@@ -5,21 +5,21 @@ version-template: $MAJOR.$MINOR.$PATCH
 categories:
   - title: "🚀 기능 추가"
     labels:
-      - "Feat"
+      - "✨ Feat"
   - title: "⚙️ 기능 개선"
     labels:
-      - "Refactor"
+      - "🛠️ Refactor"
   - title: "🐛 버그 수정"
     labels:
-      - "Fix"
+      - "🐞 Fix"
   - title: "🧰 그 외"
     labels:
-      - "Chore"
+      - "🔧 Chore"
       - "CI/CD"
-      - "Docs"
-      - "Build"
+      - "📝 Docs"
+      - "⚙️ Build"
       - "Common"
-      - "Test"
+      - "🔍 Test"
 
 version-resolver:
   major:
