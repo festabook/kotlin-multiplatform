@@ -4,9 +4,9 @@ import com.daedan.festabook.data.model.response.UniversityResponse
 import com.daedan.festabook.data.model.response.festival.FestivalGeographyResponse
 import com.daedan.festabook.data.model.response.festival.FestivalResponse
 import com.daedan.festabook.data.model.response.lostitem.LostGuideItemResponse
-import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Query
+import de.jensklingenberg.ktorfit.Response
+import de.jensklingenberg.ktorfit.http.GET
+import de.jensklingenberg.ktorfit.http.Query
 
 interface FestivalService {
     @GET("festivals")

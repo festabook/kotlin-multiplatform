@@ -4,9 +4,9 @@ import com.daedan.festabook.data.model.response.place.PlaceDetailResponse
 import com.daedan.festabook.data.model.response.place.PlaceGeographyResponse
 import com.daedan.festabook.data.model.response.place.PlaceResponse
 import com.daedan.festabook.data.model.response.place.TimeTagResponse
-import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Path
+import de.jensklingenberg.ktorfit.Response
+import de.jensklingenberg.ktorfit.http.GET
+import de.jensklingenberg.ktorfit.http.Path
 
 interface PlaceService {
     @GET("time-tags")
