@@ -12,13 +12,13 @@ class FestaBookAuthPlugin(
     private val festivalLocalDataSource: FestivalLocalDataSource,
 ) {
     val plugin =
-        createClientPlugin("FestaBookAuthPlugin", ::FestaBookAuthPluginConfig) {
+        createClientPlugin(name = "FestaBookAuthPlugin") {
             onRequest { request, _ ->
                 val festivalId = festivalLocalDataSource.getFestivalId()
 
                 if (festivalId != null) {
 //                Timber.d("festivalId : $festivalId")
-                    request.headers.append("festival", festivalId.toString())
+                    request.headers["festival"] = festivalId.toString()
                 }
             }
         }
