@@ -1,4 +1,12 @@
+import org.jetbrains.compose.internal.utils.getLocalProperty
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+private val jksFilePath = getLocalProperty("JKS_FILE_PATH")
+private val storePasswordValue = getLocalProperty("STORE_PASSWORD")
+private val keyPasswordValue = getLocalProperty("KEY_PASSWORD")
+private val keyAliasValue = getLocalProperty("KEY_ALIAS")
+private val baseUrlDev = getLocalProperty("BASE_URL_DEV")
+private val baseUrl = getLocalProperty("BASE_URL")
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -47,6 +55,8 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktorfit.lib)
             implementation(libs.ktorfit.converters.response)
+            implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.3")
+            implementation("io.ktor:ktor-client-content-negotiation:3.3.3")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -60,6 +70,16 @@ android {
         libs.versions.android.compileSdk
             .get()
             .toInt()
+
+    signingConfigs {
+        create("release") {
+            storeFile = file(checkNotNull(jksFilePath) { "JKS_FILE_PATH가 local.properties에 없음" })
+            storePassword =
+                checkNotNull(storePasswordValue) { "STORE_PASSWORD가 local.properties에 없음" }
+            keyAlias = checkNotNull(keyAliasValue) { "KEY_ALIAS가 local.properties에 없음" }
+            keyPassword = checkNotNull(keyPasswordValue) { "KEY_PASSWORD가 local.properties에 없음" }
+        }
+    }
 
     defaultConfig {
         applicationId = "com.daedan.festabook"
@@ -80,13 +100,37 @@ android {
         }
     }
     buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
+        debug {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+            resValue("string", "app_name", "(Debug)Festabook")
+
+            val baseUrl = checkNotNull(baseUrlDev) { "BASE_URL_DEV가 local.properties에 없음" }
+
+            buildConfigField("String", "FESTABOOK_URL", baseUrl)
+        }
+
+        release {
+//            isMinifyEnabled = true
+//            isShrinkResources = true
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro",
+//            )
+            resValue("string", "app_name", "Festabook")
+            signingConfig = signingConfigs["release"]
+
+            val baseUrl = checkNotNull(baseUrl) { "BASE_URL가 local.properties에 없음" }
+
+            buildConfigField("String", "FESTABOOK_URL", baseUrl)
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+    buildFeatures {
+        buildConfig = true
     }
 }
 
