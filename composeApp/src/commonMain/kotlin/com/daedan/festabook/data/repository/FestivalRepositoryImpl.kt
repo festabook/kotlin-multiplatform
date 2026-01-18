@@ -12,7 +12,7 @@ import com.daedan.festabook.domain.repository.FestivalRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import java.time.LocalDate
+import kotlinx.datetime.LocalDate
 
 @ContributesBinding(AppScope::class)
 @Inject
@@ -31,7 +31,7 @@ class FestivalRepositoryImpl(
         return response.mapCatching { lineupResponses ->
             lineupResponses
                 .map { it.toDomain() }
-                .groupBy { it.performanceAt.toLocalDate() }
+                .groupBy { it.performanceAt.date }
         }
     }
 

@@ -1,7 +1,9 @@
 package com.daedan.festabook.domain.model
 
-import timber.log.Timber
-import java.time.LocalDateTime
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Instant
 
 sealed interface Lost {
     data class Item(
@@ -17,11 +19,13 @@ sealed interface Lost {
     ) : Lost
 }
 
+private val MIN_DATE = LocalDateTime(0, 1, 1, 0, 0)
+
 fun String.toLocalDateTime(): LocalDateTime =
     runCatching {
-        LocalDateTime.parse(this)
+        Instant.parse(this).toLocalDateTime(TimeZone.UTC)
     }.onFailure {
-        Timber.e(it, "LostItem: 날짜 파싱 실패:${it.message}")
+//        Timber.e(it, "LostItem: 날짜 파싱 실패:${it.message}")
     }.getOrElse {
-        LocalDateTime.MIN
+        MIN_DATE
     }

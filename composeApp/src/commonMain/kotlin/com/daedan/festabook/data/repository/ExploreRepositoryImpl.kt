@@ -9,7 +9,6 @@ import com.daedan.festabook.domain.repository.ExploreRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import timber.log.Timber
 
 @ContributesBinding(AppScope::class)
 @Inject
@@ -18,7 +17,7 @@ class ExploreRepositoryImpl(
     private val festivalLocalDataSource: FestivalLocalDataSource,
 ) : ExploreRepository {
     override suspend fun search(query: String): Result<List<University>> {
-        Timber.d("Searching for query: $query")
+//        Timber.d("Searching for query: $query")
 
         val response =
             festivalDataSource

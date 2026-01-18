@@ -9,7 +9,6 @@ import com.daedan.festabook.domain.repository.FestivalNotificationRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import timber.log.Timber
 
 @ContributesBinding(AppScope::class)
 @Inject
@@ -22,7 +21,7 @@ class FestivalNotificationRepositoryImpl(
     override suspend fun saveFestivalNotification(): Result<Unit> {
         val deviceId = deviceLocalDataSource.getDeviceId()
         if (deviceId == null) {
-            Timber.e("${::FestivalNotificationRepositoryImpl.name}: DeviceId가 없습니다.")
+//            Timber.e("${::FestivalNotificationRepositoryImpl.name}: DeviceId가 없습니다.")
             return Result.failure(IllegalStateException())
         }
         val festivalId = festivalLocalDataSource.getFestivalId()
@@ -35,7 +34,7 @@ class FestivalNotificationRepositoryImpl(
                         deviceId = deviceId,
                     ).toResult()
             }
-                ?: throw IllegalArgumentException("${::FestivalNotificationRepositoryImpl.javaClass.simpleName}festivalId가 null 입니다.")
+                ?: throw IllegalArgumentException("${this::class.simpleName}festivalId가 null 입니다.")
         return result
             .mapCatching {
                 festivalNotificationLocalDataSource.saveFestivalNotificationId(

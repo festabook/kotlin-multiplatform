@@ -5,7 +5,6 @@ import com.daedan.festabook.domain.model.LostItemStatus
 import com.daedan.festabook.domain.model.toLocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import timber.log.Timber
 
 @Serializable
 data class LostItemResponse(
@@ -28,6 +27,7 @@ fun LostItemResponse.toDomain(): Lost.Item =
         imageUrl = imageUrl,
         storageLocation = storageLocation,
         status =
-            pickupStatus.also { if (it == LostItemStatus.UNKNOWN) Timber.e("${::toDomain.name}: 알 수 없는 분실물 상태") },
+        pickupStatus,
+        // .also { if (it == LostItemStatus.UNKNOWN) Timber.e("${::toDomain.name}: 알 수 없는 분실물 상태") }
         createdAt = createdAt.toLocalDateTime(),
     )

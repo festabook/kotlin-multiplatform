@@ -2,7 +2,7 @@ package com.daedan.festabook.domain.repository
 
 import com.daedan.festabook.domain.model.LineupItem
 import com.daedan.festabook.domain.model.Organization
-import java.time.LocalDate
+import kotlinx.datetime.LocalDate
 
 interface FestivalRepository {
     suspend fun getFestivalInfo(): Result<Organization>
