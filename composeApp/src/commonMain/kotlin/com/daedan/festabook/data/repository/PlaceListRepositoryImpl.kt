@@ -1,0 +1,46 @@
+package com.daedan.festabook.data.repository
+
+import com.daedan.festabook.data.datasource.remote.place.PlaceDataSource
+import com.daedan.festabook.data.model.response.festival.toDomain
+import com.daedan.festabook.data.model.response.place.toDomain
+import com.daedan.festabook.data.util.toResult
+import com.daedan.festabook.domain.model.OrganizationGeography
+import com.daedan.festabook.domain.model.Place
+import com.daedan.festabook.domain.model.PlaceGeography
+import com.daedan.festabook.domain.model.TimeTag
+import com.daedan.festabook.domain.repository.PlaceListRepository
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+
+@ContributesBinding(AppScope::class)
+@Inject
+class PlaceListRepositoryImpl(
+    private val placeDataSource: PlaceDataSource,
+) : PlaceListRepository {
+    override suspend fun getTimeTags(): Result<List<TimeTag>> {
+        val response = placeDataSource.fetchTimeTag().toResult()
+        return response.mapCatching { timeTags ->
+            timeTags.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun getPlaces(): Result<List<Place>> {
+        val response = placeDataSource.fetchPlaces().toResult()
+        return response.mapCatching { places ->
+            places.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun getOrganizationGeography(): Result<OrganizationGeography> {
+        val response = placeDataSource.fetchOrganizationGeography().toResult()
+        return response.mapCatching { it.toDomain() }
+    }
+
+    override suspend fun getPlaceGeographies(): Result<List<PlaceGeography>> {
+        val response = placeDataSource.fetchPlaceGeographies().toResult()
+        return response.mapCatching { placeGeographies ->
+            placeGeographies.map { it.toDomain() }
+        }
+    }
+}

@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		C134408B94E62675C2D81EAE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		C134408B94E62675C2D81EAE /* Exceptions for "iosApp" folder in "iosApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -24,7 +24,7 @@
 		82A10FDF00A7F8537FA4736B /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				C134408B94E62675C2D81EAE /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+				C134408B94E62675C2D81EAE /* Exceptions for "iosApp" folder in "iosApp" target */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -169,6 +169,8 @@
 /* Begin XCBuildConfiguration section */
 		94BDB26E51A3BD8821288379 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 8E6C8D378651BF8144E66D20 /* Configuration */;
+			baseConfigurationReferenceRelativePath = Debug.xcconfig;
 			buildSettings = {
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -256,6 +258,8 @@
 		};
 		A71446CCDF09E963D579622B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 8E6C8D378651BF8144E66D20 /* Configuration */;
+			baseConfigurationReferenceRelativePath = Release.xcconfig;
 			buildSettings = {
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
