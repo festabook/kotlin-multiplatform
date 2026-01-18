@@ -1,9 +1,12 @@
 package com.daedan.festabook.data.model.response.notice
 
 import com.daedan.festabook.domain.model.Notice
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.time.LocalDateTime
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @Serializable
 data class NoticeResponse(
@@ -19,11 +22,12 @@ data class NoticeResponse(
     val createdAt: String,
 )
 
+@OptIn(ExperimentalTime::class)
 fun NoticeResponse.toDomain() =
     Notice(
         id = id,
         title = title,
         content = content,
         isPinned = isPinned,
-        createdAt = LocalDateTime.parse(createdAt),
+        createdAt = Instant.parse(createdAt).toLocalDateTime(TimeZone.UTC),
     )

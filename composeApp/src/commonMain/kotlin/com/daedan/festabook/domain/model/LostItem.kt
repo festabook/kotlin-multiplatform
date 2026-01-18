@@ -3,6 +3,7 @@ package com.daedan.festabook.domain.model
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 sealed interface Lost {
@@ -21,6 +22,7 @@ sealed interface Lost {
 
 private val MIN_DATE = LocalDateTime(0, 1, 1, 0, 0)
 
+@OptIn(ExperimentalTime::class)
 fun String.toLocalDateTime(): LocalDateTime =
     runCatching {
         Instant.parse(this).toLocalDateTime(TimeZone.UTC)

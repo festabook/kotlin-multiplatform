@@ -5,11 +5,10 @@ import com.daedan.festabook.domain.model.Notice
 import com.daedan.festabook.domain.model.Place
 import com.daedan.festabook.domain.model.PlaceDetail
 import com.daedan.festabook.domain.model.PlaceDetailImage
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 @Serializable
 data class PlaceDetailResponse(
@@ -102,6 +101,9 @@ private fun PlaceDetailResponse.toPlaceDetailImages() =
     }
 
 private fun String?.toLocalTime(): LocalTime? =
-    runCatching {
-        LocalTime.parse(this, DateTimeFormatter.ofPattern("HH:mm"))
-    }.getOrNull()
+    this?.let { timeString ->
+        runCatching {
+            val (h, m) = timeString.split(":").map { it.toInt() }
+            LocalTime(h, m)
+        }.getOrNull()
+    }
