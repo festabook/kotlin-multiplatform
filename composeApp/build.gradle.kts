@@ -55,8 +55,9 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktorfit.lib)
             implementation(libs.ktorfit.converters.response)
-            implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.3")
-            implementation("io.ktor:ktor-client-content-negotiation:3.3.3")
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
