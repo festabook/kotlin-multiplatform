@@ -1,8 +1,7 @@
 package com.daedan.festabook.config
 
-import dev.zacsweers.metro.Inject
-
-@Inject
-expect class AppConfig {
+interface AppConfig {
     val baseUrl: String
 }
+
+expect fun createAppConfig(): AppConfig
