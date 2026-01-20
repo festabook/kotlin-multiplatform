@@ -1,12 +1,19 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.internal.utils.getLocalProperty
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-private val jksFilePath = getLocalProperty("JKS_FILE_PATH")
-private val storePasswordValue = getLocalProperty("STORE_PASSWORD")
-private val keyPasswordValue = getLocalProperty("KEY_PASSWORD")
-private val keyAliasValue = getLocalProperty("KEY_ALIAS")
-private val baseUrlDev = getLocalProperty("BASE_URL_DEV")
-private val baseUrl = getLocalProperty("BASE_URL")
+private val jksFilePath =
+    getLocalProperty("JKS_FILE_PATH") ?: error("JKS_FILE_PATH가 local.properties에 없음")
+private val storePasswordValue =
+    getLocalProperty("STORE_PASSWORD") ?: error("STORE_PASSWORD가 local.properties에 없음")
+private val keyPasswordValue =
+    getLocalProperty("KEY_PASSWORD") ?: error("KEY_PASSWORD가 local.properties에 없음")
+private val keyAliasValue =
+    getLocalProperty("KEY_ALIAS") ?: error("KEY_ALIAS가 local.properties에 없음")
+private val baseUrlDev =
+    getLocalProperty("BASE_URL_DEV") ?: error("BASE_URL_DEV가 local.properties에 없음")
+private val baseUrl =
+    getLocalProperty("BASE_URL") ?: error("BASE_URL가 local.properties에 없음")
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -17,6 +24,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.ktorfit)
     alias(libs.plugins.metro)
+    alias(libs.plugins.buildkonfig)
 }
 
 kotlin {
@@ -65,6 +73,30 @@ kotlin {
     }
 }
 
+buildkonfig {
+    packageName = "com.daedan.festabook"
+
+    defaultConfigs {
+        buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
+    }
+    targetConfigs {
+        // android용 입니다.
+        create("debug") {
+            buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
+        }
+        create("release") {
+            buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
+        }
+        // ios용 입니다.
+        create("Debug") {
+            buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
+        }
+        create("Release") {
+            buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
+        }
+    }
+}
+
 android {
     namespace = "com.daedan.festabook"
     compileSdk =
@@ -74,11 +106,10 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file(checkNotNull(jksFilePath) { "JKS_FILE_PATH가 local.properties에 없음" })
-            storePassword =
-                checkNotNull(storePasswordValue) { "STORE_PASSWORD가 local.properties에 없음" }
-            keyAlias = checkNotNull(keyAliasValue) { "KEY_ALIAS가 local.properties에 없음" }
-            keyPassword = checkNotNull(keyPasswordValue) { "KEY_PASSWORD가 local.properties에 없음" }
+            storeFile = file(jksFilePath)
+            storePassword = storePasswordValue
+            keyAlias = keyAliasValue
+            keyPassword = keyPasswordValue
         }
     }
 
@@ -105,10 +136,6 @@ android {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
             resValue("string", "app_name", "(Debug)Festabook")
-
-            val baseUrl = checkNotNull(baseUrlDev) { "BASE_URL_DEV가 local.properties에 없음" }
-
-            buildConfigField("String", "FESTABOOK_URL", baseUrl)
         }
 
         release {
@@ -120,10 +147,6 @@ android {
 //            )
             resValue("string", "app_name", "Festabook")
             signingConfig = signingConfigs["release"]
-
-            val baseUrl = checkNotNull(baseUrl) { "BASE_URL가 local.properties에 없음" }
-
-            buildConfigField("String", "FESTABOOK_URL", baseUrl)
         }
     }
     compileOptions {

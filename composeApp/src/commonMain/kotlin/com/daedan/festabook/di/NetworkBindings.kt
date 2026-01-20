@@ -1,7 +1,6 @@
 package com.daedan.festabook.di
 
-import com.daedan.festabook.config.AppConfig
-import com.daedan.festabook.config.createAppConfig
+import com.daedan.festabook.BuildKonfig
 import com.daedan.festabook.data.service.DeviceService
 import com.daedan.festabook.data.service.FAQService
 import com.daedan.festabook.data.service.FestivalLineupService
@@ -43,17 +42,13 @@ object NetworkBindings {
     fun provideResponseConverterFactory(): ResponseConverterFactory = ResponseConverterFactory()
 
     @Provides
-    fun provideAppConfig(): AppConfig = createAppConfig()
-
-    @Provides
     fun provideKtorfit(
-        appConfig: AppConfig,
         responseConverterFactory: ResponseConverterFactory,
         authPlugin: FestaBookAuthPlugin,
         json: Json,
     ): Ktorfit =
         ktorfit {
-            baseUrl(appConfig.baseUrl)
+            baseUrl(BuildKonfig.FESTABOOK_URL)
             converterFactories(responseConverterFactory)
             httpClient {
                 HttpClient {
