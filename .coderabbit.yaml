@@ -1,3 +1,4 @@
+language: "ko-KR"
 reviews:
   auto_review:
     enabled: true
@@ -16,6 +17,7 @@ reviews:
         - expect / actual 분리가 필요한 코드가 commonMain에 포함되지 않았는지
         - Coroutine / Flow 사용이 멀티플랫폼 환경에서 안전한지
         - Compose 공통 UI가 특정 플랫폼 동작을 가정하지 않는지
+        - "하드코딩된 값(문자열, 숫자, URL, 키 등)을 반드시 지적하고, 상수 또는 설정 파일로 분리하도록 제안하세요."
 
         각 리뷰 지적에는 가능하면 Kotlin Multiplatform 또는
         Compose Multiplatform 공식 문서를 근거 링크로 첨부해 주세요.
