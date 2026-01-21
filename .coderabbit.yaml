@@ -1,0 +1,58 @@
+language: "ko-KR"
+reviews:
+  auto_review:
+    enabled: true
+    base_branches:
+      - develop
+
+  path_instructions:
+    # 1️⃣ 공통 로직 (Compose Multiplatform 핵심)
+    - path: "composeApp/commonMain/**"
+      instructions: |
+        이 PR의 commonMain 코드는 Compose Multiplatform 관점에서 리뷰해 주세요.
+
+        특히 다음을 확인해 주세요.
+        - Kotlin 코딩 컨벤션 및 네이밍 규칙
+        - 플랫폼(Android/iOS/Desktop) 의존 API가 commonMain에 직접 사용되지 않았는지
+        - expect / actual 분리가 필요한 코드가 commonMain에 포함되지 않았는지
+        - Coroutine / Flow 사용이 멀티플랫폼 환경에서 안전한지
+        - Compose 공통 UI가 특정 플랫폼 동작을 가정하지 않는지
+        - "하드코딩된 값(문자열, 숫자, URL, 키 등)을 반드시 지적하고, 상수 또는 설정 파일로 분리하도록 제안하세요."
+
+        각 리뷰 지적에는 가능하면 Kotlin Multiplatform 또는
+        Compose Multiplatform 공식 문서를 근거 링크로 첨부해 주세요.
+
+    # 2️⃣ Android 전용 구현
+    - path: "composeApp/androidMain/**"
+      instructions: |
+        Android 코드에 한해서 다음을 중점적으로 리뷰해 주세요.
+        - Kotlin 코딩 컨벤션 및 네이밍 규칙
+        - expect / actual 구현의 책임이 androidMain에 적절히 위치했는지
+        - Android 공식 가이드라인 및 Jetpack 권장 사항
+        - Android 전용 API 사용의 적절성
+        - 불필요하게 복잡한 코드나 중복 로직
+
+        각 리뷰 지적에는 Android 공식 문서 링크를 근거로 첨부해 주세요.
+
+    # 3️⃣ iOS 전용 Kotlin 코드 (iosMain)
+    - path: "composeApp/iosMain/**"
+      instructions: |
+        iOS 전용 Kotlin 코드에 대해 다음을 중점적으로 리뷰해 주세요.
+        - Kotlin 코딩 컨벤션 및 네이밍 규칙
+        - expect / actual 구현의 책임이 iosMain에 적절히 위치했는지
+        - iOS 플랫폼 API 접근 방식이 안전한지
+        - commonMain과의 의존 방향이 올바른지
+
+        각 리뷰 지적에는 Kotlin Multiplatform iOS 관련 공식 문서를
+        근거 링크로 첨부해 주세요.
+
+    # 4️⃣ iOS App (Swift / Xcode 프로젝트)
+    - path: "iosApp/**"
+      instructions: |
+        iOS App(Swift / Xcode 프로젝트) 코드는 다음 기준으로 리뷰해 주세요.
+        - Compose Multiplatform과의 연결 구조가 명확한지
+        - Swift ↔ Kotlin 인터페이스가 불필요하게 복잡하지 않은지
+        - iOS 앱 생명주기와 충돌하는 구조가 없는지
+
+        각 리뷰 지적에는 Apple 또는 Compose Multiplatform 공식 문서를
+        근거 링크로 첨부해 주세요.
