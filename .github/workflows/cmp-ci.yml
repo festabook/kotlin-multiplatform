@@ -1,0 +1,85 @@
+name: CMP CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - '**'
+
+jobs:
+  Run-PR-Test:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      checks: write
+
+    steps:
+      - name: Repository Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Gradle cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          # CMP 루트의 파일을 기준으로 해시를 생성하도록 경로 수정
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle.kts', '**/gradle-wrapper.properties', 'gradle/libs.versions.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Create local.properties
+        run: |
+          # CMP 빌드 시 BuildKonfig가 참조할 수 있도록 루트에 생성
+          echo "BASE_URL=${{ secrets.BASE_URL }}" > local.properties
+          echo "BASE_URL_DEV=${{ secrets.BASE_URL_DEV }}" >> local.properties
+          echo "NAVER_MAP_CLIENT_ID=${{ secrets.NAVER_MAP_CLIENT_ID }}" >> local.properties
+          echo "NAVER_MAP_STYLE_ID=${{ secrets.NAVER_MAP_STYLE_ID }}" >> local.properties
+
+      - name: Load Google Service file
+        env:
+          DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo "$DATA" > composeApp/google-services.json
+
+      - name: Restore keystore file
+        run: |
+          mkdir -p composeApp
+          echo "$KEYSTORE_BASE64" | base64 --decode > ./composeApp/festabook_appkey.jks
+          echo "JKS_FILE_PATH=./composeApp/festabook_appkey.jks" >> local.properties
+          echo "STORE_PASSWORD=${{ secrets.STORE_PASSWORD }}" >> local.properties
+          echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> local.properties
+          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> local.properties
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+
+      - name: Clean Project
+        run: ./gradlew clean
+
+      - name: Generate BuildKonfig
+        # BuildKonfig 객체를 먼저 생성해야 테스트나 빌드가 가능함
+        run: ./gradlew :composeApp:generateBuildKonfig
+
+      - name: Run ktlint
+        run: ./gradlew ktlintCheck
+
+      - name: Run Unit Test
+        # CMP에서는 모듈별로 테스트를 수행합니다.
+        run: ./gradlew :composeApp:test
+
+      - name: Publish Unit Test Results
+        if: always()
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          # 결과 리포트 경로 수정 (composeApp 모듈 기준)
+          files: composeApp/build/test-results/**/*.xml
+          check_name: '테스트 결과 🛠️'
+          comment_mode: 'off'
