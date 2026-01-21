@@ -12,6 +12,10 @@ jobs:
   Run-PR-Test:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      checks: write
+
     steps:
       - name: Repository Checkout
         uses: actions/checkout@v4
