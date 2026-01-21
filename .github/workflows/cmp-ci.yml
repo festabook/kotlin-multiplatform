@@ -68,6 +68,9 @@ jobs:
         # BuildKonfig 객체를 먼저 생성해야 테스트나 빌드가 가능함
         run: ./gradlew :composeApp:generateBuildKonfig
 
+      - name: Run ktlint
+        run: ./gradlew ktlintCheck
+
       - name: Run Unit Test
         # CMP에서는 모듈별로 테스트를 수행합니다.
         run: ./gradlew :composeApp:test
