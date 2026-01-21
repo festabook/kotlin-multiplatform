@@ -1,6 +1,6 @@
 package com.daedan.festabook.domain.model
 
-import java.time.LocalTime
+import kotlinx.datetime.LocalTime
 
 data class PlaceDetail(
     val id: Long,
