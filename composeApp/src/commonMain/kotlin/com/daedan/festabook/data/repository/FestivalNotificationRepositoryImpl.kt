@@ -58,12 +58,12 @@ class FestivalNotificationRepositoryImpl(
         return response.toResult()
     }
 
-    override fun getFestivalNotificationIsAllow(): Boolean {
+    override suspend fun getFestivalNotificationIsAllow(): Boolean {
         val festivalId = festivalLocalDataSource.getFestivalId() ?: return false
         return festivalNotificationLocalDataSource.getFestivalNotificationIsAllowed(festivalId)
     }
 
-    override fun setFestivalNotificationIsAllow(isAllowed: Boolean) {
+    override suspend fun setFestivalNotificationIsAllow(isAllowed: Boolean) {
         festivalLocalDataSource.getFestivalId()?.let { festivalId ->
             festivalNotificationLocalDataSource.saveFestivalNotificationIsAllowed(
                 festivalId,

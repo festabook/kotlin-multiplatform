@@ -35,7 +35,7 @@ class FestivalRepositoryImpl(
         }
     }
 
-    override fun getIsFirstVisit(): Result<Boolean> =
+    override suspend fun getIsFirstVisit(): Result<Boolean> =
         runCatching {
             festivalLocalDataSource.getIsFirstVisit()
         }

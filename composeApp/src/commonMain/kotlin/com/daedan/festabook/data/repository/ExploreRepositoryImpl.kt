@@ -27,7 +27,7 @@ class ExploreRepositoryImpl(
         return response.mapCatching { universities -> universities.map { it.toDomain() } }
     }
 
-    override fun saveFestivalId(festivalId: Long) = festivalLocalDataSource.saveFestivalId(festivalId)
+    override suspend fun saveFestivalId(festivalId: Long) = festivalLocalDataSource.saveFestivalId(festivalId)
 
-    override fun getFestivalId(): Long? = festivalLocalDataSource.getFestivalId()
+    override suspend fun getFestivalId(): Long? = festivalLocalDataSource.getFestivalId()
 }
