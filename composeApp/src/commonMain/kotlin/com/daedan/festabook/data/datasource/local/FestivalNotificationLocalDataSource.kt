@@ -1,21 +1,21 @@
 package com.daedan.festabook.data.datasource.local
 
 interface FestivalNotificationLocalDataSource {
-    fun saveFestivalNotificationId(
+    suspend fun saveFestivalNotificationId(
         festivalId: Long,
         festivalNotificationId: Long,
     )
 
-    fun getFestivalNotificationId(festivalId: Long): Long
+    suspend fun getFestivalNotificationId(festivalId: Long): Long
 
-    fun deleteFestivalNotificationId(festivalId: Long)
+    suspend fun deleteFestivalNotificationId(festivalId: Long)
 
-    fun clearAll()
+    suspend fun clearAll()
 
-    fun saveFestivalNotificationIsAllowed(
+    suspend fun saveFestivalNotificationIsAllowed(
         festivalId: Long,
         isAllowed: Boolean,
     )
 
-    fun getFestivalNotificationIsAllowed(festivalId: Long): Boolean
+    suspend fun getFestivalNotificationIsAllowed(festivalId: Long): Boolean
 }
