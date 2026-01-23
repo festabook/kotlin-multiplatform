@@ -41,7 +41,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
-            export("dev.zacsweers.metro:runtime:0.9.4")
+            export(libs.metro.runtime)
         }
     }
 
