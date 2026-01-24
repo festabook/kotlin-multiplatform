@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.first
 
 @ContributesBinding(AppScope::class)
 @Inject
@@ -21,7 +21,12 @@ class DeviceLocalDataSourceImpl(
         }
     }
 
-    override suspend fun getUuid(): String? = dataStore.data.firstOrNull()?.get(KEY_UUID)
+    override suspend fun getUuid(): String? =
+        runCatching {
+            dataStore.data.first()[KEY_UUID]
+        }.onFailure {
+            TODO("추후 예외로그 추가")
+        }.getOrNull()
 
     override suspend fun saveDeviceId(deviceId: Long) {
         dataStore.edit { preferences ->
@@ -29,7 +34,12 @@ class DeviceLocalDataSourceImpl(
         }
     }
 
-    override suspend fun getDeviceId(): Long? = dataStore.data.firstOrNull()?.get(KEY_DEVICE_ID)
+    override suspend fun getDeviceId(): Long? =
+        runCatching {
+            dataStore.data.first()[KEY_DEVICE_ID]
+        }.onFailure {
+            TODO("추후 예외로그 추가")
+        }.getOrNull()
 
     companion object {
         private val KEY_DEVICE_ID = longPreferencesKey("server_device_id")

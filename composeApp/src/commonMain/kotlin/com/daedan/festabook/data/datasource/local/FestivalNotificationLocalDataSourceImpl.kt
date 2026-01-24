@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.first
 
 @ContributesBinding(AppScope::class)
 @Inject
@@ -27,7 +27,10 @@ class FestivalNotificationLocalDataSourceImpl(
 
     override suspend fun getFestivalNotificationId(festivalId: Long): Long {
         val key = longPreferencesKey("${KEY_FESTIVAL_NOTIFICATION_ID}_$festivalId")
-        return dataStore.data.firstOrNull()?.get(key) ?: DEFAULT_FESTIVAL_NOTIFICATION_ID
+        return runCatching { dataStore.data.first()[key] }
+            .onFailure { TODO("추후 예외로그 추가") }
+            .getOrNull()
+            ?: DEFAULT_FESTIVAL_NOTIFICATION_ID
     }
 
     override suspend fun deleteFestivalNotificationId(festivalId: Long) {
@@ -49,7 +52,9 @@ class FestivalNotificationLocalDataSourceImpl(
 
     override suspend fun getFestivalNotificationIsAllowed(festivalId: Long): Boolean {
         val key = booleanPreferencesKey("${KEY_FESTIVAL_NOTIFICATION_IS_ALLOWED}_$festivalId")
-        return dataStore.data.firstOrNull()?.get(key) ?: false
+        return runCatching { dataStore.data.first()[key] }
+            .onFailure { TODO("추후 예외로그 추가") }
+            .getOrNull() ?: false
     }
 
     companion object {
