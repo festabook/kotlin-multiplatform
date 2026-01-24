@@ -10,8 +10,6 @@ interface FestivalNotificationLocalDataSource {
 
     suspend fun deleteFestivalNotificationId(festivalId: Long)
 
-    suspend fun clearAll()
-
     suspend fun saveFestivalNotificationIsAllowed(
         festivalId: Long,
         isAllowed: Boolean,

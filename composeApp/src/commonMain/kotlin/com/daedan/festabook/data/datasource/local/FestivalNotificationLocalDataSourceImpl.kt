@@ -38,10 +38,6 @@ class FestivalNotificationLocalDataSourceImpl(
         dataStore.edit { preferences -> preferences.remove(key) }
     }
 
-    override suspend fun clearAll() {
-        dataStore.edit { preferences -> preferences.clear() }
-    }
-
     override suspend fun saveFestivalNotificationIsAllowed(
         festivalId: Long,
         isAllowed: Boolean,
