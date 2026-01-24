@@ -9,5 +9,5 @@ interface FestivalRepository {
 
     suspend fun getLineUpGroupByDate(): Result<Map<LocalDate, List<LineupItem>>>
 
-    fun getIsFirstVisit(): Result<Boolean>
+    suspend fun getIsFirstVisit(): Result<Boolean>
 }

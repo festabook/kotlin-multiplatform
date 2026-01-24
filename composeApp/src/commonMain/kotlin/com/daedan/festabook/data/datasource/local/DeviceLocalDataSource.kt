@@ -1,11 +1,11 @@
 package com.daedan.festabook.data.datasource.local
 
 interface DeviceLocalDataSource {
-    fun saveUuid(uuid: String)
+    suspend fun saveUuid(uuid: String)
 
-    fun getUuid(): String?
+    suspend fun getUuid(): String?
 
-    fun saveDeviceId(deviceId: Long)
+    suspend fun saveDeviceId(deviceId: Long)
 
-    fun getDeviceId(): Long?
+    suspend fun getDeviceId(): Long?
 }

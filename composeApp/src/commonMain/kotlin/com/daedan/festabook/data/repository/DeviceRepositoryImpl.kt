@@ -29,15 +29,15 @@ class DeviceRepositoryImpl(
         return response.mapCatching { it.id }
     }
 
-    override fun saveDeviceId(deviceId: Long) {
+    override suspend fun saveDeviceId(deviceId: Long) {
         deviceLocalDataSource.saveDeviceId(deviceId)
     }
 
-    override fun getUuid(): String? = deviceLocalDataSource.getUuid()
+    override suspend fun getUuid(): String? = deviceLocalDataSource.getUuid()
 
-    override fun getFcmToken(): String? = fcmDataSource.getFcmToken()
+    override suspend fun getFcmToken(): String? = fcmDataSource.getFcmToken()
 
-    override fun saveFcmToken(token: String) {
+    override suspend fun saveFcmToken(token: String) {
         fcmDataSource.saveFcmToken(token)
     }
 }

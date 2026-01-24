@@ -6,11 +6,11 @@ interface DeviceRepository {
         fcmToken: String,
     ): Result<Long>
 
-    fun saveDeviceId(deviceId: Long)
+    suspend fun saveDeviceId(deviceId: Long)
 
-    fun getUuid(): String?
+    suspend fun getUuid(): String?
 
-    fun getFcmToken(): String?
+    suspend fun getFcmToken(): String?
 
-    fun saveFcmToken(token: String)
+    suspend fun saveFcmToken(token: String)
 }

@@ -1,23 +1,33 @@
 package com.daedan.festabook.data.datasource.local
 
-import android.content.SharedPreferences
-import androidx.core.content.edit
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.flow.first
 
 @ContributesBinding(AppScope::class)
 @Inject
-class FcmDataSourceImpl constructor(
-    private val prefs: SharedPreferences,
+class FcmDataSourceImpl(
+    private val dataStore: DataStore<Preferences>,
 ) : FcmDataSource {
-    override fun saveFcmToken(token: String) {
-        prefs.edit { putString(KEY_FCM_TOKEN, token) }
+    override suspend fun saveFcmToken(token: String) {
+        dataStore.edit { preferences ->
+            preferences[KEY_FCM_TOKEN] = token
+        }
     }
 
-    override fun getFcmToken(): String? = prefs.getString(KEY_FCM_TOKEN, null)
+    override suspend fun getFcmToken(): String? =
+        runCatching {
+            dataStore.data.first()[KEY_FCM_TOKEN]
+        }.onFailure {
+            TODO("추후 예외로그 추가")
+        }.getOrNull()
 
     companion object {
-        private const val KEY_FCM_TOKEN = "fcm_token"
+        private val KEY_FCM_TOKEN = stringPreferencesKey("fcm_token")
     }
 }

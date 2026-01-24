@@ -1,9 +1,9 @@
 package com.daedan.festabook.data.datasource.local
 
 interface FestivalLocalDataSource {
-    fun saveFestivalId(festivalId: Long)
+    suspend fun saveFestivalId(festivalId: Long)
 
-    fun getFestivalId(): Long?
+    suspend fun getFestivalId(): Long?
 
-    fun getIsFirstVisit(): Boolean
+    suspend fun getIsFirstVisit(): Boolean
 }
