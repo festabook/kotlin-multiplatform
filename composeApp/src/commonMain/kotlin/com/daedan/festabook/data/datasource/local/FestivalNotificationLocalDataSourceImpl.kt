@@ -42,7 +42,7 @@ class FestivalNotificationLocalDataSourceImpl(
         festivalId: Long,
         isAllowed: Boolean,
     ) {
-        val key = booleanPreferencesKey("${KEY_FESTIVAL_NOTIFICATION_ID}_$festivalId")
+        val key = booleanPreferencesKey("${KEY_FESTIVAL_NOTIFICATION_IS_ALLOWED}_$festivalId")
         dataStore.edit { preferences -> preferences[key] = isAllowed }
     }
 
