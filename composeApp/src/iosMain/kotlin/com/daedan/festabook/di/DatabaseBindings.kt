@@ -8,6 +8,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.SingleIn
 import kotlinx.cinterop.ExperimentalForeignApi
 import okio.Path.Companion.toPath
 import platform.Foundation.NSDocumentDirectory
@@ -19,6 +20,7 @@ import platform.Foundation.NSUserDomainMask
 object DatabaseBindings {
     @OptIn(ExperimentalForeignApi::class)
     @Provides
+    @SingleIn(AppScope::class)
     fun provideDataStore(): DataStore<Preferences> =
         PreferenceDataStoreFactory.createWithPath {
             val documentDirectory =
