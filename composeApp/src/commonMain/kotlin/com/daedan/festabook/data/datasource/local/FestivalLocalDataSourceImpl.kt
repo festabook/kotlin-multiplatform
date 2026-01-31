@@ -4,11 +4,14 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.longPreferencesKey
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 
 @ContributesBinding(AppScope::class)
 @Inject
@@ -21,21 +24,16 @@ class FestivalLocalDataSourceImpl(
         }
     }
 
-    override suspend fun getFestivalId(): Long? =
-        runCatching { dataStore.data.first()[KEY_FESTIVAL_ID] }
-            .onFailure {
-                TODO("추후 예외로그 추가")
-            }.getOrNull()
+    override suspend fun getFestivalId(): Flow<Long?> = dataStore.data.catch { emit(emptyPreferences()) }.map { it[KEY_FESTIVAL_ID] }
 
-    override suspend fun getIsFirstVisit(): Boolean {
-        val festivalId = getFestivalId() ?: return true
+    override suspend fun getIsFirstVisit(festivalId: Long): Boolean {
         val key = booleanPreferencesKey("${KEY_IS_FIRST_VISIT}_$festivalId")
-        val isFirstVisit =
-            runCatching { dataStore.data.first()[key] }
-                .onFailure { TODO("추후 예외로그 추가") }
-                .getOrNull() ?: true
+        var isFirstVisit = true
+        dataStore.edit { preferences ->
+            isFirstVisit = preferences[key] ?: true
+            if (isFirstVisit) preferences[key] = false
+        }
 
-        if (isFirstVisit) dataStore.edit { preferences -> preferences[key] = false }
         return isFirstVisit
     }
 

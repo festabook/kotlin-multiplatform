@@ -4,11 +4,14 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.longPreferencesKey
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 
 @ContributesBinding(AppScope::class)
 @Inject
@@ -25,12 +28,12 @@ class FestivalNotificationLocalDataSourceImpl(
         }
     }
 
-    override suspend fun getFestivalNotificationId(festivalId: Long): Long {
+    override suspend fun getFestivalNotificationId(festivalId: Long): Flow<Long> {
         val key = longPreferencesKey("${KEY_FESTIVAL_NOTIFICATION_ID}_$festivalId")
-        return runCatching { dataStore.data.first()[key] }
-            .onFailure { TODO("추후 예외로그 추가") }
-            .getOrNull()
-            ?: DEFAULT_FESTIVAL_NOTIFICATION_ID
+        return dataStore.data
+            .catch {
+                emit(emptyPreferences())
+            }.map { it[key] ?: DEFAULT_FESTIVAL_NOTIFICATION_ID }
     }
 
     override suspend fun deleteFestivalNotificationId(festivalId: Long) {
@@ -46,11 +49,12 @@ class FestivalNotificationLocalDataSourceImpl(
         dataStore.edit { preferences -> preferences[key] = isAllowed }
     }
 
-    override suspend fun getFestivalNotificationIsAllowed(festivalId: Long): Boolean {
+    override suspend fun getFestivalNotificationIsAllowed(festivalId: Long): Flow<Boolean> {
         val key = booleanPreferencesKey("${KEY_FESTIVAL_NOTIFICATION_IS_ALLOWED}_$festivalId")
-        return runCatching { dataStore.data.first()[key] }
-            .onFailure { TODO("추후 예외로그 추가") }
-            .getOrNull() ?: false
+        return dataStore.data
+            .catch {
+                emit(emptyPreferences())
+            }.map { it[key] ?: false }
     }
 
     companion object {
