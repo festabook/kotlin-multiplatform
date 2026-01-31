@@ -2,17 +2,18 @@ package com.daedan.festabook.data.repository
 
 import com.daedan.festabook.data.datasource.local.DeviceLocalDataSource
 import com.daedan.festabook.data.datasource.local.FcmDataSource
-import com.daedan.festabook.data.datasource.remote.device.DeviceDataSource
+import com.daedan.festabook.data.datasource.remote.device.DeviceRemoteDataSource
 import com.daedan.festabook.data.util.toResult
 import com.daedan.festabook.domain.repository.DeviceRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.flow.first
 
 @ContributesBinding(AppScope::class)
 @Inject
 class DeviceRepositoryImpl(
-    private val deviceDataSource: DeviceDataSource,
+    private val deviceRemoteDataSource: DeviceRemoteDataSource,
     private val deviceLocalDataSource: DeviceLocalDataSource,
     private val fcmDataSource: FcmDataSource,
 ) : DeviceRepository {
@@ -21,7 +22,7 @@ class DeviceRepositoryImpl(
         fcmToken: String,
     ): Result<Long> {
         val response =
-            deviceDataSource
+            deviceRemoteDataSource
                 .registerDevice(
                     deviceIdentifier = deviceIdentifier,
                     fcmToken = fcmToken,
@@ -29,15 +30,23 @@ class DeviceRepositoryImpl(
         return response.mapCatching { it.id }
     }
 
-    override fun saveDeviceId(deviceId: Long) {
+    override suspend fun saveDeviceId(deviceId: Long) {
         deviceLocalDataSource.saveDeviceId(deviceId)
     }
 
-    override fun getUuid(): String? = deviceLocalDataSource.getUuid()
+    override suspend fun getUuid(): String? =
+        deviceLocalDataSource.getUuid().first() ?: run {
+            // 로그 달아주세요잉
+            null
+        }
 
-    override fun getFcmToken(): String? = fcmDataSource.getFcmToken()
+    override suspend fun getFcmToken(): String? =
+        fcmDataSource.getFcmToken().first() ?: run {
+            // 로그 달아주세요잉
+            null
+        }
 
-    override fun saveFcmToken(token: String) {
+    override suspend fun saveFcmToken(token: String) {
         fcmDataSource.saveFcmToken(token)
     }
 }

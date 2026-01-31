@@ -1,21 +1,21 @@
 package com.daedan.festabook.data.datasource.local
 
+import kotlinx.coroutines.flow.Flow
+
 interface FestivalNotificationLocalDataSource {
-    fun saveFestivalNotificationId(
+    suspend fun saveFestivalNotificationId(
         festivalId: Long,
         festivalNotificationId: Long,
     )
 
-    fun getFestivalNotificationId(festivalId: Long): Long
+    fun getFestivalNotificationId(festivalId: Long): Flow<Long?>
 
-    fun deleteFestivalNotificationId(festivalId: Long)
+    suspend fun deleteFestivalNotificationId(festivalId: Long)
 
-    fun clearAll()
-
-    fun saveFestivalNotificationIsAllowed(
+    suspend fun saveFestivalNotificationIsAllowed(
         festivalId: Long,
         isAllowed: Boolean,
     )
 
-    fun getFestivalNotificationIsAllowed(festivalId: Long): Boolean
+    fun getFestivalNotificationIsAllowed(festivalId: Long): Flow<Boolean>
 }

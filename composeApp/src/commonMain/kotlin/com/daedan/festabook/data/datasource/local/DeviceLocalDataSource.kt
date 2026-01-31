@@ -1,11 +1,13 @@
 package com.daedan.festabook.data.datasource.local
 
+import kotlinx.coroutines.flow.Flow
+
 interface DeviceLocalDataSource {
-    fun saveUuid(uuid: String)
+    suspend fun saveUuid(uuid: String)
 
-    fun getUuid(): String?
+    fun getUuid(): Flow<String?>
 
-    fun saveDeviceId(deviceId: Long)
+    suspend fun saveDeviceId(deviceId: Long)
 
-    fun getDeviceId(): Long?
+    fun getDeviceId(): Flow<Long?>
 }

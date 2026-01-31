@@ -10,9 +10,9 @@ import dev.zacsweers.metro.Inject
 
 @ContributesBinding(AppScope::class)
 @Inject
-class FestivalNotificationDataSourceImpl(
+class FestivalNotificationRemoteDataSourceImpl(
     private val festivalNotificationService: FestivalNotificationService,
-) : FestivalNotificationDataSource {
+) : FestivalNotificationRemoteDataSource {
     override suspend fun saveFestivalNotification(
         festivalId: Long,
         deviceId: Long,

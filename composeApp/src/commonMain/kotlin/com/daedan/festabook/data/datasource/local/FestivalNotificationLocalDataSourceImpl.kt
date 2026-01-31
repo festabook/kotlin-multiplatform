@@ -1,63 +1,65 @@
 package com.daedan.festabook.data.datasource.local
 
-import android.content.SharedPreferences
-import androidx.core.content.edit
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.IOException
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.longPreferencesKey
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 
 @ContributesBinding(AppScope::class)
 @Inject
 class FestivalNotificationLocalDataSourceImpl(
-    private val prefs: SharedPreferences,
+    private val dataStore: DataStore<Preferences>,
 ) : FestivalNotificationLocalDataSource {
-    override fun saveFestivalNotificationId(
+    override suspend fun saveFestivalNotificationId(
         festivalId: Long,
         festivalNotificationId: Long,
     ) {
-        prefs.edit {
-            putLong(
-                "${KEY_FESTIVAL_NOTIFICATION_ID}_$festivalId",
-                festivalNotificationId,
-            )
+        val key = longPreferencesKey("${KEY_FESTIVAL_NOTIFICATION_ID}_$festivalId")
+        dataStore.edit { preferences ->
+            preferences[key] = festivalNotificationId
         }
     }
 
-    override fun getFestivalNotificationId(festivalId: Long): Long =
-        prefs.getLong(
-            "${KEY_FESTIVAL_NOTIFICATION_ID}_$festivalId",
-            DEFAULT_FESTIVAL_NOTIFICATION_ID,
-        )
-
-    override fun deleteFestivalNotificationId(festivalId: Long) {
-        prefs.edit { remove("${KEY_FESTIVAL_NOTIFICATION_ID}_$festivalId") }
+    override fun getFestivalNotificationId(festivalId: Long): Flow<Long?> {
+        val key = longPreferencesKey("${KEY_FESTIVAL_NOTIFICATION_ID}_$festivalId")
+        return dataStore.data
+            .catch {
+                if (it is IOException) emit(emptyPreferences()) else throw it
+            }.map { it[key] }
     }
 
-    override fun clearAll() {
-        prefs.edit { clear() }
+    override suspend fun deleteFestivalNotificationId(festivalId: Long) {
+        val key = longPreferencesKey("${KEY_FESTIVAL_NOTIFICATION_ID}_$festivalId")
+        dataStore.edit { preferences -> preferences.remove(key) }
     }
 
-    override fun saveFestivalNotificationIsAllowed(
+    override suspend fun saveFestivalNotificationIsAllowed(
         festivalId: Long,
         isAllowed: Boolean,
     ) {
-        prefs.edit {
-            putBoolean(
-                "${KEY_FESTIVAL_NOTIFICATION_IS_ALLOWED}_$festivalId",
-                isAllowed,
-            )
-        }
+        val key = booleanPreferencesKey("${KEY_FESTIVAL_NOTIFICATION_IS_ALLOWED}_$festivalId")
+        dataStore.edit { preferences -> preferences[key] = isAllowed }
     }
 
-    override fun getFestivalNotificationIsAllowed(festivalId: Long): Boolean =
-        prefs.getBoolean(
-            "${KEY_FESTIVAL_NOTIFICATION_IS_ALLOWED}_$festivalId",
-            false,
-        )
+    override fun getFestivalNotificationIsAllowed(festivalId: Long): Flow<Boolean> {
+        val key = booleanPreferencesKey("${KEY_FESTIVAL_NOTIFICATION_IS_ALLOWED}_$festivalId")
+        return dataStore.data
+            .catch {
+                if (it is IOException) emit(emptyPreferences()) else throw it
+            }.map { it[key] ?: false }
+    }
 
     companion object {
         private const val KEY_FESTIVAL_NOTIFICATION_ID = "festival_notification_id"
-        private const val DEFAULT_FESTIVAL_NOTIFICATION_ID = -1L
         private const val KEY_FESTIVAL_NOTIFICATION_IS_ALLOWED = "key_festival_notification_allowed"
     }
 }
