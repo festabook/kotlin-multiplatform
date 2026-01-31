@@ -1,6 +1,7 @@
 package com.daedan.festabook.data.datasource.local
 
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -32,7 +33,7 @@ class FestivalNotificationLocalDataSourceImpl(
         val key = longPreferencesKey("${KEY_FESTIVAL_NOTIFICATION_ID}_$festivalId")
         return dataStore.data
             .catch {
-                emit(emptyPreferences())
+                if (it is IOException) emit(emptyPreferences()) else throw it
             }.map { it[key] }
     }
 
@@ -53,7 +54,7 @@ class FestivalNotificationLocalDataSourceImpl(
         val key = booleanPreferencesKey("${KEY_FESTIVAL_NOTIFICATION_IS_ALLOWED}_$festivalId")
         return dataStore.data
             .catch {
-                emit(emptyPreferences())
+                if (it is IOException) emit(emptyPreferences()) else throw it
             }.map { it[key] ?: false }
     }
 

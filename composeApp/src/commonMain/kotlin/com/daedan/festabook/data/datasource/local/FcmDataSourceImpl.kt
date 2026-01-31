@@ -1,6 +1,7 @@
 package com.daedan.festabook.data.datasource.local
 
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
@@ -23,7 +24,11 @@ class FcmDataSourceImpl(
         }
     }
 
-    override fun getFcmToken(): Flow<String?> = dataStore.data.catch { emit(emptyPreferences()) }.map { it[KEY_FCM_TOKEN] }
+    override fun getFcmToken(): Flow<String?> =
+        dataStore.data
+            .catch {
+                if (it is IOException) emit(emptyPreferences()) else throw it
+            }.map { it[KEY_FCM_TOKEN] }
 
     companion object {
         private val KEY_FCM_TOKEN = stringPreferencesKey("fcm_token")

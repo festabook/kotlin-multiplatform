@@ -1,6 +1,7 @@
 package com.daedan.festabook.data.datasource.local
 
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -27,7 +28,11 @@ class FestivalLocalDataSourceImpl(
         }
     }
 
-    override fun getFestivalId(): Flow<Long?> = dataStore.data.catch { emit(emptyPreferences()) }.map { it[KEY_FESTIVAL_ID] }
+    override fun getFestivalId(): Flow<Long?> =
+        dataStore.data
+            .catch {
+                if (it is IOException) emit(emptyPreferences()) else throw it
+            }.map { it[KEY_FESTIVAL_ID] }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getIsFirstVisit(): Flow<Boolean> =

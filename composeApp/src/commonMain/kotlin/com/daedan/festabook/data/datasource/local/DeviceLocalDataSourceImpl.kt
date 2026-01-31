@@ -1,6 +1,7 @@
 package com.daedan.festabook.data.datasource.local
 
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
@@ -27,7 +28,7 @@ class DeviceLocalDataSourceImpl(
     override fun getUuid(): Flow<String?> =
         dataStore.data
             .catch {
-                emit(emptyPreferences())
+                if (it is IOException) emit(emptyPreferences()) else throw it
             }.map { it[KEY_UUID] }
 
     override suspend fun saveDeviceId(deviceId: Long) {
@@ -39,7 +40,7 @@ class DeviceLocalDataSourceImpl(
     override fun getDeviceId(): Flow<Long?> =
         dataStore.data
             .catch {
-                emit(emptyPreferences())
+                if (it is IOException) emit(emptyPreferences()) else throw it
             }.map { it[KEY_DEVICE_ID] }
 
     companion object {
