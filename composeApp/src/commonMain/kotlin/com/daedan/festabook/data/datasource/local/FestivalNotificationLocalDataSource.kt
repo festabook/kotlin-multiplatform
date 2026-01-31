@@ -8,7 +8,7 @@ interface FestivalNotificationLocalDataSource {
         festivalNotificationId: Long,
     )
 
-    suspend fun getFestivalNotificationId(festivalId: Long): Flow<Long?>
+    fun getFestivalNotificationId(festivalId: Long): Flow<Long?>
 
     suspend fun deleteFestivalNotificationId(festivalId: Long)
 
@@ -17,5 +17,5 @@ interface FestivalNotificationLocalDataSource {
         isAllowed: Boolean,
     )
 
-    suspend fun getFestivalNotificationIsAllowed(festivalId: Long): Flow<Boolean>
+    fun getFestivalNotificationIsAllowed(festivalId: Long): Flow<Boolean>
 }

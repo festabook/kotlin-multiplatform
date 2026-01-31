@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 interface FestivalLocalDataSource {
     suspend fun saveFestivalId(festivalId: Long)
 
-    suspend fun getFestivalId(): Flow<Long?>
+    fun getFestivalId(): Flow<Long?>
 
-    suspend fun getIsFirstVisit(): Flow<Boolean>
+    fun getIsFirstVisit(): Flow<Boolean>
 }

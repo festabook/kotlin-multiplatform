@@ -27,10 +27,10 @@ class FestivalLocalDataSourceImpl(
         }
     }
 
-    override suspend fun getFestivalId(): Flow<Long?> = dataStore.data.catch { emit(emptyPreferences()) }.map { it[KEY_FESTIVAL_ID] }
+    override fun getFestivalId(): Flow<Long?> = dataStore.data.catch { emit(emptyPreferences()) }.map { it[KEY_FESTIVAL_ID] }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun getIsFirstVisit(): Flow<Boolean> =
+    override fun getIsFirstVisit(): Flow<Boolean> =
         getFestivalId().flatMapLatest { festivalId ->
             val key = booleanPreferencesKey("${KEY_IS_FIRST_VISIT}_$festivalId")
             var isFirstVisit = true

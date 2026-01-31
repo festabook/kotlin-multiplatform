@@ -28,7 +28,7 @@ class FestivalNotificationLocalDataSourceImpl(
         }
     }
 
-    override suspend fun getFestivalNotificationId(festivalId: Long): Flow<Long?> {
+    override fun getFestivalNotificationId(festivalId: Long): Flow<Long?> {
         val key = longPreferencesKey("${KEY_FESTIVAL_NOTIFICATION_ID}_$festivalId")
         return dataStore.data
             .catch {
@@ -49,7 +49,7 @@ class FestivalNotificationLocalDataSourceImpl(
         dataStore.edit { preferences -> preferences[key] = isAllowed }
     }
 
-    override suspend fun getFestivalNotificationIsAllowed(festivalId: Long): Flow<Boolean> {
+    override fun getFestivalNotificationIsAllowed(festivalId: Long): Flow<Boolean> {
         val key = booleanPreferencesKey("${KEY_FESTIVAL_NOTIFICATION_IS_ALLOWED}_$festivalId")
         return dataStore.data
             .catch {

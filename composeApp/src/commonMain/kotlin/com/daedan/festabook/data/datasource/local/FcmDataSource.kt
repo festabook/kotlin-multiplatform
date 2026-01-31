@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 interface FcmDataSource {
     suspend fun saveFcmToken(token: String)
 
-    suspend fun getFcmToken(): Flow<String?>
+    fun getFcmToken(): Flow<String?>
 }

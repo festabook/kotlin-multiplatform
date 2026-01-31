@@ -24,7 +24,7 @@ class DeviceLocalDataSourceImpl(
         }
     }
 
-    override suspend fun getUuid(): Flow<String?> =
+    override fun getUuid(): Flow<String?> =
         dataStore.data
             .catch {
                 emit(emptyPreferences())
@@ -36,7 +36,7 @@ class DeviceLocalDataSourceImpl(
         }
     }
 
-    override suspend fun getDeviceId(): Flow<Long?> =
+    override fun getDeviceId(): Flow<Long?> =
         dataStore.data
             .catch {
                 emit(emptyPreferences())

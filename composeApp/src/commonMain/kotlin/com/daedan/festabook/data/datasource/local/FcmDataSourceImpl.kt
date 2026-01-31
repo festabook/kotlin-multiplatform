@@ -23,7 +23,7 @@ class FcmDataSourceImpl(
         }
     }
 
-    override suspend fun getFcmToken(): Flow<String?> = dataStore.data.catch { emit(emptyPreferences()) }.map { it[KEY_FCM_TOKEN] }
+    override fun getFcmToken(): Flow<String?> = dataStore.data.catch { emit(emptyPreferences()) }.map { it[KEY_FCM_TOKEN] }
 
     companion object {
         private val KEY_FCM_TOKEN = stringPreferencesKey("fcm_token")
