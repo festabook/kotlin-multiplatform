@@ -10,9 +10,9 @@ import dev.zacsweers.metro.Inject
 
 @ContributesBinding(AppScope::class)
 @Inject
-class DeviceDataSourceImpl(
+class DeviceRemoteDataSourceImpl(
     private val deviceService: DeviceService,
-) : DeviceDataSource {
+) : DeviceRemoteDataSource {
     override suspend fun registerDevice(
         deviceIdentifier: String,
         fcmToken: String,

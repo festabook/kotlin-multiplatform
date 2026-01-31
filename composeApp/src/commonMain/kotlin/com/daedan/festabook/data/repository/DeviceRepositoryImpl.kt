@@ -2,7 +2,7 @@ package com.daedan.festabook.data.repository
 
 import com.daedan.festabook.data.datasource.local.DeviceLocalDataSource
 import com.daedan.festabook.data.datasource.local.FcmDataSource
-import com.daedan.festabook.data.datasource.remote.device.DeviceDataSource
+import com.daedan.festabook.data.datasource.remote.device.DeviceRemoteDataSource
 import com.daedan.festabook.data.util.toResult
 import com.daedan.festabook.domain.repository.DeviceRepository
 import dev.zacsweers.metro.AppScope
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.first
 @ContributesBinding(AppScope::class)
 @Inject
 class DeviceRepositoryImpl(
-    private val deviceDataSource: DeviceDataSource,
+    private val deviceRemoteDataSource: DeviceRemoteDataSource,
     private val deviceLocalDataSource: DeviceLocalDataSource,
     private val fcmDataSource: FcmDataSource,
 ) : DeviceRepository {
@@ -22,7 +22,7 @@ class DeviceRepositoryImpl(
         fcmToken: String,
     ): Result<Long> {
         val response =
-            deviceDataSource
+            deviceRemoteDataSource
                 .registerDevice(
                     deviceIdentifier = deviceIdentifier,
                     fcmToken = fcmToken,

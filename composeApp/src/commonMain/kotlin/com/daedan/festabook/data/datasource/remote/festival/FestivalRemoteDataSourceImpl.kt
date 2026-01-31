@@ -10,9 +10,9 @@ import dev.zacsweers.metro.Inject
 
 @ContributesBinding(AppScope::class)
 @Inject
-class FestivalDataSourceImpl(
+class FestivalRemoteDataSourceImpl(
     private val festivalService: FestivalService,
-) : FestivalDataSource {
+) : FestivalRemoteDataSource {
     override suspend fun fetchFestival(): ApiResult<FestivalResponse> =
         ApiResult.toApiResult {
             festivalService.fetchOrganization()

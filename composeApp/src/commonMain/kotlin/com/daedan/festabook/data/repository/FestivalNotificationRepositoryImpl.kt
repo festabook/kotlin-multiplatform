@@ -3,7 +3,7 @@ package com.daedan.festabook.data.repository
 import com.daedan.festabook.data.datasource.local.DeviceLocalDataSource
 import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
 import com.daedan.festabook.data.datasource.local.FestivalNotificationLocalDataSource
-import com.daedan.festabook.data.datasource.remote.festival.FestivalNotificationDataSource
+import com.daedan.festabook.data.datasource.remote.festival.FestivalNotificationRemoteDataSource
 import com.daedan.festabook.data.util.toResult
 import com.daedan.festabook.domain.repository.FestivalNotificationRepository
 import dev.zacsweers.metro.AppScope
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.flowOf
 @ContributesBinding(AppScope::class)
 @Inject
 class FestivalNotificationRepositoryImpl(
-    private val festivalNotificationDataSource: FestivalNotificationDataSource,
+    private val festivalNotificationRemoteDataSource: FestivalNotificationRemoteDataSource,
     private val deviceLocalDataSource: DeviceLocalDataSource,
     private val festivalNotificationLocalDataSource: FestivalNotificationLocalDataSource,
     private val festivalLocalDataSource: FestivalLocalDataSource,
@@ -36,7 +36,7 @@ class FestivalNotificationRepositoryImpl(
             }
 
         val result =
-            festivalNotificationDataSource
+            festivalNotificationRemoteDataSource
                 .saveFestivalNotification(
                     festivalId = festivalId,
                     deviceId = deviceId,
@@ -65,7 +65,7 @@ class FestivalNotificationRepositoryImpl(
                     return Result.failure(IllegalStateException())
                 }
         val response =
-            festivalNotificationDataSource.deleteFestivalNotification(festivalNotificationId)
+            festivalNotificationRemoteDataSource.deleteFestivalNotification(festivalNotificationId)
         festivalNotificationLocalDataSource.deleteFestivalNotificationId(festivalId)
 
         return response.toResult()
