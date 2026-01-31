@@ -64,11 +64,12 @@ class FestivalNotificationRepositoryImpl(
                     // 여기에 로그 달아주세요잉
                     return Result.failure(IllegalStateException())
                 }
-        val response =
-            festivalNotificationRemoteDataSource.deleteFestivalNotification(festivalNotificationId)
-        festivalNotificationLocalDataSource.deleteFestivalNotificationId(festivalId)
-
-        return response.toResult()
+        return festivalNotificationRemoteDataSource
+            .deleteFestivalNotification(festivalNotificationId)
+            .toResult()
+            .onSuccess {
+                festivalNotificationLocalDataSource.deleteFestivalNotificationId(festivalId)
+            }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
