@@ -9,8 +9,11 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 @ContributesBinding(AppScope::class)
@@ -26,16 +29,18 @@ class FestivalLocalDataSourceImpl(
 
     override suspend fun getFestivalId(): Flow<Long?> = dataStore.data.catch { emit(emptyPreferences()) }.map { it[KEY_FESTIVAL_ID] }
 
-    override suspend fun getIsFirstVisit(festivalId: Long): Boolean {
-        val key = booleanPreferencesKey("${KEY_IS_FIRST_VISIT}_$festivalId")
-        var isFirstVisit = true
-        dataStore.edit { preferences ->
-            isFirstVisit = preferences[key] ?: true
-            if (isFirstVisit) preferences[key] = false
-        }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override suspend fun getIsFirstVisit(): Flow<Boolean> =
+        getFestivalId().flatMapLatest { festivalId ->
+            val key = booleanPreferencesKey("${KEY_IS_FIRST_VISIT}_$festivalId")
+            var isFirstVisit = true
+            dataStore.edit { preferences ->
+                isFirstVisit = preferences[key] ?: true
+                if (isFirstVisit) preferences[key] = false
+            }
 
-        return isFirstVisit
-    }
+            flowOf(isFirstVisit)
+        }
 
     companion object {
         private const val KEY_IS_FIRST_VISIT = "is_first_visit"

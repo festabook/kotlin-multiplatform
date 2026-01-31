@@ -2,6 +2,7 @@ package com.daedan.festabook.domain.repository
 
 import com.daedan.festabook.domain.model.LineupItem
 import com.daedan.festabook.domain.model.Organization
+import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 
 interface FestivalRepository {
@@ -9,5 +10,5 @@ interface FestivalRepository {
 
     suspend fun getLineUpGroupByDate(): Result<Map<LocalDate, List<LineupItem>>>
 
-    suspend fun getIsFirstVisit(): Result<Boolean>
+    suspend fun getIsFirstVisit(): Flow<Boolean>
 }

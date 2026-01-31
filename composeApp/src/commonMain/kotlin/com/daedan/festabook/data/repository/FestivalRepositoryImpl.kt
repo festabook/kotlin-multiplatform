@@ -12,6 +12,7 @@ import com.daedan.festabook.domain.repository.FestivalRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 
 @ContributesBinding(AppScope::class)
@@ -35,8 +36,5 @@ class FestivalRepositoryImpl(
         }
     }
 
-    override suspend fun getIsFirstVisit(): Result<Boolean> =
-        runCatching {
-            festivalLocalDataSource.getIsFirstVisit()
-        }
+    override suspend fun getIsFirstVisit(): Flow<Boolean> = festivalLocalDataSource.getIsFirstVisit()
 }

@@ -7,5 +7,5 @@ interface FestivalLocalDataSource {
 
     suspend fun getFestivalId(): Flow<Long?>
 
-    suspend fun getIsFirstVisit(festivalId: Long): Boolean
+    suspend fun getIsFirstVisit(): Flow<Boolean>
 }

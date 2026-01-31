@@ -8,7 +8,7 @@ interface FestivalNotificationLocalDataSource {
         festivalNotificationId: Long,
     )
 
-    suspend fun getFestivalNotificationId(festivalId: Long): Flow<Long>
+    suspend fun getFestivalNotificationId(festivalId: Long): Flow<Long?>
 
     suspend fun deleteFestivalNotificationId(festivalId: Long)
 
