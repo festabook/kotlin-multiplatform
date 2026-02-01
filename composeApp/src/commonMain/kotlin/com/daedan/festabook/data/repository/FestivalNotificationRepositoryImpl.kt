@@ -67,7 +67,7 @@ class FestivalNotificationRepositoryImpl(
         return festivalNotificationRemoteDataSource
             .deleteFestivalNotification(festivalNotificationId)
             .toResult()
-            .onSuccess {
+            .mapCatching {
                 festivalNotificationLocalDataSource.deleteFestivalNotificationId(festivalId)
             }
     }
