@@ -36,5 +36,5 @@ class FestivalRepositoryImpl(
         }
     }
 
-    override suspend fun getIsFirstVisit(): Flow<Boolean> = festivalLocalDataSource.getIsFirstVisit()
+    override fun getIsFirstVisit(): Flow<Boolean> = festivalLocalDataSource.getIsFirstVisit()
 }

@@ -73,7 +73,7 @@ class FestivalNotificationRepositoryImpl(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun getFestivalNotificationIsAllow(): Flow<Boolean> =
+    override fun getFestivalNotificationIsAllow(): Flow<Boolean> =
         festivalLocalDataSource.getFestivalId().flatMapLatest { festivalId ->
             if (festivalId == null) {
 //                    Timber.e("FestivalNotificationRepository: FestivalId가 null입니다")
