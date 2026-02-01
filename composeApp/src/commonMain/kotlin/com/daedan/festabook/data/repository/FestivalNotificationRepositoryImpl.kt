@@ -11,7 +11,7 @@ import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 
@@ -25,12 +25,12 @@ class FestivalNotificationRepositoryImpl(
 ) : FestivalNotificationRepository {
     override suspend fun saveFestivalNotification(): Result<Unit> {
         val deviceId =
-            deviceLocalDataSource.getDeviceId().first() ?: run {
+            deviceLocalDataSource.getDeviceId().firstOrNull() ?: run {
 //            Timber.e("${this::class.simpleName}: DeviceId가 null 입니다.")
                 return Result.failure(IllegalStateException())
             }
         val festivalId =
-            festivalLocalDataSource.getFestivalId().first() ?: run {
+            festivalLocalDataSource.getFestivalId().firstOrNull() ?: run {
 //            Timber.e("${this::class.simpleName}festivalId가 null 입니다.")
                 return Result.failure(IllegalStateException())
             }
@@ -53,13 +53,13 @@ class FestivalNotificationRepositoryImpl(
 
     override suspend fun deleteFestivalNotification(): Result<Unit> {
         val festivalId =
-            festivalLocalDataSource.getFestivalId().first() ?: run {
+            festivalLocalDataSource.getFestivalId().firstOrNull() ?: run {
                 // 여기에 로그 달아주세요잉
                 return Result.failure(IllegalStateException())
             }
 
         val festivalNotificationId =
-            festivalNotificationLocalDataSource.getFestivalNotificationId(festivalId).first()
+            festivalNotificationLocalDataSource.getFestivalNotificationId(festivalId).firstOrNull()
                 ?: run {
                     // 여기에 로그 달아주세요잉
                     return Result.failure(IllegalStateException())
@@ -84,7 +84,7 @@ class FestivalNotificationRepositoryImpl(
         }
 
     override suspend fun setFestivalNotificationIsAllow(isAllowed: Boolean) {
-        festivalLocalDataSource.getFestivalId().first()?.let { festivalId ->
+        festivalLocalDataSource.getFestivalId().firstOrNull()?.let { festivalId ->
             festivalNotificationLocalDataSource.saveFestivalNotificationIsAllowed(
                 festivalId = festivalId,
                 isAllowed = isAllowed,

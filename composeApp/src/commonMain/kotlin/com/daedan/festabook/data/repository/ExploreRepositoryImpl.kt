@@ -9,7 +9,7 @@ import com.daedan.festabook.domain.repository.ExploreRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 
 @ContributesBinding(AppScope::class)
 @Inject
@@ -31,7 +31,7 @@ class ExploreRepositoryImpl(
     override suspend fun saveFestivalId(festivalId: Long) = festivalLocalDataSource.saveFestivalId(festivalId)
 
     override suspend fun getFestivalId(): Long? =
-        festivalLocalDataSource.getFestivalId().first() ?: run {
+        festivalLocalDataSource.getFestivalId().firstOrNull() ?: run {
             // 로그 달아주세요잉
             null
         }

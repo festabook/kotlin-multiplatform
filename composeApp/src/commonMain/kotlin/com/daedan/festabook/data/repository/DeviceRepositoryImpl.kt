@@ -8,7 +8,7 @@ import com.daedan.festabook.domain.repository.DeviceRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 
 @ContributesBinding(AppScope::class)
 @Inject
@@ -35,13 +35,13 @@ class DeviceRepositoryImpl(
     }
 
     override suspend fun getUuid(): String? =
-        deviceLocalDataSource.getUuid().first() ?: run {
+        deviceLocalDataSource.getUuid().firstOrNull() ?: run {
             // 로그 달아주세요잉
             null
         }
 
     override suspend fun getFcmToken(): String? =
-        fcmDataSource.getFcmToken().first() ?: run {
+        fcmDataSource.getFcmToken().firstOrNull() ?: run {
             // 로그 달아주세요잉
             null
         }
