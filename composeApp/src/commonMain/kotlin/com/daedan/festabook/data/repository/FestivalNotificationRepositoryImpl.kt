@@ -5,6 +5,7 @@ import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
 import com.daedan.festabook.data.datasource.local.FestivalNotificationLocalDataSource
 import com.daedan.festabook.data.datasource.remote.festival.FestivalNotificationRemoteDataSource
 import com.daedan.festabook.data.util.toResult
+import com.daedan.festabook.data.util.withTimeoutOrNullFallback
 import com.daedan.festabook.domain.repository.FestivalNotificationRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -25,15 +26,16 @@ class FestivalNotificationRepositoryImpl(
 ) : FestivalNotificationRepository {
     override suspend fun saveFestivalNotification(): Result<Unit> {
         val deviceId =
-            deviceLocalDataSource.getDeviceId().firstOrNull() ?: run {
-//            Timber.e("${this::class.simpleName}: DeviceId가 null 입니다.")
-                return Result.failure(IllegalStateException())
-            }
+            withTimeoutOrNullFallback(
+                producer = { deviceLocalDataSource.getDeviceId().firstOrNull() },
+                onFallback = { /*TODO 로그 */ },
+            ) ?: return Result.failure(IllegalStateException())
+
         val festivalId =
-            festivalLocalDataSource.getFestivalId().firstOrNull() ?: run {
-//            Timber.e("${this::class.simpleName}festivalId가 null 입니다.")
-                return Result.failure(IllegalStateException())
-            }
+            withTimeoutOrNullFallback(
+                producer = { festivalLocalDataSource.getFestivalId().firstOrNull() },
+                onFallback = { /*TODO 로그 */ },
+            ) ?: return Result.failure(IllegalStateException())
 
         val result =
             festivalNotificationRemoteDataSource
@@ -53,17 +55,21 @@ class FestivalNotificationRepositoryImpl(
 
     override suspend fun deleteFestivalNotification(): Result<Unit> {
         val festivalId =
-            festivalLocalDataSource.getFestivalId().firstOrNull() ?: run {
-                // 여기에 로그 달아주세요잉
-                return Result.failure(IllegalStateException())
-            }
+            withTimeoutOrNullFallback(
+                producer = { festivalLocalDataSource.getFestivalId().firstOrNull() },
+                onFallback = { /*TODO 로그 */ },
+            ) ?: return Result.failure(IllegalStateException())
 
         val festivalNotificationId =
-            festivalNotificationLocalDataSource.getFestivalNotificationId(festivalId).firstOrNull()
-                ?: run {
-                    // 여기에 로그 달아주세요잉
-                    return Result.failure(IllegalStateException())
-                }
+            withTimeoutOrNullFallback(
+                producer = {
+                    festivalNotificationLocalDataSource
+                        .getFestivalNotificationId(festivalId)
+                        .firstOrNull()
+                },
+                onFallback = { /*TODO 로그 */ },
+            ) ?: return Result.failure(IllegalStateException())
+
         return festivalNotificationRemoteDataSource
             .deleteFestivalNotification(festivalNotificationId)
             .toResult()
@@ -84,13 +90,14 @@ class FestivalNotificationRepositoryImpl(
         }
 
     override suspend fun setFestivalNotificationIsAllow(isAllowed: Boolean) {
-        festivalLocalDataSource.getFestivalId().firstOrNull()?.let { festivalId ->
+        withTimeoutOrNullFallback(
+            producer = { festivalLocalDataSource.getFestivalId().firstOrNull() },
+            onFallback = { /*TODO 로그 */ },
+        )?.let { festivalId ->
             festivalNotificationLocalDataSource.saveFestivalNotificationIsAllowed(
                 festivalId = festivalId,
                 isAllowed = isAllowed,
             )
-        } ?: run {
-            // 여기에 로그 달아주세요잉
         }
     }
 }
