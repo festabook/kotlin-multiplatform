@@ -1,7 +1,9 @@
 package com.daedan.festabook.data.datasource.local
 
-interface FcmDataSource {
-    fun saveFcmToken(token: String)
+import kotlinx.coroutines.flow.Flow
 
-    fun getFcmToken(): String?
+interface FcmDataSource {
+    suspend fun saveFcmToken(token: String)
+
+    fun getFcmToken(): Flow<String?>
 }

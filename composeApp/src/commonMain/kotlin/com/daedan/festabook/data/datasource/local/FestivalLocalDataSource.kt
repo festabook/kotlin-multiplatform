@@ -1,9 +1,11 @@
 package com.daedan.festabook.data.datasource.local
 
+import kotlinx.coroutines.flow.Flow
+
 interface FestivalLocalDataSource {
-    fun saveFestivalId(festivalId: Long)
+    suspend fun saveFestivalId(festivalId: Long)
 
-    fun getFestivalId(): Long?
+    fun getFestivalId(): Flow<Long?>
 
-    fun getIsFirstVisit(): Boolean
+    fun getIsFirstVisit(): Flow<Boolean>
 }
