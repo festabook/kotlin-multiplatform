@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import kotlin.test.BeforeTest
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -13,7 +13,7 @@ class FestivalNotificationLocalDataSourceTest {
     private lateinit var dataStore: DataStore<Preferences>
     private lateinit var festivalNotificationLocalDataSource: FestivalNotificationLocalDataSource
 
-    @BeforeTest
+    @AfterTest
     fun tearDown() {
         deleteTestDataStore()
     }

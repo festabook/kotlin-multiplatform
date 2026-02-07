@@ -5,10 +5,8 @@ import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -19,13 +17,6 @@ class DeviceLocalDataSourceTest {
     private lateinit var deviceLocalDataSource: DeviceLocalDataSource
 
     lateinit var testScope: TestScope
-
-    @BeforeTest
-    fun setUp() {
-        testScope = TestScope(UnconfinedTestDispatcher())
-        dataStore = createTestDataStore(testScope)
-        deviceLocalDataSource = DeviceLocalDataSourceImpl(dataStore)
-    }
 
     @AfterTest
     fun tearDown() {
