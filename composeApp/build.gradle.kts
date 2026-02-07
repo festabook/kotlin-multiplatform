@@ -1,4 +1,5 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import dev.mokkery.gradle.ApplicationRule
 import org.jetbrains.compose.internal.utils.getLocalProperty
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -25,6 +26,7 @@ plugins {
     alias(libs.plugins.ktorfit)
     alias(libs.plugins.metro)
     alias(libs.plugins.buildkonfig)
+    alias(libs.plugins.mokkery)
 }
 
 kotlin {
@@ -50,6 +52,7 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.kotlinx.coroutines.android)
+            implementation(kotlin("test-junit5"))
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -72,6 +75,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }
@@ -163,4 +167,12 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+mokkery {
+    rule.set(ApplicationRule.All)
 }
