@@ -1,4 +1,4 @@
-package com.daedan.festabook.data.local
+package com.daedan.festabook.data.datasource.local
 
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
