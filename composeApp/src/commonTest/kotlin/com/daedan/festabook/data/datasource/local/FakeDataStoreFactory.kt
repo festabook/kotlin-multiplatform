@@ -9,14 +9,13 @@ import okio.SYSTEM
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-private const val TEST_DATASTORE_FILE_NAME = "test_prefs.preferences_pb"
-
 @OptIn(ExperimentalTime::class)
-private fun getTestDataStoreFile(): String = "test_prefs_${Clock.System.now()}.preferences_pb"
+private val testDataStoreFileName: String
+    get() = "test_prefs_${Clock.System.now()}.preferences_pb"
 
 fun createTestDataStore(
     scope: TestScope,
-    fileName: String = getTestDataStoreFile(),
+    fileName: String = testDataStoreFileName,
 ): DataStore<Preferences> {
     val testFilePath = FileSystem.SYSTEM_TEMPORARY_DIRECTORY / fileName
 
@@ -26,7 +25,7 @@ fun createTestDataStore(
     )
 }
 
-fun deleteTestDataStore(fileName: String = TEST_DATASTORE_FILE_NAME) {
+fun deleteTestDataStore(fileName: String = testDataStoreFileName) {
     val testFilePath = FileSystem.SYSTEM_TEMPORARY_DIRECTORY / fileName
     FileSystem.SYSTEM.delete(testFilePath)
 }
