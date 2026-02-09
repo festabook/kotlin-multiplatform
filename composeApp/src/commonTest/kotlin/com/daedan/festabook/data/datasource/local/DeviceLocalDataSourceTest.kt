@@ -4,7 +4,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest
 import kotlin.test.Test
@@ -15,8 +14,6 @@ import kotlin.test.assertNull
 class DeviceLocalDataSourceTest {
     private lateinit var dataStore: DataStore<Preferences>
     private lateinit var deviceLocalDataSource: DeviceLocalDataSource
-
-    lateinit var testScope: TestScope
 
     @AfterTest
     fun tearDown() {
