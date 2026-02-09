@@ -6,12 +6,17 @@ import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.test.TestScope
 import okio.FileSystem
 import okio.SYSTEM
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 private const val TEST_DATASTORE_FILE_NAME = "test_prefs.preferences_pb"
 
+@OptIn(ExperimentalTime::class)
+private fun getTestDataStoreFile(): String = "test_prefs_${Clock.System.now()}.preferences_pb"
+
 fun createTestDataStore(
     scope: TestScope,
-    fileName: String = TEST_DATASTORE_FILE_NAME,
+    fileName: String = getTestDataStoreFile(),
 ): DataStore<Preferences> {
     val testFilePath = FileSystem.SYSTEM_TEMPORARY_DIRECTORY / fileName
 
