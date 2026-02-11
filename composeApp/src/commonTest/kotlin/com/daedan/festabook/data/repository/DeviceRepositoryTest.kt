@@ -7,6 +7,7 @@ import com.daedan.festabook.domain.repository.DeviceRepository
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
 import dev.mokkery.mock
+import dev.mokkery.verify.VerifyMode
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -46,12 +47,13 @@ class DeviceRepositoryTest {
                 )
 
             // when
-            val result = deviceRepository.getFcmToken()
+            val firstResult = deviceRepository.getFcmToken()
+            val secondResult = deviceRepository.getFcmToken()
 
             // then
-            verifySuspend { fcmDataSource.getFcmToken() }
-            verifySuspend { deviceLocalDataSource.getUuid() }
-            assertEquals(expected, result)
+            verifySuspend(VerifyMode.exactly(1)) { fcmDataSource.getFcmToken() }
+            assertEquals(expected, firstResult)
+            assertEquals(expected, secondResult)
         }
 
     @Test
@@ -71,11 +73,12 @@ class DeviceRepositoryTest {
                 )
 
             // when
-            val result = deviceRepository.getUuid()
+            val firstResult = deviceRepository.getUuid()
+            val secondResult = deviceRepository.getUuid()
 
             // then
-            verifySuspend { fcmDataSource.getFcmToken() }
-            verifySuspend { deviceLocalDataSource.getUuid() }
-            assertEquals(expected, result)
+            verifySuspend(VerifyMode.exactly(1)) { deviceLocalDataSource.getUuid() }
+            assertEquals(expected, firstResult)
+            assertEquals(expected, secondResult)
         }
 }
