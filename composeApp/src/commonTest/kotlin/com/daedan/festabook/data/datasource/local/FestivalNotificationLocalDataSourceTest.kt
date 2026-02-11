@@ -1,7 +1,5 @@
 package com.daedan.festabook.data.datasource.local
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest
@@ -10,12 +8,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class FestivalNotificationLocalDataSourceTest {
-    private lateinit var dataStore: DataStore<Preferences>
+    private lateinit var testDataStore: TestDataStore
     private lateinit var festivalNotificationLocalDataSource: FestivalNotificationLocalDataSource
 
     @AfterTest
     fun tearDown() {
-        deleteTestDataStore()
+        deleteTestDataStore(testDataStore.path)
     }
 
     @Test
@@ -23,10 +21,10 @@ class FestivalNotificationLocalDataSourceTest {
         runTest {
             // given
             val expected = 1L
-            dataStore = createTestDataStore(this)
+            testDataStore = createTestDataStore(this)
             festivalNotificationLocalDataSource =
                 FestivalNotificationLocalDataSourceImpl(
-                    dataStore = dataStore,
+                    dataStore = testDataStore.store,
                 )
 
             // when
@@ -44,10 +42,10 @@ class FestivalNotificationLocalDataSourceTest {
     fun `festivalNotificationId가 저장되지 않았다면 null을 반환한다`() =
         runTest {
             // given
-            dataStore = createTestDataStore(this)
+            testDataStore = createTestDataStore(this)
             festivalNotificationLocalDataSource =
                 FestivalNotificationLocalDataSourceImpl(
-                    dataStore = dataStore,
+                    dataStore = testDataStore.store,
                 )
 
             // when
@@ -64,8 +62,9 @@ class FestivalNotificationLocalDataSourceTest {
             val festivalNotificationId = 1L
             val festivalId = 1L
 
-            dataStore = createTestDataStore(this)
-            festivalNotificationLocalDataSource = FestivalNotificationLocalDataSourceImpl(dataStore)
+            testDataStore = createTestDataStore(this)
+            festivalNotificationLocalDataSource =
+                FestivalNotificationLocalDataSourceImpl(testDataStore.store)
 
             festivalNotificationLocalDataSource.saveFestivalNotificationId(
                 festivalId = festivalId,
@@ -86,8 +85,9 @@ class FestivalNotificationLocalDataSourceTest {
             // given
             val festivalId = 1L
             val expected = true
-            dataStore = createTestDataStore(this)
-            festivalNotificationLocalDataSource = FestivalNotificationLocalDataSourceImpl(dataStore)
+            testDataStore = createTestDataStore(this)
+            festivalNotificationLocalDataSource =
+                FestivalNotificationLocalDataSourceImpl(testDataStore.store)
 
             // when
             festivalNotificationLocalDataSource.saveFestivalNotificationIsAllowed(

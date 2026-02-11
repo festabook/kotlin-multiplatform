@@ -12,32 +12,28 @@ import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FakeDataStoreFactoryTest {
+    private lateinit var testDataStore: TestDataStore
+
     @Test
     fun `createTestDataStore는 파일을 생성하고 deleteTestDataStore는 파일을 삭제한다`() =
         runTest {
             // given
-            val fileName = "test.preferences_pb"
-            val filePath = FileSystem.SYSTEM_TEMPORARY_DIRECTORY / fileName
 
             // when
-            val dataStore =
-                createTestDataStore(
-                    scope = this,
-                    fileName = fileName,
-                )
+            testDataStore = createTestDataStore(this)
 
             val testKey = stringPreferencesKey("제이")
-            dataStore.edit { prefs ->
+            testDataStore.store.edit { prefs ->
                 prefs[testKey] = "제이 천재"
             }
 
             // then
-            assertTrue(FileSystem.SYSTEM.exists(filePath))
+            assertTrue(FileSystem.SYSTEM.exists(testDataStore.path))
 
             // when
-            deleteTestDataStore(fileName)
+            deleteTestDataStore(testDataStore.path)
 
             // then
-            assertFalse(FileSystem.SYSTEM.exists(filePath))
+            assertFalse(FileSystem.SYSTEM.exists(testDataStore.path))
         }
 }

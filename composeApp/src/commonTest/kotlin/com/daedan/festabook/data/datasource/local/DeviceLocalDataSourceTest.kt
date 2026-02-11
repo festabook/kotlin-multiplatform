@@ -1,7 +1,5 @@
 package com.daedan.festabook.data.datasource.local
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -12,20 +10,20 @@ import kotlin.test.assertNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DeviceLocalDataSourceTest {
-    private lateinit var dataStore: DataStore<Preferences>
+    private lateinit var testDataStore: TestDataStore
     private lateinit var deviceLocalDataSource: DeviceLocalDataSource
 
     @AfterTest
     fun tearDown() {
-        deleteTestDataStore()
+        deleteTestDataStore(testDataStore.path)
     }
 
     @Test
     fun `Uuid를 읽고 쓸 수 있다`() =
         runTest {
             // given
-            dataStore = createTestDataStore(this)
-            deviceLocalDataSource = DeviceLocalDataSourceImpl(dataStore)
+            testDataStore = createTestDataStore(this)
+            deviceLocalDataSource = DeviceLocalDataSourceImpl(testDataStore.store)
 
             val uuid = "제이"
 
@@ -41,8 +39,8 @@ class DeviceLocalDataSourceTest {
     fun `DeviceId를 읽고 쓸 수 있다`() =
         runTest {
             // given
-            dataStore = createTestDataStore(this)
-            deviceLocalDataSource = DeviceLocalDataSourceImpl(dataStore)
+            testDataStore = createTestDataStore(this)
+            deviceLocalDataSource = DeviceLocalDataSourceImpl(testDataStore.store)
             val deviceId = 1L
 
             // when
@@ -57,8 +55,8 @@ class DeviceLocalDataSourceTest {
     fun `Uuid가 저장되지 않았다면 null을 반환한다`() =
         runTest {
             // given
-            dataStore = createTestDataStore(this)
-            deviceLocalDataSource = DeviceLocalDataSourceImpl(dataStore)
+            testDataStore = createTestDataStore(this)
+            deviceLocalDataSource = DeviceLocalDataSourceImpl(testDataStore.store)
 
             // when
             val result = deviceLocalDataSource.getUuid()
@@ -71,8 +69,8 @@ class DeviceLocalDataSourceTest {
     fun `DeviceId가 저장되지 않았다면 null을 반환한다`() =
         runTest {
             // given
-            dataStore = createTestDataStore(this)
-            deviceLocalDataSource = DeviceLocalDataSourceImpl(dataStore)
+            testDataStore = createTestDataStore(this)
+            deviceLocalDataSource = DeviceLocalDataSourceImpl(testDataStore.store)
 
             // when
             val result = deviceLocalDataSource.getDeviceId()

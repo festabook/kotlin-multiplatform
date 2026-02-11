@@ -1,7 +1,5 @@
 package com.daedan.festabook.data.datasource.local
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest
@@ -12,12 +10,12 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class FestivalLocalDataSourceTest {
-    private lateinit var dataStore: DataStore<Preferences>
+    private lateinit var testDataStore: TestDataStore
     private lateinit var festivalLocalDataSource: FestivalLocalDataSource
 
     @AfterTest
     fun tearDown() {
-        deleteTestDataStore()
+        deleteTestDataStore(testDataStore.path)
     }
 
     @Test
@@ -25,8 +23,8 @@ class FestivalLocalDataSourceTest {
         runTest {
             // given
             val expected = 1L
-            dataStore = createTestDataStore(this)
-            festivalLocalDataSource = FestivalLocalDataSourceImpl(dataStore)
+            testDataStore = createTestDataStore(this)
+            festivalLocalDataSource = FestivalLocalDataSourceImpl(testDataStore.store)
 
             // when
             festivalLocalDataSource.saveFestivalId(expected)
@@ -40,8 +38,8 @@ class FestivalLocalDataSourceTest {
     fun `festivalId가 저장되지 않았다면 null을 반환한다`() =
         runTest {
             // given
-            dataStore = createTestDataStore(this)
-            festivalLocalDataSource = FestivalLocalDataSourceImpl(dataStore)
+            testDataStore = createTestDataStore(this)
+            festivalLocalDataSource = FestivalLocalDataSourceImpl(testDataStore.store)
 
             // when
             val result = festivalLocalDataSource.getFestivalId().first()
@@ -54,8 +52,8 @@ class FestivalLocalDataSourceTest {
     fun `첫 방문이라면 true를 반환한다`() =
         runTest {
             // given
-            dataStore = createTestDataStore(this)
-            festivalLocalDataSource = FestivalLocalDataSourceImpl(dataStore)
+            testDataStore = createTestDataStore(this)
+            festivalLocalDataSource = FestivalLocalDataSourceImpl(testDataStore.store)
 
             // when
             val result = festivalLocalDataSource.getIsFirstVisit().first()
@@ -68,8 +66,8 @@ class FestivalLocalDataSourceTest {
     fun `첫 방문이 아니라면 false를 반환한다`() =
         runTest {
             // given
-            dataStore = createTestDataStore(this)
-            festivalLocalDataSource = FestivalLocalDataSourceImpl(dataStore)
+            testDataStore = createTestDataStore(this)
+            festivalLocalDataSource = FestivalLocalDataSourceImpl(testDataStore.store)
             festivalLocalDataSource.getIsFirstVisit().first()
 
             // when

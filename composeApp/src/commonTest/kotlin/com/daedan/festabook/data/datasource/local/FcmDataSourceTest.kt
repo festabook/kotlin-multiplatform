@@ -1,7 +1,5 @@
 package com.daedan.festabook.data.datasource.local
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest
@@ -10,20 +8,20 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class FcmDataSourceTest {
-    private lateinit var dataStore: DataStore<Preferences>
+    private lateinit var testDataStore: TestDataStore
     private lateinit var fcmDataSource: FcmDataSource
 
     @AfterTest
     fun tearDown() {
-        deleteTestDataStore()
+        deleteTestDataStore(testDataStore.path)
     }
 
     @Test
     fun `DataStore에 FcmToken을 읽고 쓸 수 있다`() =
         runTest {
             // given
-            dataStore = createTestDataStore(this)
-            fcmDataSource = FcmDataSourceImpl(dataStore)
+            testDataStore = createTestDataStore(this)
+            fcmDataSource = FcmDataSourceImpl(testDataStore.store)
             val token = "제이"
 
             // when
@@ -38,8 +36,8 @@ class FcmDataSourceTest {
     fun `FcmToken이 저장되지 않았다면 null을 반환한다`() =
         runTest {
             // given
-            dataStore = createTestDataStore(this)
-            fcmDataSource = FcmDataSourceImpl(dataStore)
+            testDataStore = createTestDataStore(this)
+            fcmDataSource = FcmDataSourceImpl(testDataStore.store)
 
             // when
             val result = fcmDataSource.getFcmToken()
