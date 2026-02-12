@@ -5,7 +5,7 @@ import com.daedan.festabook.data.datasource.remote.festival.FestivalRemoteDataSo
 import com.daedan.festabook.data.model.response.toDomain
 import com.daedan.festabook.data.util.toResult
 import com.daedan.festabook.data.util.withTimeoutOrNullFallback
-import com.daedan.festabook.domain.model.University
+import com.daedan.festabook.domain.model.FestivalSearchItem
 import com.daedan.festabook.domain.repository.ExploreRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -18,7 +18,7 @@ class ExploreRepositoryImpl(
     private val festivalRemoteDataSource: FestivalRemoteDataSource,
     private val festivalLocalDataSource: FestivalLocalDataSource,
 ) : ExploreRepository {
-    override suspend fun search(query: String): Result<List<University>> {
+    override suspend fun search(query: String): Result<List<FestivalSearchItem>> {
 //        Timber.d("Searching for query: $query")
 
         val response =

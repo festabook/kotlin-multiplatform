@@ -1,11 +1,11 @@
 package com.daedan.festabook.data.datasource.remote.festival
 
 import com.daedan.festabook.data.datasource.remote.ApiResult
-import com.daedan.festabook.data.model.response.UniversityResponse
+import com.daedan.festabook.data.model.response.FestivalSearchResponse
 import com.daedan.festabook.data.model.response.festival.FestivalResponse
 
 interface FestivalRemoteDataSource {
     suspend fun fetchFestival(): ApiResult<FestivalResponse>
 
-    suspend fun findUniversitiesByName(universityName: String): ApiResult<List<UniversityResponse>>
+    suspend fun findUniversitiesByName(universityName: String): ApiResult<List<FestivalSearchResponse>>
 }

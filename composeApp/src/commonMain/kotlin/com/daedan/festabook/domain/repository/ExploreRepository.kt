@@ -1,9 +1,9 @@
 package com.daedan.festabook.domain.repository
 
-import com.daedan.festabook.domain.model.University
+import com.daedan.festabook.domain.model.FestivalSearchItem
 
 interface ExploreRepository {
-    suspend fun search(query: String): Result<List<University>>
+    suspend fun search(query: String): Result<List<FestivalSearchItem>>
 
     suspend fun saveFestivalId(festivalId: Long)
 
