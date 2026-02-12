@@ -7,5 +7,5 @@ import com.daedan.festabook.data.model.response.festival.FestivalResponse
 interface FestivalRemoteDataSource {
     suspend fun fetchFestival(): ApiResult<FestivalResponse>
 
-    suspend fun findUniversitiesByName(universityName: String): ApiResult<List<FestivalSearchResponse>>
+    suspend fun findFestivalsByKeyword(keyword: String): ApiResult<List<FestivalSearchResponse>>
 }

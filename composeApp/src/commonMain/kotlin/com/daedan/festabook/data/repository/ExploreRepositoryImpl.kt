@@ -23,10 +23,10 @@ class ExploreRepositoryImpl(
 
         val response =
             festivalRemoteDataSource
-                .findUniversitiesByName(universityName = query)
+                .findFestivalsByKeyword(keyword = query)
                 .toResult()
 
-        return response.mapCatching { universities -> universities.map { it.toDomain() } }
+        return response.mapCatching { searchItem -> searchItem.map { it.toDomain() } }
     }
 
     override suspend fun saveFestivalId(festivalId: Long) = festivalLocalDataSource.saveFestivalId(festivalId)

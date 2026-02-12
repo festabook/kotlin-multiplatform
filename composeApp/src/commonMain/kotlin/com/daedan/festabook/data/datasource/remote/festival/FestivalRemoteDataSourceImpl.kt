@@ -18,10 +18,10 @@ class FestivalRemoteDataSourceImpl(
             festivalService.fetchOrganization()
         }
 
-    override suspend fun findUniversitiesByName(universityName: String): ApiResult<List<FestivalSearchResponse>> =
+    override suspend fun findFestivalsByKeyword(keyword: String): ApiResult<List<FestivalSearchResponse>> =
         ApiResult.toApiResult {
             festivalService.findFestivalsByKeyword(
-                keyword = universityName,
+                keyword = keyword,
             )
         }
 }

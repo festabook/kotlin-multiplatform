@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 data class FestivalSearchResponse(
     @SerialName("festivalId")
     val festivalId: Long,
-    @SerialName("universityName")
+    @SerialName("organizationName")
     val organizationName: String,
     @SerialName("festivalName")
     val festivalName: String,
