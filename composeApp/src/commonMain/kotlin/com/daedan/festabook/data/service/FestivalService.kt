@@ -16,7 +16,7 @@ interface FestivalService {
     suspend fun fetchOrganizationGeography(): Response<FestivalGeographyResponse>
 
     @GET("organizations/festivals/search")
-    suspend fun findUniversitiesByName(
+    suspend fun findFestivalsByKeyword(
         @Query("keyword") keyword: String,
     ): Response<List<UniversityResponse>>
 
