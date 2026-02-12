@@ -21,7 +21,7 @@ class FestivalRemoteDataSourceImpl(
     override suspend fun findUniversitiesByName(universityName: String): ApiResult<List<UniversityResponse>> =
         ApiResult.toApiResult {
             festivalService.findUniversitiesByName(
-                universityName = universityName,
+                keyword = universityName,
             )
         }
 }
