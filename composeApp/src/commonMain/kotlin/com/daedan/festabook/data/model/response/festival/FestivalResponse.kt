@@ -36,7 +36,7 @@ data class FestivalResponse(
 fun FestivalResponse.toDomain() =
     Organization(
         id = id,
-        universityName = organizationName,
+        organizationName = organizationName,
         festival =
             Festival(
                 festivalImages = festivalImages.map { it.toDomain() },
