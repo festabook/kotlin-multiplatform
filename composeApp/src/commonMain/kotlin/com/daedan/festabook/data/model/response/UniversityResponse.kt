@@ -9,7 +9,7 @@ data class UniversityResponse(
     @SerialName("festivalId")
     val festivalId: Long,
     @SerialName("universityName")
-    val universityName: String,
+    val organizationName: String,
     @SerialName("festivalName")
     val festivalName: String,
     @SerialName("startDate")
@@ -21,7 +21,7 @@ data class UniversityResponse(
 fun UniversityResponse.toDomain() =
     University(
         festivalId = festivalId,
-        universityName = universityName,
+        universityName = organizationName,
         festivalName = festivalName,
         startDate = startDate,
         endDate = endDate,
