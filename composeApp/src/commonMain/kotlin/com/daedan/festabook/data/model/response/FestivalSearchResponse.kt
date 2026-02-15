@@ -1,15 +1,15 @@
 package com.daedan.festabook.data.model.response
 
-import com.daedan.festabook.domain.model.University
+import com.daedan.festabook.domain.model.FestivalSearchItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UniversityResponse(
+data class FestivalSearchResponse(
     @SerialName("festivalId")
     val festivalId: Long,
-    @SerialName("universityName")
-    val universityName: String,
+    @SerialName("organizationName")
+    val organizationName: String,
     @SerialName("festivalName")
     val festivalName: String,
     @SerialName("startDate")
@@ -18,10 +18,10 @@ data class UniversityResponse(
     val endDate: String,
 )
 
-fun UniversityResponse.toDomain() =
-    University(
+fun FestivalSearchResponse.toDomain() =
+    FestivalSearchItem(
         festivalId = festivalId,
-        universityName = universityName,
+        organizationName = organizationName,
         festivalName = festivalName,
         startDate = startDate,
         endDate = endDate,
