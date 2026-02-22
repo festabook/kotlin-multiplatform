@@ -25,6 +25,7 @@ materialIconsCore = "1.7.3"
 metro = "0.9.4"
 buildkonfig = "0.17.1"
 ktlint = "14.0.1"
+ktlintVersion = "0.5.0"
 mokkery = "3.2.0"
 landscapistCoil3 = "2.9.5"
 
@@ -57,6 +58,8 @@ landscapist-coil3 = { module = "com.github.skydoves:landscapist-coil3", version.
 landscapist-placeholder = { module = "com.github.skydoves:landscapist-placeholder", version.ref = "landscapistCoil3" }
 landscapist-zoomable = { module = "com.github.skydoves:landscapist-zoomable", version.ref = "landscapistCoil3" }
 compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }
+ktlint = { module = "io.nlopez.compose.rules:ktlint", version.ref = "ktlintVersion" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

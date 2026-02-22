@@ -1,8 +1,12 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import com.google.devtools.ksp.gradle.KspAATask
 import dev.mokkery.gradle.ApplicationRule
 import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.compose.internal.utils.getLocalProperty
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jlleitschuh.gradle.ktlint.KtlintExtension
+import org.jlleitschuh.gradle.ktlint.tasks.KtLintCheckTask
+import org.jlleitschuh.gradle.ktlint.tasks.KtLintFormatTask
 
 private val jksFilePath =
     getLocalProperty("JKS_FILE_PATH") ?: error("JKS_FILE_PATH가 local.properties에 없음")
@@ -34,6 +38,7 @@ plugins {
     alias(libs.plugins.metro)
     alias(libs.plugins.buildkonfig)
     alias(libs.plugins.mokkery)
+    alias(libs.plugins.ktlint)
 }
 
 kotlin {
@@ -185,10 +190,19 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+    ktlintRuleset(libs.ktlint)
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.withType<KtLintCheckTask>().configureEach {
+    dependsOn(tasks.withType<KspAATask>())
+}
+
+tasks.withType<KtLintFormatTask>().configureEach {
+    dependsOn(tasks.withType<KspAATask>())
 }
 
 mokkery {
