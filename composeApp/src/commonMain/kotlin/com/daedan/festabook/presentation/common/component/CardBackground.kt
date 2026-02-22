@@ -1,0 +1,45 @@
+package com.daedan.festabook.presentation.common.component
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.daedan.festabook.presentation.theme.FestabookColor
+import com.daedan.festabook.presentation.theme.FestabookTheme
+import com.daedan.festabook.presentation.theme.festabookShapes
+import org.jetbrains.compose.ui.tooling.preview.Preview
+
+@Composable
+fun Modifier.cardBackground(
+    backgroundColor: Color = FestabookColor.gray100,
+    borderStroke: Dp = 1.dp,
+    borderColor: Color = FestabookColor.gray200,
+    shape: Shape = festabookShapes.radius3,
+): Modifier =
+    background(
+        color = backgroundColor,
+        shape = shape,
+    ).border(
+        width = borderStroke,
+        color = borderColor,
+        shape = shape,
+    )
+
+@Composable
+@Preview(showBackground = true)
+private fun CardBackgroundPreview() {
+    FestabookTheme {
+        Box(
+            modifier =
+                Modifier
+                    .cardBackground()
+                    .size(120.dp),
+        )
+    }
+}
