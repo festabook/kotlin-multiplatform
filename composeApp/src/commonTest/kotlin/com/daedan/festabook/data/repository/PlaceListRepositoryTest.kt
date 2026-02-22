@@ -75,9 +75,10 @@ class PlaceListRepositoryTest {
             // given
             val expected = FAKE_FESTIVAL_GEOGRAPHY_RESPONSE
 
-            everySuspend { placeDataSource.fetchOrganizationGeography() } returns ApiResult.Success(
-                expected
-            )
+            everySuspend { placeDataSource.fetchOrganizationGeography() } returns
+                ApiResult.Success(
+                    expected,
+                )
 
             // when
             val result = placeListRepository.getOrganizationGeography()
@@ -97,9 +98,10 @@ class PlaceListRepositoryTest {
             // given
             val expected = FAKE_PLACE_GEOGRAPHY_RESPONSE
 
-            everySuspend { placeDataSource.fetchPlaceGeographies() } returns ApiResult.Success(
-                expected
-            )
+            everySuspend { placeDataSource.fetchPlaceGeographies() } returns
+                ApiResult.Success(
+                    expected,
+                )
 
             // when
             val result = placeListRepository.getPlaceGeographies()
