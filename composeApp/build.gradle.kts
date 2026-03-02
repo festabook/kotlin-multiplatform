@@ -1,7 +1,12 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import com.google.devtools.ksp.gradle.KspAATask
 import dev.mokkery.gradle.ApplicationRule
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.compose.internal.utils.getLocalProperty
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jlleitschuh.gradle.ktlint.KtlintExtension
+import org.jlleitschuh.gradle.ktlint.tasks.KtLintCheckTask
+import org.jlleitschuh.gradle.ktlint.tasks.KtLintFormatTask
 
 private val jksFilePath =
     getLocalProperty("JKS_FILE_PATH") ?: error("JKS_FILE_PATH가 local.properties에 없음")
@@ -16,6 +21,12 @@ private val baseUrlDev =
 private val baseUrl =
     getLocalProperty("BASE_URL") ?: error("BASE_URL가 local.properties에 없음")
 
+private val baseImageUrlDev =
+    getLocalProperty("IMAGE_BASE_URL_DEV") ?: error("IMAGE_BASE_URL_DEV가 local.properties에 없음")
+
+private val baseImageUrl =
+    getLocalProperty("IMAGE_BASE_URL") ?: error("IMAGE_BASE_URL가 local.properties에 없음")
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -27,6 +38,7 @@ plugins {
     alias(libs.plugins.metro)
     alias(libs.plugins.buildkonfig)
     alias(libs.plugins.mokkery)
+    alias(libs.plugins.ktlint)
 }
 
 kotlin {
@@ -52,12 +64,17 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.kotlinx.coroutines.android)
-            implementation(kotlin("test-junit5"))
+            implementation(libs.androidx.appcompat)
         }
         commonMain.dependencies {
+            implementation(libs.coil.compose)
+            implementation(libs.landscapist.coil3)
+            implementation(libs.landscapist.placeholder)
+            implementation(libs.landscapist.zoomable)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(libs.material.icons.core)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -72,6 +89,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
+            implementation(libs.compottie)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -85,20 +103,25 @@ buildkonfig {
 
     defaultConfigs {
         buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
+        buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
     }
     targetConfigs {
         // android용 입니다.
         create("debug") {
+            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
             buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
         }
         create("release") {
+            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
             buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
         }
         // ios용 입니다.
         create("Debug") {
+            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
             buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
         }
         create("Release") {
+            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
             buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
         }
     }
@@ -167,12 +190,25 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+    ktlintRuleset(libs.ktlint)
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+tasks.withType<KtLintCheckTask>().configureEach {
+    dependsOn(tasks.withType<KspAATask>())
+}
+
+tasks.withType<KtLintFormatTask>().configureEach {
+    dependsOn(tasks.withType<KspAATask>())
+}
+
 mokkery {
     rule.set(ApplicationRule.All)
+}
+
+ktorfit {
+    compilerPluginVersion.set("2.3.3")
 }

@@ -2,9 +2,6 @@ package com.daedan.festabook.data.repository
 
 import com.daedan.festabook.data.datasource.remote.ApiResult
 import com.daedan.festabook.data.datasource.remote.place.PlaceDataSource
-import com.daedan.festabook.data.model.response.place.PlaceDetailResponse
-import com.daedan.festabook.data.model.response.place.PlaceGeographyResponse
-import com.daedan.festabook.data.model.response.place.TimeTagResponse
 import com.daedan.festabook.data.repository.fixture.fakePlaceDetailResponse
 import com.daedan.festabook.data.repository.fixture.fakePlaceDetailResponseWithImage
 import com.daedan.festabook.data.repository.fixture.fakePlaceDetailResponseWithNotice
@@ -16,7 +13,6 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class PlaceDetailRepositoryTest {
@@ -36,9 +32,10 @@ class PlaceDetailRepositoryTest {
             val placeId = 1L
             val expected = fakePlaceDetailResponse(placeId)
 
-            everySuspend { placeDataSource.fetchPlaceDetail(placeId) } returns ApiResult.Success(
-                expected
-            )
+            everySuspend { placeDataSource.fetchPlaceDetail(placeId) } returns
+                ApiResult.Success(
+                    expected,
+                )
 
             // when
             val result = placeDetailRepository.getPlaceDetail(placeId)
@@ -58,9 +55,10 @@ class PlaceDetailRepositoryTest {
             val placeId = 1L
             val expected = fakePlaceDetailResponseWithNotice(placeId)
 
-            everySuspend { placeDataSource.fetchPlaceDetail(placeId) } returns ApiResult.Success(
-                expected
-            )
+            everySuspend { placeDataSource.fetchPlaceDetail(placeId) } returns
+                ApiResult.Success(
+                    expected,
+                )
 
             // when
             val result = placeDetailRepository.getPlaceDetail(placeId)
@@ -80,9 +78,10 @@ class PlaceDetailRepositoryTest {
             val placeId = 1L
             val expected = fakePlaceDetailResponseWithImage(placeId)
 
-            everySuspend { placeDataSource.fetchPlaceDetail(placeId) } returns ApiResult.Success(
-                expected
-            )
+            everySuspend { placeDataSource.fetchPlaceDetail(placeId) } returns
+                ApiResult.Success(
+                    expected,
+                )
 
             // when
             val result = placeDetailRepository.getPlaceDetail(placeId)
@@ -94,7 +93,7 @@ class PlaceDetailRepositoryTest {
 
             assertEquals(
                 "https://example.com/image1.jpg",
-                actual.sortedImages.first().imageUrl
+                actual.sortedImages.first().imageUrl,
             )
             assertEquals(1, actual.sortedImages.first().sequence)
             assertEquals(2, actual.sortedImages.last().sequence)
