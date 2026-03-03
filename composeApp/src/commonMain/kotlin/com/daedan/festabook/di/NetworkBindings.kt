@@ -27,7 +27,6 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
-import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -51,12 +50,10 @@ object NetworkBindings {
             baseUrl(BuildKonfig.FESTABOOK_URL)
             converterFactories(responseConverterFactory)
             httpClient {
-                HttpClient {
-                    install(ContentNegotiation) {
-                        json(json)
-                    }
-                    install(authPlugin.plugin)
+                install(ContentNegotiation) {
+                    json(json)
                 }
+                install(authPlugin.plugin)
             }
         }
 

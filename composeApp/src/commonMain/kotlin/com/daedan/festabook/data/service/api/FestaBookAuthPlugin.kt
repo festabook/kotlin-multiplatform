@@ -11,12 +11,11 @@ class FestaBookAuthPlugin(
     val plugin =
         createClientPlugin(name = "FestaBookAuthPlugin") {
             onRequest { request, _ ->
-                val festivalId = festivalLocalDataSource.getFestivalId()
+//                val festivalId = festivalLocalDataSource.getFestivalId()
+//                헤더가 필요한데 현재 탐색화면에서 id를 고를 수가 없어서 임시로 하드 코딩 해놨습니다!!!
+                val festivalId = 1
 
-                if (festivalId != null) {
-//                Timber.d("festivalId : $festivalId")
-                    request.headers["festival"] = festivalId.toString()
-                }
+                request.headers["festival"] = festivalId.toString()
             }
         }
 }

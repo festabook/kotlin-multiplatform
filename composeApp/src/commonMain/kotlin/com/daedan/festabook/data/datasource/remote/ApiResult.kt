@@ -26,7 +26,9 @@ sealed class ApiResult<out T> {
         val throwable: Throwable,
     ) : ApiResult<Nothing>()
 
-    data object UnknownError : ApiResult<Nothing>()
+    data class UnknownError(
+        val throwable: Throwable,
+    ) : ApiResult<Nothing>()
 
     companion object {
         suspend fun <T> toApiResult(apiCall: suspend () -> Response<T>): ApiResult<T> =
@@ -55,7 +57,7 @@ sealed class ApiResult<out T> {
 
                             else -> {
 //                                Timber.e("ERR ${response.code()} $requestMethod $requestUrl - Unknown success case")
-                                UnknownError
+                                UnknownError(Throwable("Unknown success case"))
                             }
                         }
                     } else {
@@ -79,7 +81,7 @@ sealed class ApiResult<out T> {
                             }
 
                             else -> {
-                                UnknownError
+                                UnknownError(Throwable("Unknown success case"))
                             }
                         }
                     }
@@ -87,7 +89,7 @@ sealed class ApiResult<out T> {
                     return when (error) {
                         is CancellationException -> throw error
                         is IOException -> NetworkError(error)
-                        else -> UnknownError
+                        else -> UnknownError(error)
                     }
                 }
     }
