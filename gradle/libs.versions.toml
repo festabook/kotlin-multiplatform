@@ -58,7 +58,10 @@ landscapist-coil3 = { module = "com.github.skydoves:landscapist-coil3", version.
 landscapist-placeholder = { module = "com.github.skydoves:landscapist-placeholder", version.ref = "landscapistCoil3" }
 landscapist-zoomable = { module = "com.github.skydoves:landscapist-zoomable", version.ref = "landscapistCoil3" }
 compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }
+compottie-dot = { module = "io.github.alexzhirkevich:compottie-dot", version.ref = "compottie" }
+compottie-resources = { module = "io.github.alexzhirkevich:compottie-resources", version.ref = "compottie" }
 ktlint = { module = "io.nlopez.compose.rules:ktlint", version.ref = "ktlintVersion" }
+metrox-viewmodel-compose = { module = "dev.zacsweers.metro:metrox-viewmodel-compose", version.ref = "metro" }
 
 
 [plugins]
