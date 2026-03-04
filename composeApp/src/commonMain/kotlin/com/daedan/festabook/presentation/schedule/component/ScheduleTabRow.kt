@@ -20,8 +20,20 @@ import com.daedan.festabook.presentation.schedule.model.ScheduleDateUiModel
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.festabookShapes
 import com.daedan.festabook.presentation.theme.festabookSpacing
+import festabookkmp.composeapp.generated.resources.Friday
+import festabookkmp.composeapp.generated.resources.Monday
+import festabookkmp.composeapp.generated.resources.Res
+import festabookkmp.composeapp.generated.resources.Saturday
+import festabookkmp.composeapp.generated.resources.Sunday
+import festabookkmp.composeapp.generated.resources.Thursday
+import festabookkmp.composeapp.generated.resources.Tuesday
+import festabookkmp.composeapp.generated.resources.Wednesday
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.number
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -47,7 +59,7 @@ fun ScheduleTabRow(
                 unselectedContentColor = FestabookColor.gray500,
                 selectedContentColor = MaterialTheme.colorScheme.background,
                 onClick = { scope.launch { pageState.animateScrollToPage(index) } },
-                text = { Text(text = scheduleDate.date) },
+                text = { Text(text = scheduleDate.date.toFormattedDate()) },
             )
         }
     }
@@ -69,6 +81,22 @@ private fun ScheduleTabIndicator(modifier: Modifier = Modifier) {
     )
 }
 
+@Composable
+private fun LocalDate.toFormattedDate(): String {
+    val dayName =
+        when (dayOfWeek) {
+            DayOfWeek.MONDAY -> stringResource(Res.string.Monday)
+            DayOfWeek.TUESDAY -> stringResource(Res.string.Tuesday)
+            DayOfWeek.WEDNESDAY -> stringResource(Res.string.Wednesday)
+            DayOfWeek.THURSDAY -> stringResource(Res.string.Thursday)
+            DayOfWeek.FRIDAY -> stringResource(Res.string.Friday)
+            DayOfWeek.SATURDAY -> stringResource(Res.string.Saturday)
+            DayOfWeek.SUNDAY -> stringResource(Res.string.Sunday)
+        }
+
+    return "${month.number}/$day ($dayName)"
+}
+
 @Preview
 @Composable
 private fun ScheduleTabRowPreview() {
@@ -77,11 +105,26 @@ private fun ScheduleTabRowPreview() {
         scope = rememberCoroutineScope(),
         dates =
             listOf(
-                ScheduleDateUiModel(1, "11/12"),
-                ScheduleDateUiModel(2, "11/13"),
-                ScheduleDateUiModel(3, "11/13"),
-                ScheduleDateUiModel(3, "11/13"),
-                ScheduleDateUiModel(3, "11/13"),
+                ScheduleDateUiModel(
+                    id = 1,
+                    date = LocalDate(2025, 11, 12),
+                ),
+                ScheduleDateUiModel(
+                    id = 2,
+                    date = LocalDate(2025, 11, 13),
+                ),
+                ScheduleDateUiModel(
+                    id = 3,
+                    date = LocalDate(2025, 11, 13),
+                ),
+                ScheduleDateUiModel(
+                    id = 4,
+                    date = LocalDate(2025, 11, 13),
+                ),
+                ScheduleDateUiModel(
+                    id = 5,
+                    date = LocalDate(2025, 11, 13),
+                ),
             ),
     )
 }
