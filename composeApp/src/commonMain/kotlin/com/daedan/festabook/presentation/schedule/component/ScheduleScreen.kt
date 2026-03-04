@@ -22,11 +22,13 @@ import com.daedan.festabook.presentation.schedule.ScheduleEventsUiState
 import com.daedan.festabook.presentation.schedule.ScheduleUiState
 import com.daedan.festabook.presentation.schedule.ScheduleViewModel
 import com.daedan.festabook.presentation.theme.FestabookColor
+import com.daedan.festabook.presentation.theme.FestabookTheme
 import com.daedan.festabook.presentation.theme.festabookSpacing
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.schedule_title
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ScheduleScreen(
@@ -100,5 +102,13 @@ fun ScheduleScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+@Preview
+private fun ScheduleScreenPreview() {
+    FestabookTheme {
+        ScheduleScreen()
     }
 }
