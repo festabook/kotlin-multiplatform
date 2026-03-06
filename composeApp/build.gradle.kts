@@ -43,6 +43,8 @@ plugins {
 }
 
 kotlin {
+    compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
+
     cocoapods {
         version = "2.0.1"
         summary = "festabook"
@@ -72,6 +74,7 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            implementation(libs.map.sdk)
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.kotlinx.coroutines.android)
