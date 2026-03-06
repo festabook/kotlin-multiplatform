@@ -6,10 +6,10 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.getDrawableResourceBytes
 import org.jetbrains.compose.resources.getSystemResourceEnvironment
-import com.naver.maps.map.overlay.OverlayImage as NaverOverlayImage
+import com.naver.maps.map.overlay.OverlayImage as PlatformOverlayImage
 
 actual class OverlayImage private constructor(
-    val platform: NaverOverlayImage,
+    val platform: PlatformOverlayImage,
 ) {
     actual companion object {
         actual suspend fun create(resource: DrawableResource): OverlayImage =
@@ -18,7 +18,7 @@ actual class OverlayImage private constructor(
                 val imageByteArray = getDrawableResourceBytes(env, resource)
                 val imageBitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.size)
                 OverlayImage(
-                    platform = NaverOverlayImage.fromBitmap(imageBitmap),
+                    platform = PlatformOverlayImage.fromBitmap(imageBitmap),
                 )
             }
     }
