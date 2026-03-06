@@ -39,9 +39,20 @@ plugins {
     alias(libs.plugins.buildkonfig)
     alias(libs.plugins.mokkery)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.kotlinCocoapods)
 }
 
 kotlin {
+    cocoapods {
+        version = "2.0.1"
+        summary = "festabook"
+        homepage = "https://landing.festabook.app/"
+        ios.deploymentTarget = "16.0"
+
+        pod("NMapsMap") {
+            version = "3.23.1"
+        }
+    }
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)

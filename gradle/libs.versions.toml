@@ -62,6 +62,7 @@ ktlint = { module = "io.nlopez.compose.rules:ktlint", version.ref = "ktlintVersi
 
 
 [plugins]
+kotlinCocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
