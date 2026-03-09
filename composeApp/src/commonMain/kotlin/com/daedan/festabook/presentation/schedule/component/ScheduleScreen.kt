@@ -32,8 +32,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ScheduleScreen(
-    scheduleViewModel: ScheduleViewModel = metroViewModel(),
     modifier: Modifier = Modifier,
+    scheduleViewModel: ScheduleViewModel = metroViewModel(),
     onShowErrorSnackbar: (Throwable) -> Unit = {}, // TODO Fragment 제거 시 필수 파라미터로 변경
 ) {
     val scheduleUiState by scheduleViewModel.scheduleUiState.collectAsStateWithLifecycle()
