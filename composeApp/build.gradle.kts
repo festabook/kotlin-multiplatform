@@ -27,6 +27,10 @@ private val baseImageUrlDev =
 private val baseImageUrl =
     getLocalProperty("IMAGE_BASE_URL") ?: error("IMAGE_BASE_URL가 local.properties에 없음")
 
+private val naverMapStyleId =
+    getLocalProperty("NAVER_MAP_STYLE_ID") ?: error("NAVER_MAP_STYLE_ID local.properties에 없음")
+
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -116,6 +120,7 @@ buildkonfig {
     packageName = "com.daedan.festabook"
 
     defaultConfigs {
+        buildConfigField(STRING, "NAVER_MAP_STYLE_ID", naverMapStyleId)
         buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
         buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
     }
