@@ -18,6 +18,6 @@ sealed class ApiResultException : Exception() {
     ) : ApiResultException()
 
     data class UnknownException(
-        val throwable: Throwable,
+        val msg: String?,
     ) : ApiResultException()
 }

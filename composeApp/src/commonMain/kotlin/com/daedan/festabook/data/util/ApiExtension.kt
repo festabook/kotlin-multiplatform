@@ -12,5 +12,5 @@ fun <T> ApiResult<T>.toResult(): Result<T> =
         is ApiResult.ClientError -> Result.failure(ClientException(code, message, errorBody))
         is ApiResult.ServerError -> Result.failure(ServerException(code, message, errorBody))
         is ApiResult.NetworkError -> Result.failure(NetworkException(throwable))
-        is ApiResult.UnknownError -> Result.failure(UnknownException(throwable))
+        is ApiResult.UnknownError -> Result.failure(UnknownException(message))
     }

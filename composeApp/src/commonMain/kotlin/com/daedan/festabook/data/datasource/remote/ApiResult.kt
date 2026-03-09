@@ -27,7 +27,7 @@ sealed class ApiResult<out T> {
     ) : ApiResult<Nothing>()
 
     data class UnknownError(
-        val throwable: Throwable,
+        val message: String,
     ) : ApiResult<Nothing>()
 
     companion object {
@@ -57,7 +57,7 @@ sealed class ApiResult<out T> {
 
                             else -> {
 //                                Timber.e("ERR ${response.code()} $requestMethod $requestUrl - Unknown success case")
-                                UnknownError(Throwable("Unknown success case"))
+                                UnknownError("response=${response.code} Unknown success case")
                             }
                         }
                     } else {
@@ -81,7 +81,7 @@ sealed class ApiResult<out T> {
                             }
 
                             else -> {
-                                UnknownError(Throwable("Unknown success case"))
+                                UnknownError("${response.code} $requestMethod $requestUrl")
                             }
                         }
                     }
@@ -89,7 +89,7 @@ sealed class ApiResult<out T> {
                     return when (error) {
                         is CancellationException -> throw error
                         is IOException -> NetworkError(error)
-                        else -> UnknownError(error)
+                        else -> UnknownError(error.stackTraceToString())
                     }
                 }
     }
