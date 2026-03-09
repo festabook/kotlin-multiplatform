@@ -23,6 +23,7 @@ import com.daedan.festabook.presentation.theme.FestabookTypography
 import com.daedan.festabook.presentation.theme.festabookShapes
 import com.daedan.festabook.presentation.theme.festabookSpacing
 import festabookkmp.composeapp.generated.resources.Res
+import festabookkmp.composeapp.generated.resources.content_description_iv_clock
 import festabookkmp.composeapp.generated.resources.content_description_iv_location
 import festabookkmp.composeapp.generated.resources.format_date
 import festabookkmp.composeapp.generated.resources.ic_clock
@@ -68,7 +69,7 @@ fun ScheduleEventCard(
         ) {
             Icon(
                 painter = painterResource(Res.drawable.ic_clock),
-                contentDescription = stringResource(Res.string.content_description_iv_location),
+                contentDescription = stringResource(Res.string.content_description_iv_clock),
                 tint = scheduleEventCardColors.contentColor,
             )
             Text(
