@@ -20,14 +20,14 @@ import com.daedan.festabook.presentation.schedule.model.ScheduleDateUiModel
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.festabookShapes
 import com.daedan.festabook.presentation.theme.festabookSpacing
-import festabookkmp.composeapp.generated.resources.Friday
-import festabookkmp.composeapp.generated.resources.Monday
 import festabookkmp.composeapp.generated.resources.Res
-import festabookkmp.composeapp.generated.resources.Saturday
-import festabookkmp.composeapp.generated.resources.Sunday
-import festabookkmp.composeapp.generated.resources.Thursday
-import festabookkmp.composeapp.generated.resources.Tuesday
-import festabookkmp.composeapp.generated.resources.Wednesday
+import festabookkmp.composeapp.generated.resources.friday
+import festabookkmp.composeapp.generated.resources.monday
+import festabookkmp.composeapp.generated.resources.saturday
+import festabookkmp.composeapp.generated.resources.sunday
+import festabookkmp.composeapp.generated.resources.thursday
+import festabookkmp.composeapp.generated.resources.tuesday
+import festabookkmp.composeapp.generated.resources.wednesday
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DayOfWeek
@@ -85,13 +85,13 @@ private fun ScheduleTabIndicator(modifier: Modifier = Modifier) {
 private fun LocalDate.toFormattedDate(): String {
     val dayName =
         when (dayOfWeek) {
-            DayOfWeek.MONDAY -> stringResource(Res.string.Monday)
-            DayOfWeek.TUESDAY -> stringResource(Res.string.Tuesday)
-            DayOfWeek.WEDNESDAY -> stringResource(Res.string.Wednesday)
-            DayOfWeek.THURSDAY -> stringResource(Res.string.Thursday)
-            DayOfWeek.FRIDAY -> stringResource(Res.string.Friday)
-            DayOfWeek.SATURDAY -> stringResource(Res.string.Saturday)
-            DayOfWeek.SUNDAY -> stringResource(Res.string.Sunday)
+            DayOfWeek.MONDAY -> stringResource(Res.string.monday)
+            DayOfWeek.TUESDAY -> stringResource(Res.string.tuesday)
+            DayOfWeek.WEDNESDAY -> stringResource(Res.string.wednesday)
+            DayOfWeek.THURSDAY -> stringResource(Res.string.thursday)
+            DayOfWeek.FRIDAY -> stringResource(Res.string.friday)
+            DayOfWeek.SATURDAY -> stringResource(Res.string.saturday)
+            DayOfWeek.SUNDAY -> stringResource(Res.string.sunday)
         }
 
     return "${month.number}/$day ($dayName)"
