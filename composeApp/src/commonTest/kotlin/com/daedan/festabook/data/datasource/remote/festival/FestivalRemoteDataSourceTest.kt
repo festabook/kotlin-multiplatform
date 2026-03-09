@@ -19,18 +19,19 @@ private val FAKE_FESTIVAL_RESPONSE =
     FestivalResponse(
         id = 1L,
         organizationName = "대학교",
-        festivalImages = listOf(
-            FestivalResponse.FestivalImage(
-                id = 100L,
-                imageUrl = "https://image1.com",
-                sequence = 1,
+        festivalImages =
+            listOf(
+                FestivalResponse.FestivalImage(
+                    id = 100L,
+                    imageUrl = "https://image1.com",
+                    sequence = 1,
+                ),
+                FestivalResponse.FestivalImage(
+                    id = 101L,
+                    imageUrl = "https://image2.com",
+                    sequence = 2,
+                ),
             ),
-            FestivalResponse.FestivalImage(
-                id = 101L,
-                imageUrl = "https://image2.com",
-                sequence = 2,
-            ),
-        ),
         festivalName = "봄 축제",
         startDate = "2026-04-01",
         endDate = "2026-04-10",
@@ -69,7 +70,6 @@ private val FAKE_FESTIVAL_SEARCH_HTTP_RESPONSE: Response<List<FestivalSearchResp
     ) as Response<List<FestivalSearchResponse>>
 
 class FestivalRemoteDataSourceTest {
-
     private lateinit var festivalService: FestivalService
     private lateinit var festivalRemoteDataSource: FestivalRemoteDataSource
 

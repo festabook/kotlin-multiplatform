@@ -28,8 +28,10 @@ captures/
 *.xcworkspace
 xcuserdata/
 
+
 # CocoaPods
 Pods/
+*.podspec
 
 ## iOS App packaging
 *.ipa

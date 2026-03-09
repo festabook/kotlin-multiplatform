@@ -39,9 +39,22 @@ plugins {
     alias(libs.plugins.buildkonfig)
     alias(libs.plugins.mokkery)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.kotlinCocoapods)
 }
 
 kotlin {
+    compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
+
+    cocoapods {
+        version = "2.0.1"
+        summary = "festabook"
+        homepage = "https://landing.festabook.app/"
+        ios.deploymentTarget = "16.0"
+
+        pod("NMapsMap") {
+            version = "3.23.1"
+        }
+    }
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
@@ -61,6 +74,7 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            implementation(libs.map.sdk)
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.kotlinx.coroutines.android)

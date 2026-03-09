@@ -20,13 +20,13 @@ private val FAKE_LINEUP: List<LineupResponse> =
             lineupId = 1,
             imageUrl = "url",
             name = "name",
-            performanceAt = "date"
+            performanceAt = "date",
         ),
         LineupResponse(
             lineupId = 2,
             imageUrl = "url",
             name = "name",
-            performanceAt = "date"
+            performanceAt = "date",
         ),
     )
 
@@ -38,7 +38,6 @@ private val FAKE_LINEUP_HTTP_RESPONSE: Response<List<LineupResponse>> =
     ) as Response<List<LineupResponse>>
 
 class LineupDataSourceTest {
-
     private lateinit var festivalLineupService: FestivalLineupService
     private lateinit var lineupDataSource: LineupDataSource
 
