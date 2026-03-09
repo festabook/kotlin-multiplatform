@@ -65,9 +65,9 @@ actual class NaverMap(
         private val map: NMFNaverMapView,
     ) {
         actual var isZoomControlEnabled: Boolean
-            get() = map.mapView.isZoomGestureEnabled()
+            get() = map.showZoomControls
             set(value) {
-                map.mapView.setZoomGestureEnabled(value)
+                map.showZoomControls = value
             }
         actual var isScaleBarEnabled: Boolean
             get() = map.showScaleBar
