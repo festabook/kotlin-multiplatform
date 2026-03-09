@@ -1,0 +1,67 @@
+package com.daedan.festabook.presentation.placeMap.platform
+
+import com.naver.maps.map.NaverMap as PlatformMap
+import com.naver.maps.map.UiSettings as PlatformUiSettings
+
+actual class NaverMap(
+    val platformMap: PlatformMap,
+) {
+    val platformUiSettings = platformMap.uiSettings
+    actual var isIndoorEnabled: Boolean
+        get() = platformMap.isIndoorEnabled
+        set(value) {
+            platformMap.isIndoorEnabled = value
+        }
+    actual var symbolScale: Double
+        get() = platformMap.symbolScale.toDouble()
+        set(value) {
+            platformMap.symbolScale = value.toFloat()
+        }
+
+    actual var customStyleId: String?
+        get() = platformMap.customStyleId
+        set(value) {
+            platformMap.customStyleId = value
+        }
+    actual val uiSettings: UiSettings = UiSettings(platformUiSettings)
+
+    actual fun setOnMapClickListener(onClick: (LatLng) -> Unit) {
+        platformMap.setOnMapClickListener { pointF, latLng ->
+            onClick(LatLng(latLng.latitude, latLng.longitude))
+        }
+    }
+
+    actual fun setContentPadding(
+        left: Int,
+        top: Int,
+        right: Int,
+        bottom: Int,
+        animate: Boolean,
+    ) {
+        platformMap.setContentPadding(left, top, right, bottom, animate)
+    }
+
+    actual class UiSettings(
+        private val platformUiSettings: PlatformUiSettings,
+    ) {
+        actual var isZoomControlEnabled: Boolean
+            get() = platformUiSettings.isZoomControlEnabled
+            set(value) {
+                platformUiSettings.isZoomControlEnabled = value
+            }
+        actual var isScaleBarEnabled: Boolean
+            get() = platformUiSettings.isScaleBarEnabled
+            set(value) {
+                platformUiSettings.isScaleBarEnabled = value
+            }
+
+        actual fun setLogoMargin(
+            start: Int,
+            top: Int,
+            end: Int,
+            bottom: Int,
+        ) {
+            platformUiSettings.setLogoMargin(start, top, end, bottom)
+        }
+    }
+}
