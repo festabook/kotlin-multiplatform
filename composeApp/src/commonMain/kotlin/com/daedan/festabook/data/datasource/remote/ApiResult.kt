@@ -1,7 +1,6 @@
 package com.daedan.festabook.data.datasource.remote
 
 import de.jensklingenberg.ktorfit.Response
-import io.ktor.client.statement.request
 import kotlinx.coroutines.CancellationException
 import kotlinx.io.IOException
 
@@ -34,13 +33,6 @@ sealed class ApiResult<out T> {
         suspend fun <T> toApiResult(apiCall: suspend () -> Response<T>): ApiResult<T> =
             runCatching { apiCall() }
                 .mapCatching { response ->
-                    val requestUrl =
-                        response
-                            .raw()
-                            .request.url
-                            .toString()
-                    val requestMethod = response.raw().request.method
-
                     if (response.isSuccessful) {
                         val body = response.body()
                         when {
@@ -81,7 +73,7 @@ sealed class ApiResult<out T> {
                             }
 
                             else -> {
-                                UnknownError("${response.code} $requestMethod $requestUrl")
+                                UnknownError("code = ${response.code} message = ${response.message} errorBody = $errorBody")
                             }
                         }
                     }
