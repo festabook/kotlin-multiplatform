@@ -1,5 +1,7 @@
-// package com.daedan.festabook.presentation.schedule.navigation
-//
+@file:Suppress("ktlint:standard:no-empty-file")
+
+package com.daedan.festabook.presentation.schedule.navigation
+
 // import androidx.navigation.NavGraphBuilder
 // import androidx.navigation.compose.composable
 // import com.daedan.festabook.presentation.main.MainTabRoute
