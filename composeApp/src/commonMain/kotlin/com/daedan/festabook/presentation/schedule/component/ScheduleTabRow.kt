@@ -43,6 +43,7 @@ fun ScheduleTabRow(
     dates: List<ScheduleDateUiModel>,
     modifier: Modifier = Modifier,
 ) {
+    if (dates.isEmpty()) return
     ScrollableTabRow(
         edgePadding = festabookSpacing.paddingScreenGutter,
         selectedTabIndex = pageState.currentPage,
