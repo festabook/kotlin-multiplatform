@@ -1,8 +1,15 @@
 package com.daedan.festabook.presentation.placeMap.platform
 
+import cocoapods.NMapsMap.NMFMapView
+import cocoapods.NMapsMap.NMFMapViewTouchDelegateProtocol
 import cocoapods.NMapsMap.NMFNaverMapView
+import cocoapods.NMapsMap.NMGLatLng
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.cValue
+import platform.CoreGraphics.CGPoint
+import platform.UIKit.UIEdgeInsets
+import platform.darwin.NSObject
 
 @OptIn(ExperimentalForeignApi::class)
 actual class NaverMap(
@@ -26,6 +33,16 @@ actual class NaverMap(
     actual val uiSettings: UiSettings = UiSettings(platformMap)
 
     actual fun setOnMapClickListener(onClick: (LatLng) -> Unit) {
+        platformMap.mapView.touchDelegate =
+            object : NSObject(), NMFMapViewTouchDelegateProtocol {
+                override fun mapView(
+                    mapView: NMFMapView,
+                    didLongTapMap: NMGLatLng,
+                    point: CValue<CGPoint>,
+                ) {
+                    onClick(LatLng(didLongTapMap.lat(), didLongTapMap.lng()))
+                }
+            }
     }
 
     actual fun setContentPadding(
@@ -35,6 +52,13 @@ actual class NaverMap(
         bottom: Int,
         animate: Boolean,
     ) {
+        platformMap.mapView.contentInset =
+            cValue<UIEdgeInsets> {
+                this.left = left.toDouble()
+                this.top = top.toDouble()
+                this.right = right.toDouble()
+                this.bottom = bottom.toDouble()
+            }
     }
 
     actual class UiSettings(
