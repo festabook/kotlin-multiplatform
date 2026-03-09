@@ -50,7 +50,7 @@ fun ScheduleTabRow(
         containerColor = MaterialTheme.colorScheme.background,
         indicator = {
             ScheduleTabIndicator(
-                modifier = Modifier.tabIndicatorOffset(selectedIndex)
+                modifier = Modifier.tabIndicatorOffset(selectedIndex),
             )
         },
         divider = {},
