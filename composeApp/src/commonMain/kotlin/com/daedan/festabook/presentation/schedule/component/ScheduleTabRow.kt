@@ -6,9 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -44,12 +43,12 @@ fun ScheduleTabRow(
     modifier: Modifier = Modifier,
 ) {
     if (dates.isEmpty()) return
-    ScrollableTabRow(
+    PrimaryScrollableTabRow(
         edgePadding = festabookSpacing.paddingScreenGutter,
         selectedTabIndex = pageState.currentPage,
         containerColor = MaterialTheme.colorScheme.background,
-        indicator = { tabPositions ->
-            ScheduleTabIndicator(modifier = Modifier.tabIndicatorOffset(currentTabPosition = tabPositions[pageState.currentPage]))
+        indicator = {
+            ScheduleTabIndicator(modifier = Modifier.tabIndicatorOffset(pageState.currentPage))
         },
         divider = {},
         modifier = modifier,
