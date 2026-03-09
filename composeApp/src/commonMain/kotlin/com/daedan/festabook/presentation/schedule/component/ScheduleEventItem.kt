@@ -71,27 +71,21 @@ private fun ScheduleEventItemPreview() {
 @Composable
 private fun rememberScheduleEventDynamicProperties(props: LottieTimeLineCircleProps) =
     rememberLottieDynamicProperties {
-        shapeLayer(*props.centerKeyPath.toTypedArray()) {
-            fill {
+        shapeLayer(props.centerPath.layer) {
+            fill(props.centerPath.group, props.centerPath.fill) {
                 color { props.centerColor }
             }
         }
 
-        shapeLayer(*props.outerKeyPath.toTypedArray()) {
-            fill {
+        shapeLayer(props.outerPath.layer) {
+            fill(props.outerPath.group, props.outerPath.fill) {
                 color { props.outerColor }
-                transform {
-                    opacity { props.outerOpacity }
-                }
             }
         }
 
-        shapeLayer(*props.innerKeyPath.toTypedArray()) {
-            fill {
+        shapeLayer(props.innerPath.layer) {
+            fill(props.innerPath.group, props.innerPath.fill) {
                 color { props.innerColor }
-                transform {
-                    opacity { props.innerOpacity }
-                }
             }
         }
     }
@@ -102,8 +96,6 @@ private fun lottieTimeLineCircleProps(status: ScheduleEventUiStatus): LottieTime
         ScheduleEventUiStatus.UPCOMING -> {
             LottieTimeLineCircleProps(
                 centerColor = FestabookColor.accentGreen,
-                outerOpacity = 0f,
-                innerOpacity = 1f,
                 outerColor = FestabookColor.accentGreen,
                 innerColor = FestabookColor.accentGreen,
             )
@@ -112,8 +104,6 @@ private fun lottieTimeLineCircleProps(status: ScheduleEventUiStatus): LottieTime
         ScheduleEventUiStatus.ONGOING -> {
             LottieTimeLineCircleProps(
                 centerColor = FestabookColor.accentBlue,
-                outerOpacity = 1f,
-                innerOpacity = 1f,
                 outerColor = FestabookColor.accentBlue,
                 innerColor = FestabookColor.accentBlue,
             )
@@ -122,8 +112,6 @@ private fun lottieTimeLineCircleProps(status: ScheduleEventUiStatus): LottieTime
         ScheduleEventUiStatus.COMPLETED -> {
             LottieTimeLineCircleProps(
                 centerColor = FestabookColor.gray300,
-                outerOpacity = 0f,
-                innerOpacity = 0f,
                 outerColor = FestabookColor.gray300,
                 innerColor = FestabookColor.gray300,
             )
@@ -132,11 +120,18 @@ private fun lottieTimeLineCircleProps(status: ScheduleEventUiStatus): LottieTime
 
 data class LottieTimeLineCircleProps(
     val centerColor: Color,
-    val outerOpacity: Float,
-    val innerOpacity: Float,
     val outerColor: Color,
     val innerColor: Color,
-    val centerKeyPath: List<String> = listOf("centerCircle", "**", "Fill 1"),
-    val outerKeyPath: List<String> = listOf("outerWave", "**", "Fill 1"),
-    val innerKeyPath: List<String> = listOf("innerWave", "**", "Fill 1"),
+    val centerPath: LottieFillKeyPath =
+        LottieFillKeyPath("centerCircle", "Ellipse 1", "Fill 1"),
+    val outerPath: LottieFillKeyPath =
+        LottieFillKeyPath("outerWave", "Ellipse 1", "Fill 1"),
+    val innerPath: LottieFillKeyPath =
+        LottieFillKeyPath("innerWave", "Ellipse 1", "Fill 1"),
+)
+
+data class LottieFillKeyPath(
+    val layer: String,
+    val group: String,
+    val fill: String,
 )
