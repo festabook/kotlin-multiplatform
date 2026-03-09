@@ -42,25 +42,38 @@ fun ScheduleTabRow(
     dates: List<ScheduleDateUiModel>,
     modifier: Modifier = Modifier,
 ) {
-    if (dates.isEmpty()) return
+    val selectedIndex = if (dates.isEmpty()) 0 else pageState.currentPage
+
     PrimaryScrollableTabRow(
         edgePadding = festabookSpacing.paddingScreenGutter,
-        selectedTabIndex = pageState.currentPage,
+        selectedTabIndex = selectedIndex,
         containerColor = MaterialTheme.colorScheme.background,
         indicator = {
-            ScheduleTabIndicator(modifier = Modifier.tabIndicatorOffset(pageState.currentPage))
+            ScheduleTabIndicator(
+                modifier = Modifier.tabIndicatorOffset(selectedIndex)
+            )
         },
         divider = {},
         modifier = modifier,
     ) {
-        dates.forEachIndexed { index, scheduleDate ->
+        if (dates.isEmpty()) {
             Tab(
-                selected = pageState.currentPage == index,
+                selected = true,
                 unselectedContentColor = FestabookColor.gray500,
                 selectedContentColor = MaterialTheme.colorScheme.background,
-                onClick = { scope.launch { pageState.animateScrollToPage(index) } },
-                text = { Text(text = scheduleDate.date.toFormattedDate()) },
+                onClick = {},
+                text = { Text("-") },
             )
+        } else {
+            dates.forEachIndexed { index, scheduleDate ->
+                Tab(
+                    selected = selectedIndex == index,
+                    unselectedContentColor = FestabookColor.gray500,
+                    selectedContentColor = MaterialTheme.colorScheme.background,
+                    onClick = { scope.launch { pageState.animateScrollToPage(index) } },
+                    text = { Text(scheduleDate.date.toFormattedDate()) },
+                )
+            }
         }
     }
 }
