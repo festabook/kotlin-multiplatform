@@ -26,7 +26,10 @@ private val baseImageUrl =
     getLocalProperty("IMAGE_BASE_URL") ?: error("IMAGE_BASE_URL가 local.properties에 없음")
 
 private val naverMapStyleId =
-    getLocalProperty("NAVER_MAP_STYLE_ID") ?: error("NAVER_MAP_STYLE_ID local.properties에 없음")
+    getLocalProperty("NAVER_MAP_STYLE_ID") ?: error("NAVER_MAP_STYLE_ID가 local.properties에 없음")
+
+private val naverMapClientId =
+    getLocalProperty("NAVER_MAP_CLIENT_ID") ?: error("NAVER_MAP_CLIENT_ID가 local.properties에 없음")
 
 
 plugins {
@@ -120,6 +123,7 @@ buildkonfig {
 
     defaultConfigs {
         buildConfigField(STRING, "NAVER_MAP_STYLE_ID", naverMapStyleId)
+        buildConfigField(STRING, "NAVER_MAP_CLIENT_ID", naverMapClientId)
         buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
         buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
     }
