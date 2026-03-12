@@ -24,6 +24,18 @@ actual class NaverMap(
             platformMap.customStyleId = value
         }
     actual val uiSettings: UiSettings = UiSettings(platformUiSettings)
+    actual val cameraPosition: CameraPosition
+        get() = CameraPosition(platformMap.cameraPosition)
+
+    actual fun moveCamera(cameraUpdate: CameraUpdate) {
+        platformMap.moveCamera(cameraUpdate.platform)
+    }
+
+    actual fun addOnCameraChangeListener(listener: OnCameraChangeListener) {
+        platformMap.addOnCameraChangeListener { reason, animated ->
+            listener.onCameraChange(reason, animated)
+        }
+    }
 
     actual fun setOnMapClickListener(onClick: (LatLng) -> Unit) {
         platformMap.setOnMapClickListener { pointF, latLng ->
@@ -39,6 +51,13 @@ actual class NaverMap(
         animate: Boolean,
     ) {
         platformMap.setContentPadding(left, top, right, bottom, animate)
+    }
+
+    actual fun interface OnCameraChangeListener {
+        actual fun onCameraChange(
+            reason: Int,
+            animated: Boolean,
+        )
     }
 
     actual class UiSettings(

@@ -6,6 +6,11 @@ expect class NaverMap {
 
     var customStyleId: String?
     val uiSettings: UiSettings
+    val cameraPosition: CameraPosition
+
+    fun moveCamera(cameraUpdate: CameraUpdate)
+
+    fun addOnCameraChangeListener(listener: OnCameraChangeListener)
 
     fun setOnMapClickListener(onClick: (LatLng) -> Unit)
 
@@ -16,6 +21,13 @@ expect class NaverMap {
         bottom: Int,
         animate: Boolean,
     )
+
+    fun interface OnCameraChangeListener {
+        fun onCameraChange(
+            reason: Int,
+            animated: Boolean,
+        )
+    }
 
     class UiSettings {
         var isZoomControlEnabled: Boolean

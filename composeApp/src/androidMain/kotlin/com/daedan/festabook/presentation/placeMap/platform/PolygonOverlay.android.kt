@@ -15,8 +15,6 @@ actual class PolygonOverlay actual constructor(
                 }
         }
 
-    private var commonMap: NaverMap? = null
-
     actual var color: Int
         get() = platform.color
         set(value) {
@@ -27,10 +25,12 @@ actual class PolygonOverlay actual constructor(
         set(value) {
             platform.outlineWidth = value
         }
+    private var _map: NaverMap? = null
+
     actual var map: NaverMap?
-        get() = commonMap
+        get() = _map
         set(value) {
-            commonMap = value
+            _map = value
             platform.map = value?.platformMap
         }
 }

@@ -1,6 +1,7 @@
 package com.daedan.festabook.presentation.placeMap.platform
 
 import cocoapods.NMapsMap.NMFMapView
+import cocoapods.NMapsMap.NMFMapViewCameraDelegateProtocol
 import cocoapods.NMapsMap.NMFMapViewTouchDelegateProtocol
 import cocoapods.NMapsMap.NMFNaverMapView
 import cocoapods.NMapsMap.NMGLatLng
@@ -15,6 +16,27 @@ import platform.darwin.NSObject
 actual class NaverMap(
     val platformMap: NMFNaverMapView,
 ) {
+    actual val cameraPosition: CameraPosition
+        get() = CameraPosition(platformMap.mapView.cameraPosition)
+
+    actual fun moveCamera(cameraUpdate: CameraUpdate) {
+        platformMap.mapView.moveCamera(cameraUpdate.platform)
+    }
+
+    actual fun addOnCameraChangeListener(listener: OnCameraChangeListener) {
+        platformMap.mapView.addCameraDelegate(
+            object : NSObject(), NMFMapViewCameraDelegateProtocol {
+                override fun mapView(
+                    mapView: NMFMapView,
+                    cameraDidChangeByReason: Long,
+                    animated: Boolean,
+                ) {
+                    listener.onCameraChange(cameraDidChangeByReason.toInt(), animated)
+                }
+            },
+        )
+    }
+
     actual var isIndoorEnabled: Boolean
         get() = platformMap.mapView.isIndoorMapEnabled()
         set(value) {
@@ -59,6 +81,13 @@ actual class NaverMap(
                 this.right = right.toDouble()
                 this.bottom = bottom.toDouble()
             }
+    }
+
+    actual fun interface OnCameraChangeListener {
+        actual fun onCameraChange(
+            reason: Int,
+            animated: Boolean,
+        )
     }
 
     actual class UiSettings(

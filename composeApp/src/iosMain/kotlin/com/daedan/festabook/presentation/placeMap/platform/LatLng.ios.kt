@@ -9,4 +9,6 @@ actual class LatLng actual constructor(
     longitude: Double,
 ) {
     val platform = NMGLatLng.latLngWithLat(latitude, longitude)
+
+    actual fun distanceTo(other: LatLng): Double = platform.distanceTo(other.platform)
 }
