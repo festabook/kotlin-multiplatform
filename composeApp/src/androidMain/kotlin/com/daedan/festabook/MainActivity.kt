@@ -5,15 +5,27 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.CompositionLocalProvider
+import com.daedan.festabook.presentation.schedule.component.ScheduleScreen
+import com.daedan.festabook.presentation.theme.FestabookTheme
+import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 class MainActivity : ComponentActivity() {
+    private val metroVmf by lazy {
+        (application as FestabookApp).festabookAppGraph.metroViewModelFactory
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         setContent {
-            App()
+            FestabookTheme {
+                CompositionLocalProvider(LocalMetroViewModelFactory provides metroVmf) {
+                    ScheduleScreen()
+                }
+            }
         }
     }
 }
@@ -21,5 +33,5 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 private fun AppAndroidPreview() {
-    App()
+    FestabookTheme {}
 }

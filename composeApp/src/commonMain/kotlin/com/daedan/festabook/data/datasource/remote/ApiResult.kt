@@ -1,7 +1,6 @@
 package com.daedan.festabook.data.datasource.remote
 
 import de.jensklingenberg.ktorfit.Response
-import io.ktor.client.statement.request
 import kotlinx.coroutines.CancellationException
 import kotlinx.io.IOException
 
@@ -26,19 +25,14 @@ sealed class ApiResult<out T> {
         val throwable: Throwable,
     ) : ApiResult<Nothing>()
 
-    data object UnknownError : ApiResult<Nothing>()
+    data class UnknownError(
+        val message: String,
+    ) : ApiResult<Nothing>()
 
     companion object {
         suspend fun <T> toApiResult(apiCall: suspend () -> Response<T>): ApiResult<T> =
             runCatching { apiCall() }
                 .mapCatching { response ->
-                    val requestUrl =
-                        response
-                            .raw()
-                            .request.url
-                            .toString()
-                    val requestMethod = response.raw().request.method
-
                     if (response.isSuccessful) {
                         val body = response.body()
                         when {
@@ -55,7 +49,7 @@ sealed class ApiResult<out T> {
 
                             else -> {
 //                                Timber.e("ERR ${response.code()} $requestMethod $requestUrl - Unknown success case")
-                                UnknownError
+                                UnknownError("response=${response.code} Unknown success case")
                             }
                         }
                     } else {
@@ -79,7 +73,7 @@ sealed class ApiResult<out T> {
                             }
 
                             else -> {
-                                UnknownError
+                                UnknownError("code = ${response.code} message = ${response.message} errorBody = $errorBody")
                             }
                         }
                     }
@@ -87,7 +81,7 @@ sealed class ApiResult<out T> {
                     return when (error) {
                         is CancellationException -> throw error
                         is IOException -> NetworkError(error)
-                        else -> UnknownError
+                        else -> UnknownError(error.stackTraceToString())
                     }
                 }
     }

@@ -163,4 +163,13 @@
     <string name="uncaught_exception_message">이용에 불편을 드려 정말 죄송합니다. \n 앱을 다시 시작해 주시면 대부분 해결되니, \n 잠시 후에 앱을 다시 실행해주세요 !</string>
     <string name="uncaught_exception_confirm">앱 재시작하기</string>
     <string name="explore_back">뒤로가기</string>
+
+    <!--요일-->
+    <string name="monday">월</string>
+    <string name="tuesday">화</string>
+    <string name="wednesday">수</string>
+    <string name="thursday">목</string>
+    <string name="friday">금</string>
+    <string name="saturday">토</string>
+    <string name="sunday">일</string>
 </resources>

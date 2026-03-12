@@ -1,10 +1,8 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import com.google.devtools.ksp.gradle.KspAATask
 import dev.mokkery.gradle.ApplicationRule
-import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.compose.internal.utils.getLocalProperty
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import org.jlleitschuh.gradle.ktlint.tasks.KtLintCheckTask
 import org.jlleitschuh.gradle.ktlint.tasks.KtLintFormatTask
 
@@ -108,6 +106,7 @@ kotlin {
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.compottie)
+            implementation(libs.metrox.viewmodel.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

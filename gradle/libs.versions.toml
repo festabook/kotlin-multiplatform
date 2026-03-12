@@ -60,6 +60,8 @@ landscapist-placeholder = { module = "com.github.skydoves:landscapist-placeholde
 landscapist-zoomable = { module = "com.github.skydoves:landscapist-zoomable", version.ref = "landscapistCoil3" }
 compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }
 ktlint = { module = "io.nlopez.compose.rules:ktlint", version.ref = "ktlintVersion" }
+metrox-viewmodel-compose = { module = "dev.zacsweers.metro:metrox-viewmodel-compose", version.ref = "metro" }
+
 map-sdk = { module = "com.naver.maps:map-sdk", version.ref = "mapSdk" }
 
 [plugins]
