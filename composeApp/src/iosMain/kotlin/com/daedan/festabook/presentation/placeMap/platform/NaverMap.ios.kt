@@ -1,5 +1,7 @@
 package com.daedan.festabook.presentation.placeMap.platform
 
+import cocoapods.NMapsMap.NMFLocationManager
+import cocoapods.NMapsMap.NMFLocationManagerDelegateProtocol
 import cocoapods.NMapsMap.NMFMapView
 import cocoapods.NMapsMap.NMFMapViewCameraDelegateProtocol
 import cocoapods.NMapsMap.NMFMapViewTouchDelegateProtocol
@@ -16,6 +18,13 @@ import platform.darwin.NSObject
 actual class NaverMap(
     val platformMap: NMFNaverMapView,
 ) {
+    private var _locationSource: LocationSource? = null
+    actual var locationSource: LocationSource?
+        get() = _locationSource
+        set(value) {
+            _locationSource = value
+        }
+
     actual val cameraPosition: CameraPosition
         get() = CameraPosition(platformMap.mapView.cameraPosition)
 
@@ -32,6 +41,19 @@ actual class NaverMap(
                     animated: Boolean,
                 ) {
                     listener.onCameraChange(cameraDidChangeByReason.toInt(), animated)
+                }
+            },
+        )
+    }
+
+    actual fun addOnLocationChangeListener(listener: OnLocationChangeListener) {
+        NMFLocationManager.sharedInstance()?.addDelegate(
+            object : NSObject(), NMFLocationManagerDelegateProtocol {
+                override fun locationManager(
+                    locationManager: NMFLocationManager?,
+                    didUpdateLocations: List<*>?,
+                ) {
+                    listener.onLocationChange()
                 }
             },
         )
@@ -88,6 +110,10 @@ actual class NaverMap(
             reason: Int,
             animated: Boolean,
         )
+    }
+
+    actual fun interface OnLocationChangeListener {
+        actual fun onLocationChange()
     }
 
     actual class UiSettings(
