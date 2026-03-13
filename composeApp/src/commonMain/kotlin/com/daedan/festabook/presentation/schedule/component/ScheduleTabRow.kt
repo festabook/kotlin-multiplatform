@@ -31,7 +31,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.number
+import kotlinx.datetime.format
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
+import kotlinx.datetime.format.byUnicodePattern
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -94,6 +96,7 @@ private fun ScheduleTabIndicator(modifier: Modifier = Modifier) {
     )
 }
 
+@OptIn(FormatStringsInDatetimeFormats::class)
 @Composable
 private fun LocalDate.toFormattedDate(): String {
     val dayName =
@@ -106,8 +109,8 @@ private fun LocalDate.toFormattedDate(): String {
             DayOfWeek.SATURDAY -> stringResource(Res.string.saturday)
             DayOfWeek.SUNDAY -> stringResource(Res.string.sunday)
         }
-
-    return "${month.number}/$day ($dayName)"
+    val format = LocalDate.Format { byUnicodePattern("MM/dd ($dayName)") }
+    return format(format)
 }
 
 @Preview
