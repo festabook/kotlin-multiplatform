@@ -3,14 +3,14 @@ package com.daedan.festabook.presentation.news.component
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material3.TabRowDefaults.PrimaryIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import com.daedan.festabook.presentation.news.NewsTab
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTheme
@@ -25,14 +25,14 @@ fun NewsTabRow(
     scope: CoroutineScope,
     modifier: Modifier = Modifier,
 ) {
-    TabRow(
+    PrimaryTabRow(
         selectedTabIndex = pageState.currentPage,
         containerColor = MaterialTheme.colorScheme.background,
-        indicator = { tabPositions ->
-            TabRowDefaults.PrimaryIndicator(
+        indicator = {
+            PrimaryIndicator(
                 color = FestabookColor.black,
-                width = tabPositions[pageState.currentPage].width,
-                modifier = Modifier.tabIndicatorOffset(currentTabPosition = tabPositions[pageState.currentPage]),
+                width = Dp.Unspecified,
+                modifier = Modifier.tabIndicatorOffset(pageState.currentPage),
             )
         },
         modifier = modifier,
