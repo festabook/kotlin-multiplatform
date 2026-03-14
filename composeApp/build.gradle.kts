@@ -54,11 +54,9 @@ kotlin {
         version = "2.0.1"
         summary = "festabook"
         homepage = "https://landing.festabook.app/"
-        ios.deploymentTarget = "16.0"
+        ios.deploymentTarget = "17.0"
 
-        pod("NMapsMap") {
-            version = "3.23.1"
-        }
+        pod("NMapsMap")
     }
     androidTarget {
         compilerOptions {
