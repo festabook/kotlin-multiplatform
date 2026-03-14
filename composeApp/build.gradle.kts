@@ -78,6 +78,7 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.map.sdk)
+            implementation(libs.play.services.location)
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.kotlinx.coroutines.android)

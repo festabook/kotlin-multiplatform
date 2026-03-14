@@ -6,7 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import com.daedan.festabook.presentation.news.component.NewsScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.daedan.festabook.presentation.placeMap.component.PlaceMapRoute
+import com.daedan.festabook.presentation.platform.rememberLocationSource
 import com.daedan.festabook.presentation.theme.FestabookTheme
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -23,7 +25,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             FestabookTheme {
                 CompositionLocalProvider(LocalMetroViewModelFactory provides metroVmf) {
-                    NewsScreen()
+                    PlaceMapRoute(
+                        placeMapViewModel = viewModel(factory = metroVmf),
+                        onStartPlaceDetail = {},
+                        onShowErrorSnackBar = {},
+                        locationSource = rememberLocationSource(),
+                    )
                 }
             }
         }

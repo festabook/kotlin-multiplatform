@@ -10,8 +10,8 @@ import com.naver.maps.map.widget.LogoView
 
 @Composable
 actual fun NaverMapLogo(
-    modifier: Modifier,
     naverMap: NaverMap?,
+    modifier: Modifier,
 ) {
     val context = LocalContext.current
     val logoView = remember { LogoView(context) }

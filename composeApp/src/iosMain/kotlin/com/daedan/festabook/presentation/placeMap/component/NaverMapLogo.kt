@@ -21,8 +21,8 @@ import platform.UIKit.UIEdgeInsetsMake
 @Composable
 @OptIn(ExperimentalForeignApi::class)
 actual fun NaverMapLogo(
-    modifier: Modifier,
     naverMap: NaverMap?,
+    modifier: Modifier,
 ) {
     val density = LocalDensity.current
     var targetPosition by remember { mutableStateOf(Offset.Zero) }
