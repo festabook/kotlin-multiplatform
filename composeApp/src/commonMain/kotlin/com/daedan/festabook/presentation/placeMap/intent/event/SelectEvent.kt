@@ -1,7 +1,7 @@
 package com.daedan.festabook.presentation.placeMap.intent.event
 
 import com.daedan.festabook.domain.model.TimeTag
-import com.daedan.festabook.presentation.placeMap.intent.FakePlaceDetailUiModel
+import com.daedan.festabook.presentation.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.intent.state.LoadState
 
 sealed interface SelectEvent : PlaceMapEvent {
@@ -10,7 +10,7 @@ sealed interface SelectEvent : PlaceMapEvent {
     ) : SelectEvent
 
     data class OnPlacePreviewClick(
-        val place: LoadState<FakePlaceDetailUiModel>,
+        val place: LoadState<PlaceDetailUiModel>,
     ) : SelectEvent
 
     data object UnSelectPlace : SelectEvent

@@ -3,13 +3,13 @@ package com.daedan.festabook.presentation.placeMap.intent.handler
 import com.daedan.festabook.di.placeMapHandler.PlaceMapViewModelScope
 import com.daedan.festabook.domain.model.TimeTag
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
+import com.daedan.festabook.presentation.placeDetail.model.toUiModel
 import com.daedan.festabook.presentation.placeMap.intent.event.SelectEvent
 import com.daedan.festabook.presentation.placeMap.intent.sideEffect.MapControlSideEffect
 import com.daedan.festabook.presentation.placeMap.intent.sideEffect.PlaceMapSideEffect
 import com.daedan.festabook.presentation.placeMap.intent.state.LoadState
 import com.daedan.festabook.presentation.placeMap.intent.state.PlaceMapUiState
 import com.daedan.festabook.presentation.placeMap.intent.state.await
-import com.daedan.festabook.presentation.placeMap.intent.toUiModel
 import com.daedan.festabook.presentation.placeMap.model.PlaceCoordinateUiModel
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject

@@ -1,7 +1,7 @@
 package com.daedan.festabook.presentation.placeMap.intent.sideEffect
 
 import com.daedan.festabook.domain.model.TimeTag
-import com.daedan.festabook.presentation.placeMap.intent.FakePlaceDetailUiModel
+import com.daedan.festabook.presentation.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.intent.state.LoadState
 import com.daedan.festabook.presentation.placeMap.model.InitialMapSettingUiModel
 import com.daedan.festabook.presentation.placeMap.model.PlaceCategoryUiModel
@@ -27,7 +27,7 @@ sealed interface MapControlSideEffect {
     ) : MapControlSideEffect
 
     data class SelectMarker(
-        val placeDetail: LoadState<FakePlaceDetailUiModel>,
+        val placeDetail: LoadState<PlaceDetailUiModel>,
     ) : MapControlSideEffect
 
     data object UnselectMarker : MapControlSideEffect
