@@ -7,6 +7,15 @@ actual class NaverMap(
     val platformMap: PlatformMap,
 ) {
     val platformUiSettings = platformMap.uiSettings
+
+    private var _locationSource: LocationSource? = null
+    actual var locationSource: LocationSource?
+        get() = _locationSource
+        set(value) {
+            _locationSource = value
+            platformMap.locationSource = value?.platform
+        }
+
     actual var isIndoorEnabled: Boolean
         get() = platformMap.isIndoorEnabled
         set(value) {
@@ -37,6 +46,12 @@ actual class NaverMap(
         }
     }
 
+    actual fun addOnLocationChangeListener(listener: OnLocationChangeListener) {
+        platformMap.addOnLocationChangeListener { _ ->
+            listener.onLocationChange()
+        }
+    }
+
     actual fun setOnMapClickListener(onClick: (LatLng) -> Unit) {
         platformMap.setOnMapClickListener { pointF, latLng ->
             onClick(LatLng(latLng.latitude, latLng.longitude))
@@ -58,6 +73,10 @@ actual class NaverMap(
             reason: Int,
             animated: Boolean,
         )
+    }
+
+    actual fun interface OnLocationChangeListener {
+        actual fun onLocationChange()
     }
 
     actual class UiSettings(
