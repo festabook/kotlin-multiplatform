@@ -1,0 +1,26 @@
+package com.daedan.festabook.presentation.placeMap.platform
+
+enum class MarkerIcon {
+    IC_BAR,
+    IC_BAR_SELECTED,
+    IC_BOOTH,
+    IC_BOOTH_SELECTED,
+    IC_FOOD_TRUCK,
+    IC_FOOD_TRUCK_SELECTED,
+    IC_PARKING,
+    IC_PARKING_SELECTED,
+    IC_PHOTO_BOOTH,
+    IC_PHOTO_BOOTH_SELECTED,
+    IC_PRIMARY,
+    IC_PRIMARY_SELECTED,
+    IC_SMOKING_AREA,
+    IC_SMOKING_AREA_SELECTED,
+    IC_STAGE,
+    IC_STAGE_SELECTED,
+    IC_TOILET,
+    IC_TOILET_SELECTED,
+    IC_TRASH,
+    IC_TRASH_SELECTED,
+    IC_EXTRA,
+    IC_EXTRA_SELECTED,
+}

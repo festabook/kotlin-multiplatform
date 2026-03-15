@@ -3,16 +3,9 @@ package com.daedan.festabook.presentation.placeMap.model
 import androidx.compose.ui.graphics.Color
 import com.daedan.festabook.domain.model.PlaceCategory
 import com.daedan.festabook.presentation.placeMap.mapManager.internal.OverlayImageManager
+import com.daedan.festabook.presentation.placeMap.platform.MarkerIcon
 import com.daedan.festabook.presentation.placeMap.platform.OverlayImage
 import festabookkmp.composeapp.generated.resources.Res
-import festabookkmp.composeapp.generated.resources.ic_bar
-import festabookkmp.composeapp.generated.resources.ic_bar_selected
-import festabookkmp.composeapp.generated.resources.ic_booth
-import festabookkmp.composeapp.generated.resources.ic_booth_selected
-import festabookkmp.composeapp.generated.resources.ic_extra
-import festabookkmp.composeapp.generated.resources.ic_extra_selected
-import festabookkmp.composeapp.generated.resources.ic_food_truck
-import festabookkmp.composeapp.generated.resources.ic_food_truck_selected
 import festabookkmp.composeapp.generated.resources.ic_map_category_bar
 import festabookkmp.composeapp.generated.resources.ic_map_category_booth
 import festabookkmp.composeapp.generated.resources.ic_map_category_extra
@@ -24,20 +17,6 @@ import festabookkmp.composeapp.generated.resources.ic_map_category_smoking
 import festabookkmp.composeapp.generated.resources.ic_map_category_stage
 import festabookkmp.composeapp.generated.resources.ic_map_category_toilet
 import festabookkmp.composeapp.generated.resources.ic_map_category_trash
-import festabookkmp.composeapp.generated.resources.ic_parking
-import festabookkmp.composeapp.generated.resources.ic_parking_selected
-import festabookkmp.composeapp.generated.resources.ic_photo_booth
-import festabookkmp.composeapp.generated.resources.ic_photo_booth_selected
-import festabookkmp.composeapp.generated.resources.ic_primary
-import festabookkmp.composeapp.generated.resources.ic_primary_selected
-import festabookkmp.composeapp.generated.resources.ic_smoking_area
-import festabookkmp.composeapp.generated.resources.ic_smoking_area_selected
-import festabookkmp.composeapp.generated.resources.ic_stage
-import festabookkmp.composeapp.generated.resources.ic_stage_selected
-import festabookkmp.composeapp.generated.resources.ic_toilet
-import festabookkmp.composeapp.generated.resources.ic_toilet_selected
-import festabookkmp.composeapp.generated.resources.ic_trash
-import festabookkmp.composeapp.generated.resources.ic_trash_selected
 import festabookkmp.composeapp.generated.resources.map_category_bar
 import festabookkmp.composeapp.generated.resources.map_category_booth
 import festabookkmp.composeapp.generated.resources.map_category_extra
@@ -49,7 +28,6 @@ import festabookkmp.composeapp.generated.resources.map_category_smoking_area
 import festabookkmp.composeapp.generated.resources.map_category_stage
 import festabookkmp.composeapp.generated.resources.map_category_toilet
 import festabookkmp.composeapp.generated.resources.map_category_trash
-import org.jetbrains.compose.resources.DrawableResource
 
 enum class PlaceCategoryUiModel {
     FOOD_TRUCK,
@@ -84,36 +62,6 @@ enum class PlaceCategoryUiModel {
     }
 }
 
-val PlaceCategoryUiModel.Companion.iconResources: List<DrawableResource>
-    get() {
-        val listOf =
-            listOf(
-                Res.drawable.ic_food_truck,
-                Res.drawable.ic_booth,
-                Res.drawable.ic_bar,
-                Res.drawable.ic_trash,
-                Res.drawable.ic_toilet,
-                Res.drawable.ic_smoking_area,
-                Res.drawable.ic_primary,
-                Res.drawable.ic_parking,
-                Res.drawable.ic_stage,
-                Res.drawable.ic_photo_booth,
-                Res.drawable.ic_extra,
-                Res.drawable.ic_food_truck_selected,
-                Res.drawable.ic_booth_selected,
-                Res.drawable.ic_bar_selected,
-                Res.drawable.ic_trash_selected,
-                Res.drawable.ic_toilet_selected,
-                Res.drawable.ic_smoking_area_selected,
-                Res.drawable.ic_primary_selected,
-                Res.drawable.ic_parking_selected,
-                Res.drawable.ic_stage_selected,
-                Res.drawable.ic_photo_booth_selected,
-                Res.drawable.ic_extra_selected,
-            )
-        return listOf
-    }
-
 fun PlaceCategoryUiModel.getLabelColor() =
     when (this) {
         PlaceCategoryUiModel.BOOTH -> Color(0xFF0094FF)
@@ -124,32 +72,32 @@ fun PlaceCategoryUiModel.getLabelColor() =
 
 fun OverlayImageManager.getNormalIcon(category: PlaceCategoryUiModel): OverlayImage? =
     when (category) {
-        PlaceCategoryUiModel.BOOTH -> getImage(Res.drawable.ic_booth)
-        PlaceCategoryUiModel.FOOD_TRUCK -> getImage(Res.drawable.ic_food_truck)
-        PlaceCategoryUiModel.TOILET -> getImage(Res.drawable.ic_toilet)
-        PlaceCategoryUiModel.BAR -> getImage(Res.drawable.ic_bar)
-        PlaceCategoryUiModel.TRASH_CAN -> getImage(Res.drawable.ic_trash)
-        PlaceCategoryUiModel.SMOKING_AREA -> getImage(Res.drawable.ic_smoking_area)
-        PlaceCategoryUiModel.PRIMARY -> getImage(Res.drawable.ic_primary)
-        PlaceCategoryUiModel.PARKING -> getImage(Res.drawable.ic_parking)
-        PlaceCategoryUiModel.STAGE -> getImage(Res.drawable.ic_stage)
-        PlaceCategoryUiModel.PHOTO_BOOTH -> getImage(Res.drawable.ic_photo_booth)
-        PlaceCategoryUiModel.EXTRA -> getImage(Res.drawable.ic_extra)
+        PlaceCategoryUiModel.BOOTH -> getImage(MarkerIcon.IC_BOOTH)
+        PlaceCategoryUiModel.FOOD_TRUCK -> getImage(MarkerIcon.IC_FOOD_TRUCK)
+        PlaceCategoryUiModel.TOILET -> getImage(MarkerIcon.IC_TOILET)
+        PlaceCategoryUiModel.BAR -> getImage(MarkerIcon.IC_BAR)
+        PlaceCategoryUiModel.TRASH_CAN -> getImage(MarkerIcon.IC_TRASH)
+        PlaceCategoryUiModel.SMOKING_AREA -> getImage(MarkerIcon.IC_SMOKING_AREA)
+        PlaceCategoryUiModel.PRIMARY -> getImage(MarkerIcon.IC_PRIMARY)
+        PlaceCategoryUiModel.PARKING -> getImage(MarkerIcon.IC_PARKING)
+        PlaceCategoryUiModel.STAGE -> getImage(MarkerIcon.IC_STAGE)
+        PlaceCategoryUiModel.PHOTO_BOOTH -> getImage(MarkerIcon.IC_PHOTO_BOOTH)
+        PlaceCategoryUiModel.EXTRA -> getImage(MarkerIcon.IC_EXTRA)
     }
 
 fun OverlayImageManager.getSelectedIcon(category: PlaceCategoryUiModel): OverlayImage? =
     when (category) {
-        PlaceCategoryUiModel.BOOTH -> getImage(Res.drawable.ic_booth_selected)
-        PlaceCategoryUiModel.FOOD_TRUCK -> getImage(Res.drawable.ic_food_truck_selected)
-        PlaceCategoryUiModel.TOILET -> getImage(Res.drawable.ic_toilet_selected)
-        PlaceCategoryUiModel.BAR -> getImage(Res.drawable.ic_bar_selected)
-        PlaceCategoryUiModel.TRASH_CAN -> getImage(Res.drawable.ic_trash_selected)
-        PlaceCategoryUiModel.SMOKING_AREA -> getImage(Res.drawable.ic_smoking_area_selected)
-        PlaceCategoryUiModel.PRIMARY -> getImage(Res.drawable.ic_primary_selected)
-        PlaceCategoryUiModel.PARKING -> getImage(Res.drawable.ic_parking_selected)
-        PlaceCategoryUiModel.STAGE -> getImage(Res.drawable.ic_stage_selected)
-        PlaceCategoryUiModel.PHOTO_BOOTH -> getImage(Res.drawable.ic_photo_booth_selected)
-        PlaceCategoryUiModel.EXTRA -> getImage(Res.drawable.ic_extra_selected)
+        PlaceCategoryUiModel.BOOTH -> getImage(MarkerIcon.IC_BOOTH_SELECTED)
+        PlaceCategoryUiModel.FOOD_TRUCK -> getImage(MarkerIcon.IC_FOOD_TRUCK_SELECTED)
+        PlaceCategoryUiModel.TOILET -> getImage(MarkerIcon.IC_TOILET_SELECTED)
+        PlaceCategoryUiModel.BAR -> getImage(MarkerIcon.IC_BAR_SELECTED)
+        PlaceCategoryUiModel.TRASH_CAN -> getImage(MarkerIcon.IC_TRASH_SELECTED)
+        PlaceCategoryUiModel.SMOKING_AREA -> getImage(MarkerIcon.IC_SMOKING_AREA_SELECTED)
+        PlaceCategoryUiModel.PRIMARY -> getImage(MarkerIcon.IC_PRIMARY_SELECTED)
+        PlaceCategoryUiModel.PARKING -> getImage(MarkerIcon.IC_PARKING_SELECTED)
+        PlaceCategoryUiModel.STAGE -> getImage(MarkerIcon.IC_STAGE_SELECTED)
+        PlaceCategoryUiModel.PHOTO_BOOTH -> getImage(MarkerIcon.IC_PHOTO_BOOTH_SELECTED)
+        PlaceCategoryUiModel.EXTRA -> getImage(MarkerIcon.IC_EXTRA_SELECTED)
     }
 
 fun PlaceCategoryUiModel.getIconId() =
