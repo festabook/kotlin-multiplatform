@@ -123,28 +123,15 @@ buildkonfig {
     defaultConfigs {
         buildConfigField(STRING, "NAVER_MAP_STYLE_ID", naverMapStyleId)
         buildConfigField(STRING, "NAVER_MAP_CLIENT_ID", naverMapClientId)
+        buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
+        buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
+    }
+
+    defaultConfigs("release") {
+        buildConfigField(STRING, "NAVER_MAP_STYLE_ID", naverMapStyleId)
+        buildConfigField(STRING, "NAVER_MAP_CLIENT_ID", naverMapClientId)
         buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
         buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
-    }
-    targetConfigs {
-        // android용 입니다.
-        create("debug") {
-            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
-            buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
-        }
-        create("release") {
-            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
-            buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
-        }
-        // ios용 입니다.
-        create("Debug") {
-            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
-            buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
-        }
-        create("Release") {
-            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
-            buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
-        }
     }
 }
 

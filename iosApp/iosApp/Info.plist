@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+    "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-</dict>
+    <dict>
+        <key>CADisableMinimumFrameDurationOnPhone</key>
+        <true />
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>현재 위치를 지도에 표시하고 가까운 장소를 찾기 위해 위치 권한이 필요합니다.</string>
+    </dict>
 </plist>
