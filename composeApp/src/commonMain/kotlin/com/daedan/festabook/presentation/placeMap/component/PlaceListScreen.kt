@@ -29,11 +29,12 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.daedan.festabook.presentation.common.component.CoilImage
 import com.daedan.festabook.presentation.common.component.EmptyStateScreen
+import com.daedan.festabook.presentation.common.component.FestabookImage
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
 import com.daedan.festabook.presentation.placeMap.intent.state.ListLoadState
 import com.daedan.festabook.presentation.placeMap.model.PlaceCategoryUiModel
@@ -59,6 +60,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun PlaceListScreen(
     placesUiState: ListLoadState<List<PlaceUiModel>>,
+    isPlaceListVisible: Boolean,
     modifier: Modifier = Modifier,
     map: NaverMap? = null,
     isExceededMaxLength: Boolean = false,
@@ -85,7 +87,12 @@ fun PlaceListScreen(
         }
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(
+        modifier =
+            modifier
+                .alpha(if (isPlaceListVisible) 1f else 0f)
+                .fillMaxSize(),
+    ) {
         if (bottomSheetState.currentValue != PlaceListBottomSheetValue.EXPANDED) {
             OffsetDependentLayout(
                 modifier =
@@ -96,6 +103,7 @@ fun PlaceListScreen(
                 Box {
                     CurrentLocationButton(
                         map = map,
+                        visible = isPlaceListVisible,
                     )
                     if (isExceededMaxLength) {
                         Row(
@@ -212,8 +220,8 @@ private fun PlaceListItem(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            CoilImage(
-                url = place.imageUrl ?: "",
+            FestabookImage(
+                imageUrl = place.imageUrl ?: "",
                 contentDescription = stringResource(Res.string.content_description_booth_image),
                 modifier =
                     Modifier
@@ -309,6 +317,7 @@ private fun PlaceListScreenPreview() {
                         )
                     },
                 ),
+            isPlaceListVisible = true,
             modifier =
                 Modifier.padding(
                     horizontal = festabookSpacing.paddingScreenGutter,

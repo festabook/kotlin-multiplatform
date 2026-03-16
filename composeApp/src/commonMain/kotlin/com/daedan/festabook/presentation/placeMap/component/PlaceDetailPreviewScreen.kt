@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
-import com.daedan.festabook.presentation.common.component.CoilImage
+import com.daedan.festabook.presentation.common.component.FestabookImage
 import com.daedan.festabook.presentation.common.component.URLText
 import com.daedan.festabook.presentation.common.convertImageUrl
 import com.daedan.festabook.presentation.placeDetail.model.PlaceDetailUiModel
@@ -108,6 +108,7 @@ private fun PlaceDetailPreviewContent(
                     Icon(
                         painter = painterResource(Res.drawable.ic_place_detail_clock),
                         contentDescription = stringResource(Res.string.content_description_iv_clock),
+                        tint = FestabookColor.gray500,
                     )
 
                     Text(
@@ -155,12 +156,12 @@ private fun PlaceDetailPreviewContent(
                 }
             }
 
-            CoilImage(
+            FestabookImage(
                 modifier =
                     Modifier
                         .size(festabookSpacing.previewImageSize)
                         .clip(festabookShapes.radius2),
-                url = placeDetail.place.imageUrl.convertImageUrl() ?: "",
+                imageUrl = placeDetail.place.imageUrl.convertImageUrl() ?: "",
                 contentDescription = stringResource(Res.string.content_description_booth_image),
             )
         }

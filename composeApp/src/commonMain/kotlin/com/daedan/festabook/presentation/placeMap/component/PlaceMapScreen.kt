@@ -125,6 +125,8 @@ fun PlaceMapScreen(
     mapDelegate: MapDelegate,
     modifier: Modifier = Modifier,
 ) {
+    val isPlaceListVisible = uiState.selectedPlace is LoadState.Empty
+
     NaverMapContent(
         modifier = modifier.fillMaxSize(),
         mapDelegate = mapDelegate,
@@ -165,14 +167,7 @@ fun PlaceMapScreen(
                 )
 
                 PlaceListScreen(
-                    modifier =
-                        Modifier.alpha(
-                            if (uiState.selectedPlace is LoadState.Empty) {
-                                1f
-                            } else {
-                                0f
-                            },
-                        ),
+                    isPlaceListVisible = isPlaceListVisible,
                     placesUiState = uiState.places,
                     map = naverMap,
                     onPlaceClick = { onEvent(SelectEvent.OnPlaceClick(it.id)) },

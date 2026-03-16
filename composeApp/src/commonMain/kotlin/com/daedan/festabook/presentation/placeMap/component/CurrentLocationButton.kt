@@ -8,4 +8,5 @@ import com.daedan.festabook.presentation.placeMap.platform.NaverMap
 expect fun CurrentLocationButton(
     modifier: Modifier = Modifier,
     map: NaverMap? = null,
+    visible: Boolean = true,
 )

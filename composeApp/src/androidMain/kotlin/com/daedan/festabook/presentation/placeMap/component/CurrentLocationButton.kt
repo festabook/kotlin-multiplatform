@@ -10,6 +10,7 @@ import com.naver.maps.map.widget.LocationButtonView
 actual fun CurrentLocationButton(
     modifier: Modifier,
     map: NaverMap?,
+    visible: Boolean,
 ) {
     AndroidView(
         modifier = modifier,
