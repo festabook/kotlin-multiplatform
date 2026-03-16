@@ -2,7 +2,6 @@ package com.daedan.festabook.presentation.placeMap.platform
 
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import cocoapods.NMapsMap.NMFLocationManager
 import cocoapods.NMapsMap.NMFLocationManagerDelegateProtocol
 import cocoapods.NMapsMap.NMFMapView
@@ -14,7 +13,6 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.cValue
 import platform.CoreGraphics.CGPoint
-import platform.UIKit.UIEdgeInsets
 import platform.UIKit.UIEdgeInsetsMake
 import platform.darwin.NSObject
 

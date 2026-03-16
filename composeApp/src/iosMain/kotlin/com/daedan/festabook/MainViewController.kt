@@ -15,7 +15,6 @@ import com.daedan.festabook.presentation.theme.FestabookTheme
 import com.skydoves.landscapist.coil3.LocalCoilImageLoader
 import dev.zacsweers.metro.createGraph
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
-import platform.Foundation.NSLog
 
 private val festabookAppGraph = createGraph<IosAppGraph>()
 private val metroVmf = festabookAppGraph.metroViewModelFactory
