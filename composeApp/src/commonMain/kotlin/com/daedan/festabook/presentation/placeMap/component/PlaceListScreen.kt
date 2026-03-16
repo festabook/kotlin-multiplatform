@@ -87,11 +87,11 @@ fun PlaceListScreen(
         }
     }
 
+    if (!isPlaceListVisible) return
+
     Box(
         modifier =
-            modifier
-                .alpha(if (isPlaceListVisible) 1f else 0f)
-                .fillMaxSize(),
+            modifier.fillMaxSize(),
     ) {
         if (bottomSheetState.currentValue != PlaceListBottomSheetValue.EXPANDED) {
             OffsetDependentLayout(
