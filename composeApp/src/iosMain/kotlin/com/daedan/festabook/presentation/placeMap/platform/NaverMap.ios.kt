@@ -1,5 +1,7 @@
 package com.daedan.festabook.presentation.placeMap.platform
 
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import cocoapods.NMapsMap.NMFLocationManager
 import cocoapods.NMapsMap.NMFLocationManagerDelegateProtocol
 import cocoapods.NMapsMap.NMFMapView
@@ -11,7 +13,7 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.cValue
 import platform.CoreGraphics.CGPoint
-import platform.UIKit.UIEdgeInsets
+import platform.UIKit.UIEdgeInsetsMake
 import platform.darwin.NSObject
 
 @OptIn(ExperimentalForeignApi::class)
@@ -19,6 +21,13 @@ actual class NaverMap(
     val platformMap: NMFNaverMapView,
 ) {
     private var _locationSource: LocationSource? = null
+
+    private var currentTouchDelegate: NMFMapViewTouchDelegateProtocol? = null
+
+    private var currentCameraDelegate: NMFMapViewCameraDelegateProtocol? = null
+
+    private var currentLocationDelegate: NMFLocationManagerDelegateProtocol? = null
+
     actual var locationSource: LocationSource?
         get() = _locationSource
         set(value) {
@@ -33,7 +42,7 @@ actual class NaverMap(
     }
 
     actual fun addOnCameraChangeListener(listener: OnCameraChangeListener) {
-        platformMap.mapView.addCameraDelegate(
+        val cameraDelegate =
             object : NSObject(), NMFMapViewCameraDelegateProtocol {
                 override fun mapView(
                     mapView: NMFMapView,
@@ -42,12 +51,13 @@ actual class NaverMap(
                 ) {
                     listener.onCameraChange(cameraDidChangeByReason.toInt(), animated)
                 }
-            },
-        )
+            }
+        currentCameraDelegate = cameraDelegate
+        platformMap.mapView.addCameraDelegate(currentCameraDelegate!!)
     }
 
     actual fun addOnLocationChangeListener(listener: OnLocationChangeListener) {
-        NMFLocationManager.sharedInstance()?.addDelegate(
+        val locationManagerDelegate =
             object : NSObject(), NMFLocationManagerDelegateProtocol {
                 override fun locationManager(
                     locationManager: NMFLocationManager?,
@@ -55,8 +65,9 @@ actual class NaverMap(
                 ) {
                     listener.onLocationChange()
                 }
-            },
-        )
+            }
+        currentLocationDelegate = locationManagerDelegate
+        NMFLocationManager.sharedInstance()?.addDelegate(currentLocationDelegate)
     }
 
     actual var isIndoorEnabled: Boolean
@@ -77,32 +88,36 @@ actual class NaverMap(
     actual val uiSettings: UiSettings = UiSettings(platformMap)
 
     actual fun setOnMapClickListener(onClick: (LatLng) -> Unit) {
-        platformMap.mapView.touchDelegate =
+        val onClickDelegate =
             object : NSObject(), NMFMapViewTouchDelegateProtocol {
                 override fun mapView(
                     mapView: NMFMapView,
-                    didLongTapMap: NMGLatLng,
+                    didTapMap: NMGLatLng,
                     point: CValue<CGPoint>,
                 ) {
-                    onClick(LatLng(didLongTapMap.lat(), didLongTapMap.lng()))
+                    onClick(LatLng(didTapMap.lat(), didTapMap.lng()))
                 }
             }
+        currentTouchDelegate = onClickDelegate
+        platformMap.mapView.touchDelegate = currentTouchDelegate
     }
 
     actual fun setContentPadding(
-        left: Int,
-        top: Int,
-        right: Int,
-        bottom: Int,
+        left: Dp,
+        top: Dp,
+        right: Dp,
+        bottom: Dp,
+        density: Density,
         animate: Boolean,
     ) {
+        // iOS UIKit은 pt 단위 사용 — Dp는 iOS pt와 동일하므로 .value 직접 사용 가능
         platformMap.mapView.contentInset =
-            cValue<UIEdgeInsets> {
-                this.left = left.toDouble()
-                this.top = top.toDouble()
-                this.right = right.toDouble()
-                this.bottom = bottom.toDouble()
-            }
+            UIEdgeInsetsMake(
+                left = left.value.toDouble(),
+                top = top.value.toDouble(),
+                right = right.value.toDouble(),
+                bottom = bottom.value.toDouble(),
+            )
     }
 
     actual fun interface OnCameraChangeListener {

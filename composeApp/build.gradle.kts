@@ -54,11 +54,9 @@ kotlin {
         version = "2.0.1"
         summary = "festabook"
         homepage = "https://landing.festabook.app/"
-        ios.deploymentTarget = "16.0"
+        ios.deploymentTarget = "17.0"
 
-        pod("NMapsMap") {
-            version = "3.23.1"
-        }
+        pod("NMapsMap")
     }
     androidTarget {
         compilerOptions {
@@ -80,6 +78,7 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.map.sdk)
+            implementation(libs.play.services.location)
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.kotlinx.coroutines.android)
@@ -124,28 +123,15 @@ buildkonfig {
     defaultConfigs {
         buildConfigField(STRING, "NAVER_MAP_STYLE_ID", naverMapStyleId)
         buildConfigField(STRING, "NAVER_MAP_CLIENT_ID", naverMapClientId)
+        buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
+        buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
+    }
+
+    defaultConfigs("release") {
+        buildConfigField(STRING, "NAVER_MAP_STYLE_ID", naverMapStyleId)
+        buildConfigField(STRING, "NAVER_MAP_CLIENT_ID", naverMapClientId)
         buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
         buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
-    }
-    targetConfigs {
-        // android용 입니다.
-        create("debug") {
-            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
-            buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
-        }
-        create("release") {
-            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
-            buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
-        }
-        // ios용 입니다.
-        create("Debug") {
-            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
-            buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
-        }
-        create("Release") {
-            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
-            buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
-        }
     }
 }
 

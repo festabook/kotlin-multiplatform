@@ -1,12 +1,12 @@
 package com.daedan.festabook.presentation.placeMap.intent.sideEffect
 
-import com.daedan.festabook.presentation.placeMap.intent.FakePlaceDetailUiModel
+import com.daedan.festabook.presentation.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.intent.state.LoadState
 import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
 
 sealed interface PlaceMapSideEffect {
     data class StartPlaceDetail(
-        val placeDetail: LoadState.Success<FakePlaceDetailUiModel>,
+        val placeDetail: LoadState.Success<PlaceDetailUiModel>,
     ) : PlaceMapSideEffect
 
     data class PreloadImages(

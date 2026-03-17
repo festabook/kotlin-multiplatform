@@ -1,5 +1,8 @@
 package com.daedan.festabook.presentation.placeMap.platform
 
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+
 expect class NaverMap {
     var isIndoorEnabled: Boolean
     var symbolScale: Double
@@ -19,10 +22,11 @@ expect class NaverMap {
     fun setOnMapClickListener(onClick: (LatLng) -> Unit)
 
     fun setContentPadding(
-        left: Int,
-        top: Int,
-        right: Int,
-        bottom: Int,
+        left: Dp,
+        top: Dp,
+        right: Dp,
+        bottom: Dp,
+        density: Density,
         animate: Boolean,
     )
 

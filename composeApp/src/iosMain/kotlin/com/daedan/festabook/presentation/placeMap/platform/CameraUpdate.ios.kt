@@ -25,6 +25,6 @@ private fun CameraAnimation.toPlatform(): NMFCameraUpdateAnimation =
     when (this) {
         CameraAnimation.None -> NMFCameraUpdateAnimation.NMFCameraUpdateAnimationNone
         CameraAnimation.Linear -> NMFCameraUpdateAnimation.NMFCameraUpdateAnimationLinear
-        CameraAnimation.Easing -> NMFCameraUpdateAnimation.NMFCameraUpdateAnimationEaseOut
+        CameraAnimation.Easing -> NMFCameraUpdateAnimation.NMFCameraUpdateAnimationEaseIn
         CameraAnimation.Fly -> NMFCameraUpdateAnimation.NMFCameraUpdateAnimationFly
     }

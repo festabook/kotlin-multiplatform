@@ -29,6 +29,7 @@ ktlintVersion = "0.5.0"
 mokkery = "3.2.0"
 landscapistCoil3 = "2.9.5"
 mapSdk = "3.22.1"
+playServicesLocation = "21.3.0"
 
 [libraries]
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastorePreferences" }
@@ -61,6 +62,7 @@ landscapist-zoomable = { module = "com.github.skydoves:landscapist-zoomable", ve
 compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }
 ktlint = { module = "io.nlopez.compose.rules:ktlint", version.ref = "ktlintVersion" }
 metrox-viewmodel-compose = { module = "dev.zacsweers.metro:metrox-viewmodel-compose", version.ref = "metro" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 
 map-sdk = { module = "com.naver.maps:map-sdk", version.ref = "mapSdk" }
 
