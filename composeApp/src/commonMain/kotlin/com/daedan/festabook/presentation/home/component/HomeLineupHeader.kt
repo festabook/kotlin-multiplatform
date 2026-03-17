@@ -13,13 +13,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.daedan.festabook.R
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
+import festabookkmp.composeapp.generated.resources.Res
+import festabookkmp.composeapp.generated.resources.home_lineup_title
+import festabookkmp.composeapp.generated.resources.home_navigate_to_schedule_desc
+import festabookkmp.composeapp.generated.resources.home_navigate_to_schedule_text
+import festabookkmp.composeapp.generated.resources.ic_arrow_forward_right
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun HomeLineupHeader(
@@ -35,7 +39,7 @@ fun HomeLineupHeader(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = stringResource(R.string.home_lineup_title),
+            text = stringResource(Res.string.home_lineup_title),
             style = FestabookTypography.displayMedium,
             color = FestabookColor.black,
         )
@@ -49,7 +53,7 @@ fun HomeLineupHeader(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = stringResource(R.string.home_navigate_to_schedule_text),
+                text = stringResource(Res.string.home_navigate_to_schedule_text),
                 style = FestabookTypography.bodySmall,
                 color = FestabookColor.gray400,
             )
@@ -57,8 +61,8 @@ fun HomeLineupHeader(
             Spacer(modifier = Modifier.width(4.dp))
 
             Icon(
-                painter = painterResource(id = R.drawable.ic_arrow_forward_right),
-                contentDescription = stringResource(R.string.home_navigate_to_schedule_desc),
+                painter = painterResource(Res.drawable.ic_arrow_forward_right),
+                contentDescription = stringResource(Res.string.home_navigate_to_schedule_desc),
                 tint = FestabookColor.gray400,
                 modifier = Modifier.size(12.dp),
             )

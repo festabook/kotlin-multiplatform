@@ -21,16 +21,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.daedan.festabook.R
 import com.daedan.festabook.presentation.home.LineUpItemOfDayUiModel
 import com.daedan.festabook.presentation.home.LineupItemUiModel
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
-import java.time.LocalDate
-import java.time.LocalDateTime
+import festabookkmp.composeapp.generated.resources.Res
+import festabookkmp.composeapp.generated.resources.home_is_d_day
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
+import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayIn
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.time.Clock
 
 @Composable
 fun HomeLineupItem(
@@ -49,7 +53,7 @@ fun HomeLineupItem(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
-                    text = "${uiModel.date.monthValue}.${uiModel.date.dayOfMonth}",
+                    text = "${uiModel.date.month.number}.${uiModel.date.day}",
                     style = FestabookTypography.titleLarge,
                     color = FestabookColor.black,
                 )
@@ -64,7 +68,7 @@ fun HomeLineupItem(
                                 .padding(horizontal = 6.dp, vertical = 2.dp),
                     ) {
                         Text(
-                            text = stringResource(id = R.string.home_is_d_day),
+                            text = stringResource(Res.string.home_is_d_day),
                             style = FestabookTypography.labelSmall,
                             color = FestabookColor.white,
                         )
@@ -106,7 +110,7 @@ private fun HomeLineupItemPreview() {
         uiModel =
             LineUpItemOfDayUiModel(
                 id = 1L,
-                date = LocalDate.now(),
+                date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
                 isDDay = true,
                 lineupItems =
                     listOf(
@@ -114,37 +118,55 @@ private fun HomeLineupItemPreview() {
                             id = 1,
                             name = "실리카겔",
                             imageUrl = "sample",
-                            performanceAt = LocalDateTime.now(),
+                            performanceAt =
+                                Clock.System
+                                    .now()
+                                    .toLocalDateTime(TimeZone.currentSystemDefault()),
                         ),
                         LineupItemUiModel(
                             id = 2,
                             name = "한로로",
                             imageUrl = "sample",
-                            performanceAt = LocalDateTime.now(),
+                            performanceAt =
+                                Clock.System
+                                    .now()
+                                    .toLocalDateTime(TimeZone.currentSystemDefault()),
                         ),
                         LineupItemUiModel(
                             id = 3,
                             name = "실리카겔",
                             imageUrl = "sample",
-                            performanceAt = LocalDateTime.now(),
+                            performanceAt =
+                                Clock.System
+                                    .now()
+                                    .toLocalDateTime(TimeZone.currentSystemDefault()),
                         ),
                         LineupItemUiModel(
                             id = 4,
                             name = "한로로",
                             imageUrl = "sample",
-                            performanceAt = LocalDateTime.now(),
+                            performanceAt =
+                                Clock.System
+                                    .now()
+                                    .toLocalDateTime(TimeZone.currentSystemDefault()),
                         ),
                         LineupItemUiModel(
                             id = 5,
                             name = "실리카겔",
                             imageUrl = "sample",
-                            performanceAt = LocalDateTime.now(),
+                            performanceAt =
+                                Clock.System
+                                    .now()
+                                    .toLocalDateTime(TimeZone.currentSystemDefault()),
                         ),
                         LineupItemUiModel(
                             id = 6,
                             name = "한로로",
                             imageUrl = "sample",
-                            performanceAt = LocalDateTime.now(),
+                            performanceAt =
+                                Clock.System
+                                    .now()
+                                    .toLocalDateTime(TimeZone.currentSystemDefault()),
                         ),
                     ),
             ),

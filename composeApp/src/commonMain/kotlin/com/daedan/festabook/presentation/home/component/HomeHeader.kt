@@ -13,15 +13,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.PlatformTextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.daedan.festabook.R
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
+import festabookkmp.composeapp.generated.resources.Res
+import festabookkmp.composeapp.generated.resources.home_navigate_to_explore_desc
+import festabookkmp.composeapp.generated.resources.ic_dropdown
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun HomeHeader(
@@ -43,7 +44,7 @@ fun HomeHeader(
                 text = universityName,
                 style =
                     FestabookTypography.displayLarge.copy(
-                        platformStyle = PlatformTextStyle(includeFontPadding = false),
+                        platformStyle = HomeTextStyle,
                         lineHeight = 34.sp,
                     ),
                 color = FestabookColor.black,
@@ -52,9 +53,9 @@ fun HomeHeader(
             Spacer(modifier = Modifier.width(4.dp))
 
             Icon(
-                painter = painterResource(id = R.drawable.ic_dropdown),
+                painter = painterResource(Res.drawable.ic_dropdown),
                 tint = FestabookColor.black,
-                contentDescription = stringResource(R.string.home_navigate_to_explore_desc),
+                contentDescription = stringResource(Res.string.home_navigate_to_explore_desc),
                 modifier = Modifier.size(24.dp),
             )
         }

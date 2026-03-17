@@ -14,13 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import com.daedan.festabook.presentation.common.component.FestabookImage
 import com.daedan.festabook.presentation.common.component.cardBackground
 import com.daedan.festabook.presentation.theme.festabookShapes
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.absoluteValue
 
 @Composable
@@ -38,8 +39,10 @@ fun HomePosterList(
             pageCount = { Int.MAX_VALUE },
         )
 
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
+    val windowInfo = LocalWindowInfo.current
+    val density = LocalDensity.current
+    val screenWidth =
+        with(density) { windowInfo.containerSize.width.toDp() }
     val itemWidth = 300.dp
     // 화면 중앙에 아이템이 오도록 패딩 계산
     val horizontalPadding = (screenWidth - itemWidth) / 2
