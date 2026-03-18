@@ -19,10 +19,6 @@ actual class AppVersionManager(
     private val currentAppVersion =
         NSBundle.mainBundle.infoDictionary?.get("CFBundleShortVersionString") as? String
 
-    private val appleId = "6752591661"
-
-    private val appStoreOpenUrl = "itms-apps://itunes.apple.com/app/apple-store/id/$appleId"
-
     actual suspend fun getIsAppUpdateAvailable(): Result<Boolean> {
         val latestVersion = appVersionRepository.getLatestVersion()
         return latestVersion.map {
@@ -31,20 +27,32 @@ actual class AppVersionManager(
     }
 
     actual fun updateApp() {
-        val url = NSURL.URLWithString(appStoreOpenUrl)
-
-        if (url != null && UIApplication.sharedApplication.canOpenURL(url)) {
+        listOfNotNull(
+            APP_STORE_URL.toUrl(),
+            APP_STORE_WEB_URL.toUrl(),
+        ).firstOrNull()?.let {
             UIApplication.sharedApplication.openURL(
-                url = url,
+                url = it,
                 options = emptyMap<Any?, Any>(),
                 completionHandler = null,
             )
-        } else {
-            NSLog("[AppStoreCheck] 앱스토어 URL을 열 수 없습니다")
-        }
+        } ?: NSLog("[AppStoreCheck] 앱 스토어를 열 수 없습니다")
         CoroutineScope(Dispatchers.Main).launch {
-            delay(500) // 0.5초 대기
+            delay(500)
             exit(0)
         }
+    }
+
+    private fun String.toUrl(): NSURL? {
+        val url = NSURL.URLWithString(this) ?: return null
+        if (!UIApplication.sharedApplication.canOpenURL(url)) return null
+        return url
+    }
+
+    companion object {
+        private const val APPLE_ID = "6752591661"
+        private const val APP_STORE_URL =
+            "itms-apps://itunes.apple.com/app/apple-store/id/$APPLE_ID"
+        private const val APP_STORE_WEB_URL = "https://apps.apple.com/app/id/$APPLE_ID"
     }
 }
