@@ -1,0 +1,25 @@
+package com.daedan.festabook.data.service
+
+import com.daedan.festabook.data.model.response.FestivalSearchResponse
+import com.daedan.festabook.data.model.response.festival.FestivalGeographyResponse
+import com.daedan.festabook.data.model.response.festival.FestivalResponse
+import com.daedan.festabook.data.model.response.lostitem.LostGuideItemResponse
+import de.jensklingenberg.ktorfit.Response
+import de.jensklingenberg.ktorfit.http.GET
+import de.jensklingenberg.ktorfit.http.Query
+
+interface FestivalService {
+    @GET("festivals")
+    suspend fun fetchOrganization(): Response<FestivalResponse>
+
+    @GET("festivals/geography")
+    suspend fun fetchOrganizationGeography(): Response<FestivalGeographyResponse>
+
+    @GET("organizations/festivals/search")
+    suspend fun findFestivalsByKeyword(
+        @Query("keyword") keyword: String,
+    ): Response<List<FestivalSearchResponse>>
+
+    @GET("festivals/lost-item-guide")
+    suspend fun fetchLostGuideItem(): Response<LostGuideItemResponse>
+}

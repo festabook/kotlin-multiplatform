@@ -1,0 +1,97 @@
+package com.daedan.festabook.presentation.theme
+
+import androidx.compose.material3.Typography
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.sp
+import festabookkmp.composeapp.generated.resources.Res
+import festabookkmp.composeapp.generated.resources.pretendard_bold
+import festabookkmp.composeapp.generated.resources.pretendard_medium
+import festabookkmp.composeapp.generated.resources.pretendard_regular
+import org.jetbrains.compose.resources.Font
+
+private val PretendardBold
+    @Composable
+    get() = FontFamily(Font(Res.font.pretendard_bold))
+private val PretendardMedium
+    @Composable
+    get() = FontFamily(Font(Res.font.pretendard_medium))
+private val PretendardRegular
+    @Composable
+    get() = FontFamily(Font(Res.font.pretendard_regular))
+
+val FestabookTypographies
+    @Composable
+    get() =
+        Typography(
+            displayLarge =
+                TextStyle(
+                    fontFamily = PretendardBold,
+                    fontSize = 24.sp,
+                ),
+            displayMedium =
+                TextStyle(
+                    fontFamily = PretendardBold,
+                    fontSize = 20.sp,
+                ),
+            displaySmall =
+                TextStyle(
+                    fontFamily = PretendardBold,
+                    fontSize = 18.sp,
+                ),
+            titleLarge =
+                TextStyle(
+                    fontFamily = PretendardMedium,
+                    fontSize = 18.sp,
+                ),
+            titleMedium =
+                TextStyle(
+                    fontFamily = PretendardMedium,
+                    fontSize = 16.sp,
+                ),
+            titleSmall =
+                TextStyle(
+                    fontFamily = PretendardBold,
+                    fontSize = 14.sp,
+                ),
+            bodyLarge =
+                TextStyle(
+                    fontFamily = PretendardMedium,
+                    fontSize = 14.sp,
+                ),
+            bodyMedium =
+                TextStyle(
+                    fontFamily = PretendardRegular,
+                    fontSize = 14.sp,
+                ),
+            bodySmall =
+                TextStyle(
+                    fontFamily = PretendardRegular,
+                    fontSize = 12.sp,
+                ),
+            labelLarge =
+                TextStyle(
+                    fontFamily = PretendardBold,
+                    fontSize = 12.sp,
+                ),
+            labelMedium =
+                TextStyle(
+                    fontFamily = PretendardMedium,
+                    fontSize = 12.sp,
+                ),
+            labelSmall =
+                TextStyle(
+                    fontFamily = PretendardRegular,
+                    fontSize = 10.sp,
+                ),
+        )
+
+val LocalTypography = staticCompositionLocalOf { Typography() }
+
+val FestabookTypography: Typography
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalTypography.current

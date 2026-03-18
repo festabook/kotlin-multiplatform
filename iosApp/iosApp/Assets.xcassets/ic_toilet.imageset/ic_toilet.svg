@@ -1,0 +1,39 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 29"
+    id="vector">
+    <path
+        id="path"
+        d="M 4 21 L 12.071 14 L 20 21 L 12.734 27.545 C 12.356 27.885 11.783 27.888 11.402 27.551 L 4 21 Z"
+        fill="#c3c3c3"/>
+    <path
+        id="path_1"
+        d="M 12 12 M 0.5 12 C 0.5 8.951 1.712 6.024 3.868 3.868 C 6.024 1.712 8.951 0.5 12 0.5 C 15.049 0.5 17.976 1.712 20.132 3.868 C 22.288 6.024 23.5 8.951 23.5 12 C 23.5 15.049 22.288 17.976 20.132 20.132 C 17.976 22.288 15.049 23.5 12 23.5 C 8.951 23.5 6.024 22.288 3.868 20.132 C 1.712 17.976 0.5 15.049 0.5 12"
+        fill="#8c8c8c"
+        stroke="#ffffff"
+        stroke-width="1"/>
+    <path
+        id="path_2"
+        d="M 9 8.667 C 9.737 8.667 10.334 8.07 10.334 7.333 C 10.334 6.597 9.737 6 9 6 C 8.264 6 7.667 6.597 7.667 7.333 C 7.667 8.07 8.264 8.667 9 8.667 Z"
+        fill="none"
+        stroke="#fffefe"
+        stroke-width="1.3"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+    <path
+        id="path_3"
+        d="M 15 8.667 C 15.736 8.667 16.333 8.07 16.333 7.333 C 16.333 6.597 15.736 6 15 6 C 14.264 6 13.667 6.597 13.667 7.333 C 13.667 8.07 14.264 8.667 15 8.667 Z"
+        fill="none"
+        stroke="#fffefe"
+        stroke-width="1.3"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+    <path
+        id="path_4"
+        d="M 7.333 10.667 L 10.667 10.667 L 10 18 L 8 18 L 7.333 10.667 Z M 13.333 10.667 L 16.667 10.667 L 17.333 14.333 L 16.333 14.333 L 16 18 L 14 18 L 13.667 14.333 L 12.667 14.333 L 13.333 10.667 Z"
+        fill="none"
+        stroke="#fffefe"
+        stroke-width="1.3"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+</svg>

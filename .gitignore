@@ -28,8 +28,10 @@ captures/
 *.xcworkspace
 xcuserdata/
 
+
 # CocoaPods
 Pods/
+*.podspec
 
 ## iOS App packaging
 *.ipa
@@ -63,3 +65,6 @@ local.properties
 *.keystore
 google-services.json
 GoogleService-Info.plist
+
+/iosApp/Configuration/Debug.xcconfig
+/iosApp/Configuration/Release.xcconfig
