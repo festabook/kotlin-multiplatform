@@ -28,6 +28,8 @@ import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.ContentType
+import io.ktor.serialization.kotlinx.KotlinxSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
@@ -52,6 +54,14 @@ object NetworkBindings {
             httpClient {
                 install(ContentNegotiation) {
                     json(json)
+                    register(
+                        ContentType.Text.JavaScript,
+                        KotlinxSerializationConverter(
+                            Json {
+                                ignoreUnknownKeys = true
+                            },
+                        ),
+                    )
                 }
                 install(authPlugin.plugin)
             }
