@@ -2,6 +2,8 @@ package com.daedan.festabook.di
 
 import android.app.Application
 import com.daedan.festabook.presentation.splash.platform.AppVersionManager
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
@@ -20,6 +22,9 @@ interface AndroidAppGraph : FestabookAppGraph {
             @Provides application: Application,
         ): AndroidAppGraph
     }
+
+    @Provides
+    fun provideAppUpdateManager(application: Application): AppUpdateManager = AppUpdateManagerFactory.create(application)
 
     @Provides
     @SingleIn(AppScope::class)
