@@ -1,6 +1,7 @@
 package com.daedan.festabook.di
 
 import android.app.Application
+import com.daedan.festabook.presentation.splash.platform.AppVersionManager
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
@@ -11,6 +12,8 @@ import kotlinx.coroutines.SupervisorJob
 
 @DependencyGraph(AppScope::class)
 interface AndroidAppGraph : FestabookAppGraph {
+    val appVersionManagerFactory: AppVersionManager.Factory
+
     @DependencyGraph.Factory
     fun interface Factory {
         fun create(
