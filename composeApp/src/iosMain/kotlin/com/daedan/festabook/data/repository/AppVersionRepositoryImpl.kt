@@ -12,11 +12,11 @@ import dev.zacsweers.metro.Inject
 class AppVersionRepositoryImpl(
     private val appVersionRemoteDataSource: AppVersionRemoteDataSource,
 ) : AppVersionRepository {
-    override suspend fun getLatestVersion(): Result<String> =
+    override suspend fun getLatestVersion(bundleId: String): Result<String> =
         appVersionRemoteDataSource
-            .fetchIosAppVersion()
+            .fetchIosAppVersion(bundleId)
             .toResult()
             .mapCatching { response ->
-                response.results.first().version
+                response.results.firstOrNull()?.version ?: error("App Store 조회 결과가 없습니다.")
             }
 }

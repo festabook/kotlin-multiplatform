@@ -12,6 +12,10 @@ import dev.zacsweers.metro.Inject
 class AppVersionRemoteDataSourceImpl(
     private val appVersionService: AppVersionService,
 ) : AppVersionRemoteDataSource {
-    override suspend fun fetchIosAppVersion(): ApiResult<IosAppVersionResponse> =
-        ApiResult.toApiResult { appVersionService.fetchIosAppVersion() }
+    override suspend fun fetchIosAppVersion(bundleId: String): ApiResult<IosAppVersionResponse> =
+        ApiResult.toApiResult {
+            appVersionService.fetchIosAppVersion(
+                bundleId = bundleId,
+            )
+        }
 }

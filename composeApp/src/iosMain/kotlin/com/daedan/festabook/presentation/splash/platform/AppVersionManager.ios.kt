@@ -15,7 +15,7 @@ actual class AppVersionManager(
         NSBundle.mainBundle.infoDictionary?.get("CFBundleShortVersionString") as? String
 
     actual suspend fun getIsAppUpdateAvailable(): Result<Boolean> {
-        val latestVersion = appVersionRepository.getLatestVersion()
+        val latestVersion = appVersionRepository.getLatestVersion(APP_BUNDLE_ID)
         return latestVersion.map {
             it != currentAppVersion
         }
@@ -45,5 +45,7 @@ actual class AppVersionManager(
         private const val APP_STORE_URL =
             "itms-apps://itunes.apple.com/app/apple-store/id/$APPLE_ID"
         private const val APP_STORE_WEB_URL = "https://apps.apple.com/app/id/$APPLE_ID"
+
+        private const val APP_BUNDLE_ID = "eoehdeksruf.festabook"
     }
 }

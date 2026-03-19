@@ -1,5 +1,5 @@
 package com.daedan.festabook.domain.repository
 
 interface AppVersionRepository {
-    suspend fun getLatestVersion(): Result<String>
+    suspend fun getLatestVersion(bundleId: String): Result<String>
 }
