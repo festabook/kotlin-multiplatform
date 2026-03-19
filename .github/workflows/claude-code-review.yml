@@ -38,9 +38,19 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           plugin_marketplaces: 'https://github.com/anthropics/claude-code.git'
           plugins: 'code-review@claude-code-plugins'
-          prompt: "/code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}
+          show_full_output: true
+          claude_args: >-
+            --allowedTools
+             "Bash(gh pr *),Bash(gh api *),Bash(gh repo view:*),Bash(git log:*),Bash(git diff:*),Bash(git remote:*),Bash(git fetch:*),Read(*),Glob(*),Grep(*)"
+          prompt: "/code-review:code-review ${{ github.event.pull_request.number }} --comment
           
-          GitHub PR을 원격에서 리뷰하고 꼭 라인별 코멘트를 게시해 주세요. 
+          다음 사항을 꼭 지켜주세요. 
+          1. 변경된 파일만 간결하게 리뷰해세요. 
+          2. max-turn은 최대 30까지입니다. 
+          3. 꼭 리뷰 결과를 gh api를 사용해서 PR 인라인 코멘트로 달아주세요.
+          4. 리뷰의 중요도에 따라 p1, p2, p3으로 분류해주세요. 
+          5. 리뷰는 한국어로 작성해주세요. 
+          
           이 PR의 composeApp/commonMain/** 에 해당하는 코드는 Compose Multiplatform 관점에서 리뷰해 주세요.
           특히 다음을 확인해 주세요.
           - Kotlin 코딩 컨벤션 및 네이밍 규칙
