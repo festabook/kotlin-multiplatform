@@ -42,7 +42,7 @@ jobs:
           show_full_output: true
           claude_args: >-
             --allowedTools
-             "Bash(gh pr *),Bash(gh api *),Bash(gh repo view:*),Bash(git log:*),Bash(git diff:*),Bash(git remote:*),Bash(git fetch:*),Read(*),Glob(*),Grep(*)"
+             "Bash(gh pr *),Bash(gh api *),Bash(gh repo view:*),Bash(git log:*),Bash(git diff:*),Bash(git remote:*),Bash(git fetch:*),Read(*),Glob(*),Grep(*),Write(*)"
           prompt: "/code-review:code-review ${{ github.event.pull_request.number }} --comment
           
           다음 사항을 꼭 지켜주세요. 
