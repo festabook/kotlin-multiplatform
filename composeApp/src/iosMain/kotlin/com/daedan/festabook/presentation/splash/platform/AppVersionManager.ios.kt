@@ -21,7 +21,10 @@ actual class AppVersionManager(
         }
     }
 
-    private fun isNewerVersion(latest: String, current: String?): Boolean {
+    private fun isNewerVersion(
+        latest: String,
+        current: String?,
+    ): Boolean {
         if (current == null) return true
         val latestParts = latest.split(".").mapNotNull { it.toIntOrNull() }
         val currentParts = current.split(".").mapNotNull { it.toIntOrNull() }
