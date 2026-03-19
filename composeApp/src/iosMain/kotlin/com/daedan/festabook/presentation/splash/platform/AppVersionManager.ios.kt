@@ -2,15 +2,10 @@ package com.daedan.festabook.presentation.splash.platform
 
 import com.daedan.festabook.domain.repository.AppVersionRepository
 import dev.zacsweers.metro.Inject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import platform.Foundation.NSBundle
 import platform.Foundation.NSLog
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
-import platform.posix.exit
 
 @Inject
 actual class AppVersionManager(
@@ -37,10 +32,6 @@ actual class AppVersionManager(
                 completionHandler = null,
             )
         } ?: NSLog("[AppStoreCheck] 앱 스토어를 열 수 없습니다")
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(500)
-            exit(0)
-        }
     }
 
     private fun String.toUrl(): NSURL? {
