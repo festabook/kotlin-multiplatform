@@ -4,15 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.imageLoader
-import com.daedan.festabook.presentation.placeMap.component.PlaceMapRoute
-import com.daedan.festabook.presentation.platform.rememberLocationSource
+import com.daedan.festabook.presentation.platform.rememberAppVersionManager
+import com.daedan.festabook.presentation.splash.component.SplashScreen
 import com.daedan.festabook.presentation.theme.FestabookTheme
 import com.skydoves.landscapist.coil3.LocalCoilImageLoader
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
@@ -34,12 +32,17 @@ class MainActivity : ComponentActivity() {
                     LocalCoilImageLoader provides imageLoader,
                 ) {
                     Scaffold { innerPadding ->
-                        PlaceMapRoute(
-                            placeMapViewModel = viewModel(factory = metroVmf),
-                            onStartPlaceDetail = {},
-                            onShowErrorSnackBar = {},
-                            locationSource = rememberLocationSource(),
-                            modifier = Modifier.padding(innerPadding),
+                        SplashScreen(
+                            viewModel = viewModel(factory = metroVmf),
+                            appVersionManager =
+                                rememberAppVersionManager(
+                                    appGraph = (application as FestabookApp).festabookAppGraph,
+                                    onUpdateFailure = {},
+                                    onUpdateSuccess = {},
+                                ),
+                            onNavigateToMain = {},
+                            onNavigateToExplore = {},
+                            onFinishApp = { finish() },
                         )
                     }
                 }

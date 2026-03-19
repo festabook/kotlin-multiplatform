@@ -35,13 +35,14 @@ jobs:
         id: claude-review
         uses: anthropics/claude-code-action@v1
         with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           plugin_marketplaces: 'https://github.com/anthropics/claude-code.git'
           plugins: 'code-review@claude-code-plugins'
           show_full_output: true
           claude_args: >-
             --allowedTools
-             "Bash(gh pr *),Bash(gh api *),Bash(gh repo view:*),Bash(git log:*),Bash(git diff:*),Bash(git remote:*),Bash(git fetch:*),Read(*),Glob(*),Grep(*)"
+             "Bash(gh pr *),Bash(gh api *),Bash(gh repo view:*),Bash(git log:*),Bash(git diff:*),Bash(git remote:*),Bash(git fetch:*),Read(*),Glob(*),Grep(*),Write(*)"
           prompt: "/code-review:code-review ${{ github.event.pull_request.number }} --comment
           
           다음 사항을 꼭 지켜주세요. 

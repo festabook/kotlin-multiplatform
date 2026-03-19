@@ -77,6 +77,7 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            implementation(libs.app.update.ktx)
             implementation(libs.map.sdk)
             implementation(libs.play.services.location)
             implementation(compose.preview)
