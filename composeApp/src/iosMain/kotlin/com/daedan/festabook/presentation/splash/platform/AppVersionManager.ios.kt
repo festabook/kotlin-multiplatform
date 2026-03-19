@@ -16,9 +16,23 @@ actual class AppVersionManager(
 
     actual suspend fun getIsAppUpdateAvailable(): Result<Boolean> {
         val latestVersion = appVersionRepository.getLatestVersion(APP_BUNDLE_ID)
-        return latestVersion.map {
-            it != currentAppVersion
+        return latestVersion.map { latest ->
+            isNewerVersion(latest, currentAppVersion)
         }
+    }
+
+    private fun isNewerVersion(latest: String, current: String?): Boolean {
+        if (current == null) return true
+        val latestParts = latest.split(".").mapNotNull { it.toIntOrNull() }
+        val currentParts = current.split(".").mapNotNull { it.toIntOrNull() }
+        val maxLength = maxOf(latestParts.size, currentParts.size)
+        for (i in 0 until maxLength) {
+            val l = latestParts.getOrElse(i) { 0 }
+            val c = currentParts.getOrElse(i) { 0 }
+            if (l > c) return true
+            if (l < c) return false
+        }
+        return false
     }
 
     actual fun updateApp() {

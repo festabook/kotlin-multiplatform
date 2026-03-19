@@ -13,5 +13,5 @@ interface IosAppGraph : FestabookAppGraph {
     val appVersionManager: AppVersionManager
 
     @Provides
-    fun provideNoticeService(ktorfit: Ktorfit): AppVersionService = ktorfit.createAppVersionService()
+    fun provideAppVersionService(ktorfit: Ktorfit): AppVersionService = ktorfit.createAppVersionService()
 }
