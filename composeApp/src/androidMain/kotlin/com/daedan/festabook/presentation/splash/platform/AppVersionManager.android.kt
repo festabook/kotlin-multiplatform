@@ -1,0 +1,54 @@
+package com.daedan.festabook.presentation.splash.platform
+
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateOptions
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.suspendCancellableCoroutine
+
+@AssistedInject
+actual class AppVersionManager(
+    private val appUpdateManager: AppUpdateManager,
+    @Assisted private val launcher: ActivityResultLauncher<IntentSenderRequest>,
+) {
+    @AssistedFactory
+    interface Factory {
+        fun create(launcher: ActivityResultLauncher<IntentSenderRequest>): AppVersionManager
+    }
+
+    private val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+
+    actual suspend fun getIsAppUpdateAvailable(): Result<Boolean> =
+        suspendCancellableCoroutine { continuation ->
+            appUpdateInfoTask
+                .addOnSuccessListener { appUpdateInfo ->
+                    val isUpdateAvailable =
+                        appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                            appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+                    continuation.resumeWith(
+                        Result.success(
+                            Result.success(isUpdateAvailable),
+                        ),
+                    )
+                }.addOnFailureListener { e ->
+                    continuation.resumeWith(
+                        Result.success(
+                            Result.failure(e),
+                        ),
+                    )
+                }
+        }
+
+    actual fun updateApp() {
+        appUpdateManager.startUpdateFlowForResult(
+            appUpdateInfoTask.result,
+            launcher,
+            AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build(),
+        )
+    }
+}
