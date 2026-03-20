@@ -6,14 +6,20 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import com.daedan.festabook.presentation.news.component.NewsScreen
+import com.daedan.festabook.presentation.platform.rememberNotificationPermissionManager
+import com.daedan.festabook.presentation.setting.component.SettingRoute
 import com.daedan.festabook.presentation.theme.FestabookTheme
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 class MainActivity : ComponentActivity() {
-    private val metroVmf by lazy {
-        (application as FestabookApp).festabookAppGraph.metroViewModelFactory
+    private val androidAppGraph by lazy { (application as FestabookApp).androidAppGraph }
+    private val metroVmf by lazy { androidAppGraph.metroViewModelFactory }
+    private val notificationPermissionManagerFactory by lazy {
+        androidAppGraph.notificationPermissionManagerFactory
+    }
+    private val contextFactory by lazy {
+        androidAppGraph.contextFactory.create(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +29,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             FestabookTheme {
                 CompositionLocalProvider(LocalMetroViewModelFactory provides metroVmf) {
-                    NewsScreen()
+                    SettingRoute(
+                        notificationPermissionManager =
+                            rememberNotificationPermissionManager(
+                                contextFactory = contextFactory,
+                                notificationPermissionManagerFactory = notificationPermissionManagerFactory,
+                                onPermissionGrant = {},
+                                onPermissionDeny = {},
+                            ),
+                        onShowSnackBar = {},
+                        onShowErrorSnackBar = {},
+                    )
                 }
             }
         }
