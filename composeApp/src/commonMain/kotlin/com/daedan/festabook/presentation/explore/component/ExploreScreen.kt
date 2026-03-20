@@ -187,7 +187,6 @@ fun ExploreLandingScreen(
                         ExploreSearchResultList(
                             searchState = searchState,
                             onUniversitySelect = onUniversitySelect,
-                            modifier = Modifier.weight(1f),
                         )
                     }
                 }
