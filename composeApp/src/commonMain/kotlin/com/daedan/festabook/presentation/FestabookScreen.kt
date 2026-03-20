@@ -38,7 +38,6 @@ fun FestabookScreen(
         navController = festabookNavigator.navController,
     ) {
         splashNavGraph(
-            appGraph = appGraph,
             appVersionManager = appVersionManager,
             onNavigateToExplore = {
                 festabookNavigator.navigate(
@@ -54,7 +53,6 @@ fun FestabookScreen(
             onFinishApp = onAppFinish,
         )
         exploreNavGraph(
-            appGraph = appGraph,
             onBackClick = { festabookNavigator.popBackStack() },
             onNavigateToMain = { festabookNavigator.navigate(FestabookRoute.Main) },
         )
