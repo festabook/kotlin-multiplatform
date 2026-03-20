@@ -2,6 +2,9 @@
     "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
     <dict>
+        <key>CFBundleName</key>
+        <string>festabook</string>
+
         <key>CADisableMinimumFrameDurationOnPhone</key>
         <true />
 
