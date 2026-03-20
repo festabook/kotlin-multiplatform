@@ -8,6 +8,8 @@ import com.daedan.festabook.delegate.DefaultUserNotificationDelegate
 import com.daedan.festabook.delegate.FestabookAppDelegate
 import com.daedan.festabook.di.IosAppGraph
 import dev.zacsweers.metro.createGraph
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +38,7 @@ object DefaultFestabookAppDelegate : FestabookAppDelegate {
         launchOptions: Map<Any?, *>?,
     ): Boolean {
         FIRApp.configure()
+        setupNapier()
         NMFAuthManager.shared().ncpKeyId = BuildKonfig.NAVER_MAP_CLIENT_ID
         FIRMessaging.messaging().delegate = firebaseMessagingDelegate
         val center = UNUserNotificationCenter.currentNotificationCenter()
@@ -58,5 +61,11 @@ object DefaultFestabookAppDelegate : FestabookAppDelegate {
     ) {
         // 이후 화면 이동 로직 처리
         fetchCompletionHandler(UIBackgroundFetchResult.UIBackgroundFetchResultNewData)
+    }
+
+    private fun setupNapier() {
+        if (BuildKonfig.BUILD_FLAVOR == "dev") {
+            Napier.base(DebugAntilog())
+        }
     }
 }
