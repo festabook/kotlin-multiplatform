@@ -5,7 +5,7 @@ import com.daedan.festabook.di.AndroidAppGraph
 import dev.zacsweers.metro.createGraphFactory
 
 class FestabookApp : Application() {
-    val festabookAppGraph by lazy {
+    val androidAppGraph by lazy {
         createGraphFactory<AndroidAppGraph.Factory>().create(this)
     }
 }
