@@ -9,8 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.imageLoader
-import com.daedan.festabook.presentation.platform.rememberAppVersionManager
-import com.daedan.festabook.presentation.splash.component.SplashScreen
+import com.daedan.festabook.presentation.explore.component.ExploreScreen
 import com.daedan.festabook.presentation.theme.FestabookTheme
 import com.skydoves.landscapist.coil3.LocalCoilImageLoader
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
@@ -32,17 +31,10 @@ class MainActivity : ComponentActivity() {
                     LocalCoilImageLoader provides imageLoader,
                 ) {
                     Scaffold { innerPadding ->
-                        SplashScreen(
-                            viewModel = viewModel(factory = metroVmf),
-                            appVersionManager =
-                                rememberAppVersionManager(
-                                    appGraph = (application as FestabookApp).festabookAppGraph,
-                                    onUpdateFailure = {},
-                                    onUpdateSuccess = {},
-                                ),
+                        ExploreScreen(
                             onNavigateToMain = {},
-                            onNavigateToExplore = {},
-                            onFinishApp = { finish() },
+                            onBackClick = {},
+                            viewModel = viewModel(factory = metroVmf),
                         )
                     }
                 }
