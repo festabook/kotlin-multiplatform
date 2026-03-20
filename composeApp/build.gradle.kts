@@ -31,6 +31,11 @@ private val naverMapStyleId =
 private val naverMapClientId =
     getLocalProperty("NAVER_MAP_CLIENT_ID") ?: error("NAVER_MAP_CLIENT_ID가 local.properties에 없음")
 
+private val appVersionName = providers.gradleProperty("APP_VERSION_NAME").orNull
+    ?: error("APP_VERSION_NAME가 gradle.properties에 없음")
+private val appVersionCode = providers.gradleProperty("APP_VERSION_CODE").orNull
+    ?: error("APP_VERSION_CODE가 gradle.properties에 없음")
+
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -126,6 +131,7 @@ buildkonfig {
         buildConfigField(STRING, "NAVER_MAP_CLIENT_ID", naverMapClientId)
         buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
         buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
+        buildConfigField(STRING, "APP_VERSION_NAME", appVersionName)
     }
     targetConfigs {
         // android용 입니다.
@@ -175,8 +181,8 @@ android {
             libs.versions.android.targetSdk
                 .get()
                 .toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = appVersionCode.toInt()
+        versionName = appVersionName
     }
     packaging {
         resources {
@@ -233,4 +239,41 @@ mokkery {
 
 ktorfit {
     compilerPluginVersion.set("2.3.3")
+}
+
+val updateIosVersion by tasks.registering {
+
+    val plistFile = rootProject.layout.projectDirectory.file("iosApp/iosApp/Info.plist")
+    val versionName = providers.gradleProperty("APP_VERSION_NAME")
+    val versionCode = providers.gradleProperty("APP_VERSION_CODE")
+
+    inputs.file(plistFile)
+    inputs.property("versionName", versionName)
+    inputs.property("versionCode", versionCode)
+
+    doLast {
+        val file = plistFile.asFile
+
+        var text = file.readText()
+
+        text = text.replace(
+            Regex("<key>CFBundleShortVersionString</key>\\s*<string>.*</string>"),
+            "<key>CFBundleShortVersionString</key>\n\t\t<string>${versionName.get()}</string>"
+        )
+
+        text = text.replace(
+            Regex("<key>CFBundleVersion</key>\\s*<string>.*</string>"),
+            "<key>CFBundleVersion</key>\n\t\t<string>${versionCode.get()}</string>"
+        )
+
+        file.writeText(text)
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile>().configureEach {
+    dependsOn(updateIosVersion)
+}
+
+tasks.named("build") {
+    dependsOn(updateIosVersion)
 }
