@@ -9,6 +9,9 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import com.daedan.festabook.presentation.common.convertImageUrl
+import festabookkmp.composeapp.generated.resources.Res
+import festabookkmp.composeapp.generated.resources.img_fallback
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -30,6 +33,7 @@ fun CoilImage(
         contentScale = contentScale,
         placeholder = ColorPainter(Color.LightGray),
         modifier = modifier,
+        fallback = painterResource(Res.drawable.img_fallback),
     )
 }
 
