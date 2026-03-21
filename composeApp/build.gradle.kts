@@ -1,6 +1,7 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import com.google.devtools.ksp.gradle.KspAATask
 import dev.mokkery.gradle.ApplicationRule
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.compose.internal.utils.getLocalProperty
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jlleitschuh.gradle.ktlint.tasks.KtLintCheckTask
@@ -31,6 +32,15 @@ private val naverMapStyleId =
 private val naverMapClientId =
     getLocalProperty("NAVER_MAP_CLIENT_ID") ?: error("NAVER_MAP_CLIENT_ID가 local.properties에 없음")
 
+private val appBundleId =
+    getLocalProperty("APP_BUNDLE_ID") ?: error("APP_BUNDLE_ID가 local.properties에 없음")
+
+private val appBundleIdDev =
+    getLocalProperty("APP_BUNDLE_ID_DEV") ?: error("APP_BUNDLE_ID_DEV가 local.properties에 없음")
+
+private val buildFlavor =
+    project.properties["buildkonfig.flavor"].toString()
+
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -45,6 +55,7 @@ plugins {
     alias(libs.plugins.mokkery)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.kotlinCocoapods)
+    alias(libs.plugins.firebaseCrashlytcis)
 }
 
 kotlin {
@@ -57,6 +68,8 @@ kotlin {
         ios.deploymentTarget = "17.0"
 
         pod("NMapsMap")
+        pod("FirebaseCrashlytics")
+        pod("FirebaseAnalytics")
     }
     androidTarget {
         compilerOptions {
@@ -84,6 +97,9 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.androidx.appcompat)
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.firebase.crashlytics.ndk)
+            implementation(libs.firebase.analytics)
         }
         commonMain.dependencies {
             implementation(libs.compose.navigationevent)
@@ -123,17 +139,21 @@ buildkonfig {
     packageName = "com.daedan.festabook"
 
     defaultConfigs {
+        buildConfigField(STRING, "BUILD_FLAVOR", buildFlavor)
         buildConfigField(STRING, "NAVER_MAP_STYLE_ID", naverMapStyleId)
         buildConfigField(STRING, "NAVER_MAP_CLIENT_ID", naverMapClientId)
         buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
         buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
+        buildConfigField(STRING, "APP_BUNDLE_ID", appBundleIdDev)
     }
 
     defaultConfigs("release") {
+        buildConfigField(STRING, "BUILD_FLAVOR", buildFlavor)
         buildConfigField(STRING, "NAVER_MAP_STYLE_ID", naverMapStyleId)
         buildConfigField(STRING, "NAVER_MAP_CLIENT_ID", naverMapClientId)
         buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
         buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
+        buildConfigField(STRING, "APP_BUNDLE_ID", appBundleId)
     }
 }
 
