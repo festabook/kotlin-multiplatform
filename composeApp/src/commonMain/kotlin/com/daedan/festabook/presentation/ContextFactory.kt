@@ -1,9 +1,9 @@
 package com.daedan.festabook.presentation
 
 expect class ContextFactory {
-    fun getContext(): Any
+    fun createActivityContext(): Any
 
-    fun getApplication(): Any
+    fun createApplicationContext(): Any
 
-    fun getActivity(): Any
+    fun createActivity(): Any
 }

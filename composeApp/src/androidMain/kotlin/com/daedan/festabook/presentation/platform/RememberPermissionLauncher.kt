@@ -1,6 +1,5 @@
 package com.daedan.festabook.presentation.platform
 
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -24,6 +23,6 @@ actual fun shouldShowRationale(
     permission: String,
     contextFactory: ContextFactory,
 ): Boolean {
-    val activity = contextFactory.getActivity() as? ComponentActivity
-    return activity?.shouldShowRequestPermissionRationale(permission) ?: false
+    val activity = contextFactory.activity
+    return activity.shouldShowRequestPermissionRationale(permission)
 }

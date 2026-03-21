@@ -181,9 +181,7 @@ fun SettingScreen(
                     )
                 }
 
-                else -> {
-                    Unit
-                }
+                else -> {}
             }
 
             HorizontalDivider(

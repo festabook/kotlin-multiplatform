@@ -6,9 +6,9 @@ import platform.UIKit.UIApplication
 
 @Inject
 actual class ContextFactory {
-    actual fun getContext(): Any = NSBundle
+    actual fun createActivityContext(): Any = NSBundle
 
-    actual fun getApplication(): Any = UIApplication
+    actual fun createApplicationContext(): Any = UIApplication
 
-    actual fun getActivity(): Any = UIApplication.sharedApplication.keyWindow?.rootViewController ?: ""
+    actual fun createActivity(): Any = UIApplication.sharedApplication.keyWindow?.rootViewController ?: ""
 }

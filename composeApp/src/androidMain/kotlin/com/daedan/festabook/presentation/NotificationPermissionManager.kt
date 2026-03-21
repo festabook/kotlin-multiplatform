@@ -1,7 +1,6 @@
 package com.daedan.festabook.presentation
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AlertDialog
@@ -29,7 +28,7 @@ actual class NotificationPermissionManager actual constructor(
         ): NotificationPermissionManager
     }
 
-    private val context = contextFactory.getContext() as Context
+    private val context = contextFactory.activityContext
 
     actual fun requestNotificationPermission(
         title: String,
@@ -39,10 +38,8 @@ actual class NotificationPermissionManager actual constructor(
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             when {
-                ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS,
-                ) == PackageManager.PERMISSION_GRANTED -> {
+                ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+                    == PackageManager.PERMISSION_GRANTED -> {
                     // 이미 권한이 허용됨
 //                    Timber.d("Notification permission already granted")
                     onPermissionGranted()

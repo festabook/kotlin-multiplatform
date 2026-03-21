@@ -1,5 +1,7 @@
 package com.daedan.festabook.presentation
 
+import android.app.Application
+import android.content.Context
 import androidx.activity.ComponentActivity
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -7,16 +9,22 @@ import dev.zacsweers.metro.AssistedInject
 
 @AssistedInject
 actual class ContextFactory(
-    @Assisted private val activity: ComponentActivity,
+    @Assisted private val componentActivity: ComponentActivity,
 ) {
     @AssistedFactory
     interface Factory {
         fun create(activity: ComponentActivity): ContextFactory
     }
 
-    actual fun getContext(): Any = activity.baseContext
+    val activityContext: Context get() = createActivityContext() as Context
 
-    actual fun getApplication(): Any = activity.application
+    val application: Application = createApplicationContext() as Application
 
-    actual fun getActivity(): Any = activity
+    val activity: ComponentActivity get() = createActivity() as ComponentActivity
+
+    actual fun createActivityContext(): Any = componentActivity.baseContext
+
+    actual fun createApplicationContext(): Any = componentActivity.application
+
+    actual fun createActivity(): Any = componentActivity
 }
