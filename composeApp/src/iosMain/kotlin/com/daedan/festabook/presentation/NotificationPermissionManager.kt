@@ -3,6 +3,16 @@ package com.daedan.festabook.presentation
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import platform.UIKit.UIAlertAction
+import platform.UIKit.UIAlertActionStyleDefault
+import platform.UIKit.UIAlertController
+import platform.UIKit.UIAlertControllerStyleAlert
+import platform.UIKit.UIApplication
+import platform.UserNotifications.UNAuthorizationStatusAuthorized
+import platform.UserNotifications.UNAuthorizationStatusDenied
+import platform.UserNotifications.UNAuthorizationStatusNotDetermined
+import platform.UserNotifications.UNAuthorizationStatusProvisional
+import platform.UserNotifications.UNUserNotificationCenter
 
 @AssistedInject
 actual class NotificationPermissionManager actual constructor(
@@ -26,18 +36,56 @@ actual class NotificationPermissionManager actual constructor(
     actual fun requestNotificationPermission(
         title: String,
         message: String,
-        positiveText: String,
-        negativeText: String,
+        confirmText: String,
+        cancelText: String,
     ) {
-        launchPermission("")
+        val center = UNUserNotificationCenter.currentNotificationCenter()
+
+        center.getNotificationSettingsWithCompletionHandler { settings ->
+            when (settings?.authorizationStatus) {
+                UNAuthorizationStatusAuthorized,
+                UNAuthorizationStatusProvisional,
+                -> {
+                    // 이미 허용 됐을 때
+                    onPermissionGranted()
+                }
+
+                UNAuthorizationStatusNotDetermined -> {
+                    // 처음 요청 일 때
+                    launchPermission("")
+                }
+
+                UNAuthorizationStatusDenied -> {
+                    // 이미 거부 했을 때
+                    showRationaleDialog(title, message, confirmText, cancelText)
+                }
+
+                else -> {
+                    onPermissionDenied()
+                }
+            }
+        }
     }
 
     actual fun showRationaleDialog(
         title: String,
         message: String,
-        positiveText: String,
-        negativeText: String,
+        confirmText: String,
+        cancelText: String,
     ) {
-        shouldShowRationale("")
+        val alert =
+            UIAlertController.alertControllerWithTitle(
+                title = title,
+                message = message,
+                preferredStyle = UIAlertControllerStyleAlert,
+            )
+        val confirmAction =
+            UIAlertAction.actionWithTitle(confirmText, UIAlertActionStyleDefault) {
+                onPermissionDenied()
+            }
+        alert.addAction(confirmAction)
+
+        val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
+        rootViewController?.presentViewController(alert, animated = true, completion = null)
     }
 }

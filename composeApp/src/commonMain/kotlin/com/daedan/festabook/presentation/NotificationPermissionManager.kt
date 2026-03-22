@@ -20,14 +20,14 @@ expect class NotificationPermissionManager(
     fun requestNotificationPermission(
         title: String,
         message: String,
-        positiveText: String,
-        negativeText: String,
+        confirmText: String,
+        cancelText: String,
     )
 
     fun showRationaleDialog(
         title: String,
         message: String,
-        positiveText: String,
-        negativeText: String,
+        confirmText: String,
+        cancelText: String,
     )
 }

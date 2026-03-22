@@ -86,16 +86,16 @@ fun SettingRoute(
 
     val title = stringResource(Res.string.setting_title)
     val message = stringResource(Res.string.notification_permission_message)
-    val positiveText = stringResource(Res.string.confirm)
-    val negativeText = stringResource(Res.string.cancel)
+    val confirmText = stringResource(Res.string.confirm)
+    val cancelText = stringResource(Res.string.cancel)
     val enableMessage = stringResource(Res.string.setting_notice_enabled)
 
     ObserveAsEvents(flow = settingViewModel.permissionCheckEvent) {
         notificationPermissionManager.requestNotificationPermission(
             title = title,
             message = message,
-            positiveText = positiveText,
-            negativeText = negativeText,
+            confirmText = confirmText,
+            cancelText = cancelText,
         )
     }
 

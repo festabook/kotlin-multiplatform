@@ -33,8 +33,8 @@ actual class NotificationPermissionManager actual constructor(
     actual fun requestNotificationPermission(
         title: String,
         message: String,
-        positiveText: String,
-        negativeText: String,
+        confirmText: String,
+        cancelText: String,
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             when {
@@ -52,8 +52,8 @@ actual class NotificationPermissionManager actual constructor(
                     showRationaleDialog(
                         title = title,
                         message = message,
-                        positiveText = positiveText,
-                        negativeText = negativeText,
+                        confirmText = confirmText,
+                        cancelText = cancelText,
                     )
                 }
 
@@ -72,19 +72,19 @@ actual class NotificationPermissionManager actual constructor(
     actual fun showRationaleDialog(
         title: String,
         message: String,
-        positiveText: String,
-        negativeText: String,
+        confirmText: String,
+        cancelText: String,
     ) {
         AlertDialog
             .Builder(context)
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton(positiveText) { dialog, _ ->
+            .setPositiveButton(confirmText) { dialog, _ ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     launchPermission(Manifest.permission.POST_NOTIFICATIONS)
                 }
                 dialog.dismiss()
-            }.setNegativeButton(negativeText) { dialog, _ ->
+            }.setNegativeButton(cancelText) { dialog, _ ->
 //                Timber.d("Notification permission denied")
                 onPermissionDenied()
                 dialog.dismiss()
