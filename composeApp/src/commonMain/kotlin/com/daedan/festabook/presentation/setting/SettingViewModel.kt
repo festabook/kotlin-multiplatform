@@ -58,10 +58,15 @@ class SettingViewModel(
         }
     }
 
-    private fun saveNotificationIsAllowed(isAllowed: Boolean) {
-        viewModelScope.launch {
-            festivalNotificationRepository.setFestivalNotificationIsAllow(isAllowed)
-        }
+    private suspend fun saveNotificationIsAllowed(isAllowed: Boolean) {
+        val result = festivalNotificationRepository.saveFestivalNotificationIsAllow(isAllowed)
+
+        result
+            .onSuccess {
+                updateNotificationIsAllowed(isAllowed)
+            }.onFailure {
+                _error.emit(it)
+            }
     }
 
     private fun updateNotificationIsAllowed(allowed: Boolean) {
@@ -73,10 +78,8 @@ class SettingViewModel(
         _isLoading.value = true
 
         // Optimistic UI 적용, 요청 실패 시 원복
-        saveNotificationIsAllowed(true)
-        updateNotificationIsAllowed(true)
-
         viewModelScope.launch {
+            saveNotificationIsAllowed(true)
             _success.emit(Unit)
 
             val result =
@@ -86,7 +89,6 @@ class SettingViewModel(
                 .onFailure {
                     _error.emit(it)
                     saveNotificationIsAllowed(false)
-                    updateNotificationIsAllowed(false)
 //                    Timber.e(it, "${this::class.java.simpleName} NotificationId 저장 실패")
                 }.also {
                     _isLoading.value = false
@@ -99,10 +101,8 @@ class SettingViewModel(
         _isLoading.value = true
 
         // Optimistic UI 적용, 요청 실패 시 원복
-        saveNotificationIsAllowed(false)
-        updateNotificationIsAllowed(false)
-
         viewModelScope.launch {
+            saveNotificationIsAllowed(false)
             val result =
                 festivalNotificationRepository.deleteFestivalNotification()
 
@@ -110,7 +110,6 @@ class SettingViewModel(
                 .onFailure {
                     _error.emit(it)
                     saveNotificationIsAllowed(true)
-                    updateNotificationIsAllowed(true)
 //                    Timber.e(it, "${this::class.java.simpleName} NotificationId 삭제 실패")
                 }.also {
                     _isLoading.value = false

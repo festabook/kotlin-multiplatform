@@ -89,11 +89,14 @@ class FestivalNotificationRepositoryImpl(
             }
         }
 
-    override suspend fun setFestivalNotificationIsAllow(isAllowed: Boolean) {
-        withTimeoutOrNullFallback(
-            producer = { festivalLocalDataSource.getFestivalId().firstOrNull() },
-            onFallback = { /*TODO 로그 */ },
-        )?.let { festivalId ->
+    override suspend fun saveFestivalNotificationIsAllow(isAllowed: Boolean): Result<Unit> {
+        val festivalId =
+            withTimeoutOrNullFallback(
+                producer = { festivalLocalDataSource.getFestivalId().firstOrNull() },
+                onFallback = { /*TODO 로그 */ },
+            ) ?: return Result.failure(IllegalStateException())
+
+        return runCatching {
             festivalNotificationLocalDataSource.saveFestivalNotificationIsAllowed(
                 festivalId = festivalId,
                 isAllowed = isAllowed,
