@@ -14,7 +14,12 @@ actual object FirebaseAnalytics {
     ) {
         platform.logEvent(name) {
             params?.forEach {
-                param(it.key, it.value.toString())
+                when (val v = it.value) {
+                    is Long -> param(it.key, v)
+                    is Double -> param(it.key, v)
+                    is String -> param(it.key, v)
+                    else -> param(it.key, v.toString())
+                }
             }
         }
     }
