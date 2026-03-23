@@ -56,6 +56,7 @@ plugins {
     alias(libs.plugins.ktlint)
     alias(libs.plugins.kotlinCocoapods)
     alias(libs.plugins.firebaseCrashlytcis)
+    alias(libs.plugins.google.gms.services)
 }
 
 kotlin {
