@@ -12,18 +12,21 @@ import festabookkmp.composeapp.generated.resources.setting_title
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun NotificationPermissionDialog(onDismissRequest: () -> Unit) {
+fun NotificationPermissionDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
     val title = stringResource(Res.string.setting_title)
     val message = stringResource(Res.string.notification_permission_message)
     val confirmText = stringResource(Res.string.confirm)
-    val cancelText = stringResource(Res.string.cancel)
+    val dismissText = stringResource(Res.string.cancel)
     AlertDialog(
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = {},
         confirmButton = {
-            Button(onClick = onDismissRequest) { Text(confirmText) }
+            Button(onClick = onConfirm) { Text(confirmText) }
         },
         dismissButton = {
-            Button(onClick = onDismissRequest) { Text(cancelText) }
+            Button(onClick = onDismiss) { Text(dismissText) }
         },
         title = { Text(title) },
         text = { Text(message) },
