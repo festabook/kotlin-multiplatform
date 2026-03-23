@@ -21,23 +21,19 @@ import kotlinx.coroutines.launch
 class SettingViewModel(
     private val festivalNotificationRepository: FestivalNotificationRepository,
 ) : ViewModel() {
-    private val _permissionCheckEvent: MutableSharedFlow<Unit> =
-        MutableSharedFlow()
+    private val _permissionCheckEvent: MutableSharedFlow<Unit> = MutableSharedFlow()
     val permissionCheckEvent: SharedFlow<Unit> = _permissionCheckEvent.asSharedFlow()
 
     private val _isAllowed = MutableStateFlow(false)
     val isAllowed: StateFlow<Boolean> = _isAllowed.asStateFlow()
 
-    private val _error: MutableSharedFlow<Throwable> =
-        MutableSharedFlow()
+    private val _error: MutableSharedFlow<Throwable> = MutableSharedFlow()
     val error: SharedFlow<Throwable> = _error.asSharedFlow()
 
     private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
-    private val _success: MutableSharedFlow<Unit> =
-        MutableSharedFlow()
-
+    private val _success: MutableSharedFlow<Unit> = MutableSharedFlow()
     val success = _success.asSharedFlow()
 
     init {
