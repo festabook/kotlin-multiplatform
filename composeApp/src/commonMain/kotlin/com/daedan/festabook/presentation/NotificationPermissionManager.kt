@@ -1,33 +1,9 @@
 package com.daedan.festabook.presentation
 
-expect class NotificationPermissionManager(
-    contextFactory: ContextFactory,
-    launchPermission: (String) -> Unit,
-    shouldShowRationale: (String) -> Boolean,
-    onPermissionGranted: () -> Unit,
-    onPermissionDenied: () -> Unit,
-) {
-    interface Factory {
-        fun create(
-            contextFactory: ContextFactory,
-            launchPermission: (String) -> Unit,
-            shouldShowRationale: (String) -> Boolean,
-            onPermissionGranted: () -> Unit = {},
-            onPermissionDenied: () -> Unit = {},
-        ): NotificationPermissionManager
-    }
+expect class NotificationPermissionManager {
+    interface Factory
 
-    fun requestNotificationPermission(
-        title: String,
-        message: String,
-        confirmText: String,
-        cancelText: String,
-    )
+    suspend fun checkPermission(): PermissionState
 
-    fun showRationaleDialog(
-        title: String,
-        message: String,
-        confirmText: String,
-        cancelText: String,
-    )
+    fun requestPermission()
 }
