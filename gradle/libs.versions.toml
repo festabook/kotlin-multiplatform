@@ -36,6 +36,9 @@ composeNavigationEvent = "1.0.1"
 crashlytics = "3.0.6"
 firebaseBom = "34.0.0"
 googleServices = "4.4.4"
+firebaseMessaging = "25.0.1"
+firebaseMessagingKtx = "25.0.1"
+
 
 [libraries]
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastorePreferences" }
@@ -75,9 +78,7 @@ play-services-location = { module = "com.google.android.gms:play-services-locati
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-crashlytics-ndk = { module = "com.google.firebase:firebase-crashlytics-ndk" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
-
-
-
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 map-sdk = { module = "com.naver.maps:map-sdk", version.ref = "mapSdk" }
 
 [plugins]

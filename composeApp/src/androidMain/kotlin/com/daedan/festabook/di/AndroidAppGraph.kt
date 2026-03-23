@@ -25,6 +25,8 @@ interface AndroidAppGraph : FestabookAppGraph {
         ): AndroidAppGraph
     }
 
+    fun inject(app: FestabookApp)
+
     @Provides
     fun provideAppUpdateManager(application: Application): AppUpdateManager = AppUpdateManagerFactory.create(application)
 
