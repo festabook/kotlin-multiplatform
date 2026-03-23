@@ -9,11 +9,3 @@ expect fun rememberNotificationPermissionManager(
     onPermissionGrant: () -> Unit,
     onPermissionDeny: () -> Unit,
 ): NotificationPermissionManager
-
-@Composable
-expect fun rememberPermissionLauncher(onResult: (Boolean) -> Unit): (String) -> Unit
-
-expect fun shouldShowRationale(
-    permission: String,
-    activity: Any?,
-): Boolean

@@ -1,7 +1,6 @@
 package com.daedan.festabook.presentation.platform
 
 import androidx.compose.runtime.Composable
-import com.daedan.festabook.presentation.ContextFactory
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
 import platform.UserNotifications.UNAuthorizationOptionSound
@@ -22,5 +21,5 @@ actual fun rememberPermissionLauncher(onResult: (Boolean) -> Unit): (String) -> 
 
 actual fun shouldShowRationale(
     permission: String,
-    contextFactory: ContextFactory,
+    activity: Any?,
 ): Boolean = false

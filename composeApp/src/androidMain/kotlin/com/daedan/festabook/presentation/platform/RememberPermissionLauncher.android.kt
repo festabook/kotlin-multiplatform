@@ -1,9 +1,9 @@
 package com.daedan.festabook.presentation.platform
 
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import com.daedan.festabook.presentation.ContextFactory
 
 @Composable
 actual fun rememberPermissionLauncher(onResult: (Boolean) -> Unit): (String) -> Unit {
@@ -21,8 +21,5 @@ actual fun rememberPermissionLauncher(onResult: (Boolean) -> Unit): (String) -> 
 
 actual fun shouldShowRationale(
     permission: String,
-    contextFactory: ContextFactory,
-): Boolean {
-    val activity = contextFactory.activity
-    return activity.shouldShowRequestPermissionRationale(permission)
-}
+    activity: Any?,
+): Boolean = (activity as? ComponentActivity)?.shouldShowRequestPermissionRationale(permission) ?: false
