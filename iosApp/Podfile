@@ -9,5 +9,7 @@ target 'iosApp' do
 
   # Pods for iosApp
   pod 'NMapsMap'
+  pod 'FirebaseCrashlytics'
+  pod 'FirebaseAnalytics'
 
 end

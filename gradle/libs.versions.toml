@@ -33,6 +33,9 @@ landscapistCoil3 = "2.9.5"
 mapSdk = "3.22.1"
 playServicesLocation = "21.3.0"
 composeNavigationEvent = "1.0.1"
+crashlytics = "3.0.6"
+firebaseBom = "34.0.0"
+googleServices = "4.4.4"
 
 [libraries]
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastorePreferences" }
@@ -69,6 +72,11 @@ compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "comp
 ktlint = { module = "io.nlopez.compose.rules:ktlint", version.ref = "ktlintVersion" }
 metrox-viewmodel-compose = { module = "dev.zacsweers.metro:metrox-viewmodel-compose", version.ref = "metro" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-crashlytics-ndk = { module = "com.google.firebase:firebase-crashlytics-ndk" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+
+
 
 map-sdk = { module = "com.naver.maps:map-sdk", version.ref = "mapSdk" }
 
@@ -86,3 +94,5 @@ metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
+firebaseCrashlytcis = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics"}
+google-gms-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
