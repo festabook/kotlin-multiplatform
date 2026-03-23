@@ -87,6 +87,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(libs.compose.navigationevent)
+            implementation(libs.compose.navigation)
             implementation(libs.coil.compose)
             implementation(libs.landscapist.coil3)
             implementation(libs.landscapist.placeholder)

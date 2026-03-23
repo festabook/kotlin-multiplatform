@@ -1,6 +1,8 @@
 package com.daedan.festabook.di
 
 import android.app.Application
+import android.content.Context
+import com.daedan.festabook.FestabookApp
 import com.daedan.festabook.presentation.splash.platform.AppVersionManager
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -30,3 +32,5 @@ interface AndroidAppGraph : FestabookAppGraph {
     @SingleIn(AppScope::class)
     fun provideCoroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 }
+
+val Context.appGraph get() = (applicationContext as FestabookApp).festabookAppGraph
