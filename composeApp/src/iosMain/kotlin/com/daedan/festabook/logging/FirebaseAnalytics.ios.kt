@@ -9,13 +9,14 @@ actual object FirebaseAnalytics {
     private val platform = FIRAnalytics
     private const val KEY_UNINITIALIZED_USER_ID = "undefined"
 
+    @Suppress("UNCHECKED_CAST")
     actual fun logEvent(
         name: String,
         params: Map<String, Any?>?,
     ) {
         platform.logEventWithName(
             name,
-            params?.mapKeys { it.key as Any? },
+            params as? Map<Any?, Any?>,
         )
     }
 
@@ -23,8 +24,12 @@ actual object FirebaseAnalytics {
 
     actual suspend fun getSessionId(): Long =
         suspendCancellableCoroutine { cont ->
-            platform.sessionIDWithCompletion { id, _ ->
-                cont.resumeWith(Result.success(id))
+            platform.sessionIDWithCompletion { id, error ->
+                if (error != null) {
+                    cont.resumeWith(Result.failure(RuntimeException(error.localizedDescription)))
+                } else {
+                    cont.resumeWith(Result.success(id))
+                }
             }
         }
 }
