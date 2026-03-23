@@ -19,7 +19,7 @@ actual object FirebaseCrashlytics {
     }
 }
 
-fun Throwable.asNSError(): NSError {
+private fun Throwable.asNSError(): NSError {
     val userInfo = mutableMapOf<Any?, Any?>()
 
     message?.let {
