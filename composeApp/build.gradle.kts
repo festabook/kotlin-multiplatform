@@ -39,7 +39,7 @@ private val appBundleIdDev =
     getLocalProperty("APP_BUNDLE_ID_DEV") ?: error("APP_BUNDLE_ID_DEV가 local.properties에 없음")
 
 private val buildFlavor =
-    project.properties["buildkonfig.flavor"].toString()
+    project.properties["buildkonfig.flavor"]?.toString() ?: "dev"
 
 
 plugins {
