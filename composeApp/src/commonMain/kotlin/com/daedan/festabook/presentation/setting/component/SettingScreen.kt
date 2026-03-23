@@ -34,6 +34,7 @@ import com.daedan.festabook.BuildKonfig
 import com.daedan.festabook.domain.model.Festival
 import com.daedan.festabook.domain.model.Organization
 import com.daedan.festabook.presentation.NotificationPermissionManager
+import com.daedan.festabook.presentation.PermissionState
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.FestabookSwitch
 import com.daedan.festabook.presentation.common.component.FestabookTopAppBar
@@ -46,11 +47,8 @@ import com.daedan.festabook.presentation.theme.FestabookTypography
 import com.daedan.festabook.presentation.theme.festabookSpacing
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import festabookkmp.composeapp.generated.resources.Res
-import festabookkmp.composeapp.generated.resources.cancel
-import festabookkmp.composeapp.generated.resources.confirm
 import festabookkmp.composeapp.generated.resources.ic_arrow_forward_right
 import festabookkmp.composeapp.generated.resources.move
-import festabookkmp.composeapp.generated.resources.notification_permission_message
 import festabookkmp.composeapp.generated.resources.setting_app_info_title
 import festabookkmp.composeapp.generated.resources.setting_app_version
 import festabookkmp.composeapp.generated.resources.setting_contact_us
@@ -84,19 +82,25 @@ fun SettingRoute(
     val isSubscribedLoading by settingViewModel.isLoading.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
 
-    val title = stringResource(Res.string.setting_title)
-    val message = stringResource(Res.string.notification_permission_message)
-    val confirmText = stringResource(Res.string.confirm)
-    val cancelText = stringResource(Res.string.cancel)
     val enableMessage = stringResource(Res.string.setting_notice_enabled)
 
+    var showPermissionDialog by remember { mutableStateOf(false) }
+
     ObserveAsEvents(flow = settingViewModel.permissionCheckEvent) {
-        notificationPermissionManager.requestNotificationPermission(
-            title = title,
-            message = message,
-            confirmText = confirmText,
-            cancelText = cancelText,
-        )
+        val permission = notificationPermissionManager.checkPermission()
+        when (permission) {
+            PermissionState.GRANTED -> {}
+
+            PermissionState.NEED_REQUEST -> {
+                notificationPermissionManager.requestPermission()
+            }
+
+            PermissionState.NEED_RATIONALE,
+            PermissionState.DENIED,
+            -> {
+                showPermissionDialog = true
+            }
+        }
     }
 
     ObserveAsEvents(flow = settingViewModel.success) {
@@ -105,6 +109,12 @@ fun SettingRoute(
 
     ObserveAsEvents(flow = settingViewModel.error) {
         onShowErrorSnackBar(it)
+    }
+    if (showPermissionDialog) {
+        NotificationPermissionDialog {
+            showPermissionDialog = false
+            notificationPermissionManager.requestPermission()
+        }
     }
     SettingScreen(
         modifier = modifier,

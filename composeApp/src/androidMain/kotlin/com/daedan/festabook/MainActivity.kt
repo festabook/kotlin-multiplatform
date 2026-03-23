@@ -18,9 +18,6 @@ class MainActivity : ComponentActivity() {
     private val notificationPermissionManagerFactory by lazy {
         androidAppGraph.notificationPermissionManagerFactory
     }
-    private val contextFactory by lazy {
-        androidAppGraph.contextFactory.create(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -32,7 +29,6 @@ class MainActivity : ComponentActivity() {
                     SettingRoute(
                         notificationPermissionManager =
                             rememberNotificationPermissionManager(
-                                contextFactory = contextFactory,
                                 notificationPermissionManagerFactory = notificationPermissionManagerFactory,
                                 onPermissionGrant = {},
                                 onPermissionDeny = {},

@@ -14,7 +14,6 @@ private val iosAppGraph = createGraph<IosAppGraph>()
 private val metroVmf = iosAppGraph.metroViewModelFactory
 private val notificationPermissionManagerFactory =
     iosAppGraph.notificationPermissionManagerFactory
-private val contextFactory = iosAppGraph.contextFactory
 
 @Suppress("ktlint:standard:function-naming")
 @Inject
@@ -25,7 +24,6 @@ fun MainViewController() =
                 SettingRoute(
                     notificationPermissionManager =
                         rememberNotificationPermissionManager(
-                            contextFactory = contextFactory,
                             notificationPermissionManagerFactory = notificationPermissionManagerFactory,
                             onPermissionGrant = {},
                             onPermissionDeny = {},
