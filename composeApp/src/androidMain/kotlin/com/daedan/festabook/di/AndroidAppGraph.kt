@@ -1,7 +1,6 @@
 package com.daedan.festabook.di
 
 import android.app.Application
-import com.daedan.festabook.presentation.ContextFactory
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
@@ -18,8 +17,6 @@ interface AndroidAppGraph : FestabookAppGraph {
             @Provides application: Application,
         ): AndroidAppGraph
     }
-
-    val contextFactory: ContextFactory.Factory
 
     @Provides
     @SingleIn(AppScope::class)
