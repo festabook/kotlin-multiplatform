@@ -1,9 +1,8 @@
 package com.daedan.festabook
 
 import android.app.Application
-import com.daedan.festabook.data.datasource.local.DeviceLocalDataSource
-import com.daedan.festabook.data.datasource.local.FcmDataSource
 import com.daedan.festabook.di.AndroidAppGraph
+import com.daedan.festabook.domain.repository.DeviceRepository
 import com.daedan.festabook.presentation.service.NotificationHelper
 import com.google.firebase.Firebase
 import com.google.firebase.crashlytics.crashlytics
@@ -14,9 +13,7 @@ import dev.zacsweers.metro.createGraphFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class FestabookApp : Application() {
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
@@ -25,13 +22,10 @@ class FestabookApp : Application() {
     }
 
     @Inject
-    private lateinit var deviceLocalDataSource: DeviceLocalDataSource
-
-    @Inject
     private lateinit var firebaseMessaging: FirebaseMessaging
 
     @Inject
-    private lateinit var fcmDataSource: FcmDataSource
+    private lateinit var deviceRepository: DeviceRepository
 
     override fun onCreate() {
         festabookAppGraph.inject(this)
@@ -57,28 +51,16 @@ class FestabookApp : Application() {
     }
 
     private fun setupDeviceIdentifiers() {
-        applicationScope.launch {
-            if (deviceLocalDataSource
-                    .getUuid()
-                    .firstOrNull()
-                    .isNullOrEmpty()
-            ) {
-                val uuid = UUID.randomUUID().toString()
-                deviceLocalDataSource.saveUuid(uuid)
-//              Timber.d("🆕 UUID 생성 및 저장: $uuid")
-            }
-
-            firebaseMessaging
-                .token
-                .addOnSuccessListener { token ->
-                    applicationScope.launch {
-                        fcmDataSource.saveFcmToken(token)
-                    }
-//                Timber.d("📡 FCM 토큰 저장: $token")
-                }.addOnFailureListener {
-//                Timber.w(it, "❌ FCM 토큰 수신 실패")
+        firebaseMessaging
+            .token
+            .addOnSuccessListener { token ->
+                applicationScope.launch {
+                    deviceRepository.registerDevice(token)
+                    // Timber.d("📡 FCM 토큰 저장: $token")
                 }
-        }
+            }.addOnFailureListener {
+                // Timber.w(it, "❌ FCM 토큰 수신 실패")
+            }
     }
 
     private fun setupNaverSdk() {
