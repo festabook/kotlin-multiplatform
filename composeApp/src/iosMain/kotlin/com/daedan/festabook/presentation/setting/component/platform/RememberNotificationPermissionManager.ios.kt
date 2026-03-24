@@ -1,4 +1,4 @@
-package com.daedan.festabook.presentation.platform
+package com.daedan.festabook.presentation.setting.component.platform
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
