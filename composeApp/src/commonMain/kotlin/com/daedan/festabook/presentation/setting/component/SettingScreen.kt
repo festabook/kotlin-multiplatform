@@ -90,7 +90,9 @@ fun SettingRoute(
         val permission = notificationPermissionManager.checkPermission()
 
         when (permission) {
-            PermissionState.GRANTED -> {}
+            PermissionState.GRANTED -> {
+                settingViewModel.saveNotificationId()
+            }
 
             PermissionState.NEED_RATIONALE -> {
                 showPermissionDialog = true
