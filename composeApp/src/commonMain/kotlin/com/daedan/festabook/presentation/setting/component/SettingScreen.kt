@@ -88,7 +88,6 @@ fun SettingRoute(
 
     ObserveAsEvents(flow = settingViewModel.permissionCheckEvent) {
         val permission = notificationPermissionManager.checkPermission()
-        println(permission)
 
         when (permission) {
             PermissionState.GRANTED -> {}
