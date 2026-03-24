@@ -36,7 +36,7 @@ actual class NotificationPermissionManager(
         return when {
             permission == PackageManager.PERMISSION_GRANTED -> PermissionState.GRANTED
             rationale -> PermissionState.NEED_RATIONALE
-            else -> PermissionState.NEED_REQUEST
+            else -> PermissionState.DENIED
         }
     }
 

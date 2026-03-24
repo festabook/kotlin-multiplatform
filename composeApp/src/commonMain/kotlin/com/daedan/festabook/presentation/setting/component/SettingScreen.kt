@@ -93,15 +93,12 @@ fun SettingRoute(
         when (permission) {
             PermissionState.GRANTED -> {}
 
-            PermissionState.NEED_REQUEST -> {
-                notificationPermissionManager.requestPermission()
-            }
-
             PermissionState.NEED_RATIONALE -> {
                 showPermissionDialog = true
             }
 
             PermissionState.DENIED -> {
+                notificationPermissionManager.requestPermission()
             }
         }
     }

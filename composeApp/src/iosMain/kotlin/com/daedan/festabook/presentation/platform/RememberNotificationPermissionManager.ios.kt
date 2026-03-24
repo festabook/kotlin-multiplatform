@@ -16,8 +16,6 @@ actual fun rememberNotificationPermissionManager(
         }
     return remember(notificationPermissionManagerFactory, permissionLauncher) {
         notificationPermissionManagerFactory.create(
-            onPermissionGranted = onPermissionGrant,
-            onPermissionDenied = onPermissionDeny,
             launchPermission = { permission -> permissionLauncher(permission) },
         )
     }
