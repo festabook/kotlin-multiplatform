@@ -88,6 +88,8 @@ fun SettingRoute(
 
     ObserveAsEvents(flow = settingViewModel.permissionCheckEvent) {
         val permission = notificationPermissionManager.checkPermission()
+        println(permission)
+
         when (permission) {
             PermissionState.GRANTED -> {}
 
@@ -95,10 +97,11 @@ fun SettingRoute(
                 notificationPermissionManager.requestPermission()
             }
 
-            PermissionState.NEED_RATIONALE,
-            PermissionState.DENIED,
-            -> {
+            PermissionState.NEED_RATIONALE -> {
                 showPermissionDialog = true
+            }
+
+            PermissionState.DENIED -> {
             }
         }
     }
@@ -111,10 +114,15 @@ fun SettingRoute(
         onShowErrorSnackBar(it)
     }
     if (showPermissionDialog) {
-        NotificationPermissionDialog {
-            showPermissionDialog = false
-            notificationPermissionManager.requestPermission()
-        }
+        NotificationPermissionDialog(
+            onConfirm = {
+                showPermissionDialog = false
+                notificationPermissionManager.requestPermission()
+            },
+            onDismiss = {
+                showPermissionDialog = false
+            },
+        )
     }
     SettingScreen(
         modifier = modifier,

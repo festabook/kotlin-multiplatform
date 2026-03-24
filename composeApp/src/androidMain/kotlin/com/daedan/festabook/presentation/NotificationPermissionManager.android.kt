@@ -15,8 +15,6 @@ actual class NotificationPermissionManager(
     @Assisted private val context: Context,
     @Assisted private val launchPermission: (String) -> Unit,
     @Assisted private val shouldShowRationale: (String) -> Boolean,
-    @Assisted("granted") private val onPermissionGranted: () -> Unit,
-    @Assisted("denied") private val onPermissionDenied: () -> Unit,
 ) {
     @AssistedFactory
     actual interface Factory {
@@ -24,28 +22,23 @@ actual class NotificationPermissionManager(
             context: Context,
             launchPermission: (String) -> Unit,
             shouldShowRationale: (String) -> Boolean,
-            @Assisted("granted") onPermissionGranted: () -> Unit,
-            @Assisted("denied") onPermissionDenied: () -> Unit,
         ): NotificationPermissionManager
     }
 
-    actual suspend fun checkPermission(): PermissionState =
-        when {
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.POST_NOTIFICATIONS,
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                PermissionState.GRANTED
-            }
-
-            shouldShowRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
-                PermissionState.NEED_RATIONALE
-            }
-
-            else -> {
-                PermissionState.NEED_REQUEST
-            }
+    actual suspend fun checkPermission(): PermissionState {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return PermissionState.GRANTED
         }
+        val permission =
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+        val rationale = shouldShowRationale(Manifest.permission.POST_NOTIFICATIONS)
+
+        return when {
+            permission == PackageManager.PERMISSION_GRANTED -> PermissionState.GRANTED
+            rationale -> PermissionState.NEED_RATIONALE
+            else -> PermissionState.NEED_REQUEST
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     actual fun requestPermission() {

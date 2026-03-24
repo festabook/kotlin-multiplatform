@@ -24,8 +24,6 @@ actual fun rememberNotificationPermissionManager(
             context = context,
             launchPermission = { onResult -> permissionLauncher(onResult) },
             shouldShowRationale = { permission -> shouldShowRationale(permission, activity) },
-            onPermissionGranted = onPermissionGrant,
-            onPermissionDenied = onPermissionDeny,
         )
     }
 }
