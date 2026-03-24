@@ -3,7 +3,7 @@ package com.daedan.festabook
 import android.app.Application
 import com.daedan.festabook.di.AndroidAppGraph
 import com.daedan.festabook.domain.repository.DeviceRepository
-import com.daedan.festabook.presentation.service.NotificationHelper
+import com.daedan.festabook.service.NotificationHelper
 import com.google.firebase.Firebase
 import com.google.firebase.crashlytics.crashlytics
 import com.google.firebase.messaging.FirebaseMessaging

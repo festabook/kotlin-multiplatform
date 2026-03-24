@@ -1,4 +1,4 @@
-package com.daedan.festabook.presentation.service
+package com.daedan.festabook.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

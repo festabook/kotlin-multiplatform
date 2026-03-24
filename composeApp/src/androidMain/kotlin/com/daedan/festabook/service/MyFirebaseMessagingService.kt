@@ -1,4 +1,4 @@
-package com.daedan.festabook.presentation.service
+package com.daedan.festabook.service
 
 import com.daedan.festabook.R
 import com.google.firebase.messaging.FirebaseMessagingService
