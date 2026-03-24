@@ -115,9 +115,6 @@ fun SettingRoute(
                 showPermissionDialog = false
                 notificationPermissionManager.requestPermission()
             },
-            onDismiss = {
-                showPermissionDialog = false
-            },
         )
     }
     SettingScreen(
