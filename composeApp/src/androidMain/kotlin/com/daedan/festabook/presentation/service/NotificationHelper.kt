@@ -4,12 +4,13 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
+import com.daedan.festabook.MainActivity
 import com.daedan.festabook.R
-import com.daedan.festabook.presentation.common.vectorToBitmap
-import com.daedan.festabook.presentation.main.MainActivity
 import com.daedan.festabook.presentation.platform.DeepLinkKeys
+import com.daedan.festabook.presentation.theme.FestabookColorPalette
+import com.daedan.festabook.vectorToBitmap
 
 object NotificationHelper {
     private const val CHANNEL_ID = "notice_channel"
@@ -56,7 +57,7 @@ object NotificationHelper {
             NotificationCompat
                 .Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_festabook_logo_notification_small)
-                .setColor(ContextCompat.getColor(context, R.color.gray050))
+                .setColor(FestabookColorPalette().white.toArgb())
                 .setContentTitle(title)
                 .setContentText(content)
                 .setLargeIcon(
