@@ -20,7 +20,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                      didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         festabookAppDelegate.application(application: application, userInfo: userInfo) { result in
-            fetchCompletionHandler(result as! UIBackgroundFetchResult)
+            fetchCompletionHandler(UIBackgroundFetchResult(rawValue: UInt(result)) ?? .noData)
         }
     }
 }

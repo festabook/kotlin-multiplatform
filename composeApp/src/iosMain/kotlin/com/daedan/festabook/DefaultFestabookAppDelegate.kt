@@ -52,11 +52,14 @@ object DefaultFestabookAppDelegate : FestabookAppDelegate {
         FIRMessaging.messaging().APNSToken = deviceToken
     }
 
+    // 백그라운드에서 실행
     override fun application(
         application: UIApplication,
         userInfo: Map<Any?, *>,
         fetchCompletionHandler: (UIBackgroundFetchResult) -> Unit,
     ) {
         NSLog("data: ${userInfo["title"]}")
+        // 이후 화면 이동 로직 처리
+        fetchCompletionHandler(UIBackgroundFetchResult.UIBackgroundFetchResultNewData)
     }
 }

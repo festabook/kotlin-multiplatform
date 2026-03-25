@@ -20,6 +20,7 @@ class DefaultFirebaseMessagingDelegate(
         messaging: FIRMessaging,
         didReceiveRegistrationToken: String?,
     ) {
+        // FCM 토큰 등록
         didReceiveRegistrationToken?.let {
             scope.launch {
                 val result = deviceRepository.registerDevice(it)

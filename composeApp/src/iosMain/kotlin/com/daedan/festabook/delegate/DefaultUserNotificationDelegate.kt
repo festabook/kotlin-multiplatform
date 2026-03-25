@@ -17,6 +17,7 @@ class DefaultUserNotificationDelegate :
         willPresentNotification: UNNotification,
         withCompletionHandler: (UNNotificationPresentationOptions) -> Unit,
     ) {
+        // 포그라운드일 때 실행
         val userInfo = willPresentNotification.request.content.userInfo
         val options = UNNotificationPresentationOptionAlert or UNNotificationPresentationOptionSound
         withCompletionHandler(options)
