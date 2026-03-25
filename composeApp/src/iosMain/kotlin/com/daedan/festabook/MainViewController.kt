@@ -9,6 +9,7 @@ import androidx.compose.ui.window.ComposeUIViewController
 import com.daedan.festabook.di.IosAppGraph
 import com.daedan.festabook.presentation.common.component.FestabookSnackbar
 import com.daedan.festabook.presentation.common.component.rememberAppSnackbarManager
+import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.setting.component.SettingRoute
 import com.daedan.festabook.presentation.setting.component.platform.rememberNotificationPermissionManager
 import com.daedan.festabook.presentation.setting.component.platform.rememberOpenAppSettings
@@ -16,6 +17,7 @@ import com.daedan.festabook.presentation.theme.FestabookTheme
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.createGraph
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 private val iosAppGraph = createGraph<IosAppGraph>()
 private val metroVmf = iosAppGraph.metroViewModelFactory
@@ -36,11 +38,14 @@ fun MainViewController() =
                         FestabookSnackbar(data)
                     }
                 }) { innerPadding ->
+                    val viewModel = metroViewModel<SettingViewModel>()
                     SettingRoute(
                         notificationPermissionManager =
                             rememberNotificationPermissionManager(
                                 notificationPermissionManagerFactory = notificationPermissionManagerFactory,
-                                onPermissionGrant = {},
+                                onPermissionGrant = {
+                                    viewModel.saveNotificationId()
+                                },
                                 onPermissionDeny = {
                                     snackbarManager.showPermissionDeniedSnackbar(
                                         openAppSettings,

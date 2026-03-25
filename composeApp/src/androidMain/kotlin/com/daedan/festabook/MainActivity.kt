@@ -12,11 +12,13 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import com.daedan.festabook.presentation.common.component.FestabookSnackbar
 import com.daedan.festabook.presentation.common.component.rememberAppSnackbarManager
+import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.setting.component.SettingRoute
 import com.daedan.festabook.presentation.setting.component.platform.rememberNotificationPermissionManager
 import com.daedan.festabook.presentation.setting.component.platform.rememberOpenAppSettings
 import com.daedan.festabook.presentation.theme.FestabookTheme
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 class MainActivity : ComponentActivity() {
@@ -41,11 +43,14 @@ class MainActivity : ComponentActivity() {
                             FestabookSnackbar(data)
                         }
                     }) { innerPadding ->
+                        val viewModel = metroViewModel<SettingViewModel>()
                         SettingRoute(
                             notificationPermissionManager =
                                 rememberNotificationPermissionManager(
                                     notificationPermissionManagerFactory = notificationPermissionManagerFactory,
-                                    onPermissionGrant = {},
+                                    onPermissionGrant = {
+                                        viewModel.saveNotificationId()
+                                    },
                                     onPermissionDeny = {
                                         snackbarManager.showPermissionDeniedSnackbar(
                                             openAppSettings,
