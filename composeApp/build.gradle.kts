@@ -71,6 +71,8 @@ kotlin {
         pod("NMapsMap")
         pod("FirebaseCrashlytics")
         pod("FirebaseAnalytics")
+        pod("FirebaseMessaging")
+        pod("FirebaseCore")
     }
     androidTarget {
         compilerOptions {
