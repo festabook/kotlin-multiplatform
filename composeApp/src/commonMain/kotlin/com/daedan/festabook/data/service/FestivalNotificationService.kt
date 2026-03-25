@@ -9,9 +9,10 @@ import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
 
 interface FestivalNotificationService {
-    @POST("festivals/{festivalId}/notifications/android")
+    @POST("festivals/{festivalId}/notifications/{platform}}")
     suspend fun saveFestivalNotification(
         @Path("festivalId") id: Long,
+        @Path("platform") platform: String,
         @Body request: FestivalNotificationRequest,
     ): Response<FestivalNotificationResponse>
 
