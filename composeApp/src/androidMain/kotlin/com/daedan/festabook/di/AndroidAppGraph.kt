@@ -10,10 +10,6 @@ import com.google.firebase.messaging.FirebaseMessaging
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
-import dev.zacsweers.metro.SingleIn
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 
 @DependencyGraph(AppScope::class)
 interface AndroidAppGraph : FestabookAppGraph {

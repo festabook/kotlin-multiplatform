@@ -1,30 +1,34 @@
 package com.daedan.festabook
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
-import com.daedan.festabook.presentation.FestabookScreen
 import com.daedan.festabook.presentation.theme.FestabookTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 class MainActivity : ComponentActivity() {
-    private val metroVmf by lazy {
-        (application as FestabookApp).festabookAppGraph.metroViewModelFactory
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         setContent {
             FestabookTheme {
-                FestabookScreen(
-                    onAppFinish = ::finish,
-                )
+//                FestabookScreen(
+//                    onAppFinish = ::finish,
+//                )
             }
         }
+    }
+
+    companion object {
+        fun newIntent(context: Context) =
+            Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
     }
 }
 
