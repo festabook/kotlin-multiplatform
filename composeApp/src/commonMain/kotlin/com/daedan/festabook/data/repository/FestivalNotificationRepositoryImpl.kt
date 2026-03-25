@@ -29,13 +29,13 @@ class FestivalNotificationRepositoryImpl(
             withTimeoutOrNullFallback(
                 producer = { deviceLocalDataSource.getDeviceId().firstOrNull() },
                 onFallback = { /*TODO 로그 */ },
-            ) ?: return Result.failure(IllegalStateException())
+            ) ?: return Result.failure(IllegalStateException("deviceId가 null"))
 
         val festivalId =
             withTimeoutOrNullFallback(
                 producer = { festivalLocalDataSource.getFestivalId().firstOrNull() },
                 onFallback = { /*TODO 로그 */ },
-            ) ?: return Result.failure(IllegalStateException())
+            ) ?: return Result.failure(IllegalStateException("festivalId가 null"))
 
         val result =
             festivalNotificationRemoteDataSource
