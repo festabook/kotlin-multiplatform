@@ -1,5 +1,4 @@
 import SwiftUI
-import FirebaseCore
 
 @main
 struct iOSApp: App {

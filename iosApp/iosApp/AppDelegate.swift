@@ -1,14 +1,26 @@
-import FirebaseCore
 import ComposeApp
-import NMapsMap
+import UIKit
 
 class AppDelegate: NSObject, UIApplicationDelegate {
+    private lazy var festabookAppDelegate = DefaultFestabookAppDelegate.shared
+
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
-        FirebaseApp.configure()
-        NMFAuthManager.shared().ncpKeyId = NativeBuildKonfig.shared.NAVER_MAP_CLIENT_ID
-        return true
+        return festabookAppDelegate.application(application: application, launchOptions: launchOptions)
+    }
+    
+    func application(_ application: UIApplication,
+                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        festabookAppDelegate.application(application: application, deviceToken: deviceToken)
+    }
+
+    func application(_ application: UIApplication,
+                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+                     fetchCompletionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        festabookAppDelegate.application(application: application, userInfo: userInfo) { result in
+            fetchCompletionHandler(result as! UIBackgroundFetchResult)
+        }
     }
 }

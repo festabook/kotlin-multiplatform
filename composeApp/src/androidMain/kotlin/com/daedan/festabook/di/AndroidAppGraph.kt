@@ -32,10 +32,6 @@ interface AndroidAppGraph : FestabookAppGraph {
     fun provideAppUpdateManager(application: Application): AppUpdateManager = AppUpdateManagerFactory.create(application)
 
     @Provides
-    @SingleIn(AppScope::class)
-    fun provideCoroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
-    @Provides
     fun provideFirebaseMessaging(): FirebaseMessaging = FirebaseMessaging.getInstance()
 }
 
