@@ -15,7 +15,7 @@ actual typealias Intent = Intent
 @Composable
 actual fun RememberDeepLinkHandler(onDeepLink: (Intent) -> Unit) {
     val context = LocalContext.current
-    val activity = context as ComponentActivity
+    val activity = context as? ComponentActivity ?: return
     val currentOnDeepLink by rememberUpdatedState(onDeepLink)
 
     LaunchedEffect(Unit) {

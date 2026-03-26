@@ -48,7 +48,6 @@ object DefaultFestabookAppDelegate : FestabookAppDelegate {
         application: UIApplication,
         deviceToken: NSData,
     ) {
-        NSLog("token: $deviceToken")
         FIRMessaging.messaging().APNSToken = deviceToken
     }
 
@@ -58,7 +57,6 @@ object DefaultFestabookAppDelegate : FestabookAppDelegate {
         userInfo: Map<Any?, *>,
         fetchCompletionHandler: (UIBackgroundFetchResult) -> Unit,
     ) {
-        NSLog("data: ${userInfo["title"]}")
         // 이후 화면 이동 로직 처리
         fetchCompletionHandler(UIBackgroundFetchResult.UIBackgroundFetchResultNewData)
     }
