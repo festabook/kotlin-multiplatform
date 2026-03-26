@@ -41,10 +41,7 @@ class DeviceRepositoryImpl(
         )
 
     override suspend fun registerDevice(fcmToken: String): Result<Unit> {
-        val savedFcmToken =
-            getFcmToken() ?: fcmToken.also {
-                fcmDataSource.saveFcmToken(it)
-            }
+        fcmDataSource.saveFcmToken(fcmToken)
 
         val deviceIdentifier =
             deviceLocalDataSource
@@ -57,7 +54,7 @@ class DeviceRepositoryImpl(
         return deviceRemoteDataSource
             .registerDevice(
                 deviceIdentifier = deviceIdentifier,
-                fcmToken = savedFcmToken,
+                fcmToken = fcmToken,
             ).toResult()
             .onSuccess {
                 saveDeviceId(it.id)

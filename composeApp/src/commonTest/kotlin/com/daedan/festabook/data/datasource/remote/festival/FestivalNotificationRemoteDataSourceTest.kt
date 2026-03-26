@@ -4,7 +4,8 @@ import com.daedan.festabook.data.datasource.remote.ApiResult
 import com.daedan.festabook.data.datasource.remote.schedule.FAKE_HTTP_RESPONSE
 import com.daedan.festabook.data.model.request.FestivalNotificationRequest
 import com.daedan.festabook.data.model.response.festival.FestivalNotificationResponse
-import com.daedan.festabook.data.service.platform.FestivalNotificationService
+import com.daedan.festabook.data.service.FestivalNotificationService
+import com.daedan.festabook.data.service.platform.festivalNotificationPlatform
 import de.jensklingenberg.ktorfit.Response
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
@@ -56,6 +57,7 @@ class FestivalNotificationRemoteDataSourceTest {
             everySuspend {
                 festivalNotificationService.saveFestivalNotification(
                     festivalId,
+                    festivalNotificationPlatform(),
                     request,
                 )
             } returns FAKE_SAVE_FESTIVAL_NOTIFICATION_HTTP_RESPONSE
@@ -68,6 +70,7 @@ class FestivalNotificationRemoteDataSourceTest {
             verifySuspend {
                 festivalNotificationService.saveFestivalNotification(
                     festivalId,
+                    festivalNotificationPlatform(),
                     request,
                 )
             }
