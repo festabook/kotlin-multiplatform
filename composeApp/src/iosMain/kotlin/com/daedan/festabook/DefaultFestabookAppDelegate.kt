@@ -13,7 +13,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import platform.Foundation.NSData
-import platform.Foundation.NSLog
 import platform.UIKit.UIApplication
 import platform.UIKit.UIBackgroundFetchResult
 import platform.UserNotifications.UNUserNotificationCenter
