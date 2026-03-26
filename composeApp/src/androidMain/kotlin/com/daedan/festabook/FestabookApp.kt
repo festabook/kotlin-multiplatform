@@ -16,7 +16,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class FestabookApp : Application() {
-    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     val festabookAppGraph by lazy {
         createGraphFactory<AndroidAppGraph.Factory>().create(this)
     }
@@ -26,6 +25,9 @@ class FestabookApp : Application() {
 
     @Inject
     private lateinit var deviceRepository: DeviceRepository
+
+    @Inject
+    private lateinit var applicationScope: CoroutineScope
 
     override fun onCreate() {
         festabookAppGraph.inject(this)
