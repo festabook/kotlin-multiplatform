@@ -30,7 +30,7 @@ actual fun NaverMapLogo(
     val systemTopPadding = WindowInsets.statusBars.getTop(density)
     var targetPosition by remember { mutableStateOf(Offset.Zero) }
 
-    LaunchedEffect(targetPosition) {
+    LaunchedEffect(targetPosition, naverMap) {
         naverMap?.run {
             platformMap.mapView.apply {
                 logoAlign = NMFLogoAlignLeftTop
