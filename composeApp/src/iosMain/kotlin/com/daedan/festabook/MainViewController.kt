@@ -14,7 +14,6 @@ import com.daedan.festabook.presentation.setting.component.SettingRoute
 import com.daedan.festabook.presentation.setting.component.platform.rememberNotificationPermissionManager
 import com.daedan.festabook.presentation.setting.component.platform.rememberOpenAppSettings
 import com.daedan.festabook.presentation.theme.FestabookTheme
-import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.createGraph
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import dev.zacsweers.metrox.viewmodel.metroViewModel
@@ -25,7 +24,6 @@ private val notificationPermissionManagerFactory =
     iosAppGraph.notificationPermissionManagerFactory
 
 @Suppress("ktlint:standard:function-naming")
-@Inject
 fun MainViewController() =
     ComposeUIViewController {
         FestabookTheme {
@@ -57,5 +55,8 @@ fun MainViewController() =
                     )
                 }
             }
+//            FestabookScreen(
+//                onAppFinish = { exit(0) },
+//            )
         }
     }

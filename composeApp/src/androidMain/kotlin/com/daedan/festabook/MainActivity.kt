@@ -34,6 +34,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             FestabookTheme {
+//                FestabookScreen(
+//                    onAppFinish = ::finish,
+//                )
                 CompositionLocalProvider(LocalMetroViewModelFactory provides metroVmf) {
                     val snackbarHostState = remember { SnackbarHostState() }
                     val snackbarManager = rememberAppSnackbarManager(snackbarHostState)

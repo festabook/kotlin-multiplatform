@@ -79,9 +79,9 @@ actual class Marker {
         }
 
     actual var isVisible: Boolean
-        get() = platform.hidden
+        get() = !platform.hidden
         set(value) {
-            platform.hidden = value
+            platform.hidden = !value
         }
 
     actual fun setOnClickListener(listener: () -> Boolean) {

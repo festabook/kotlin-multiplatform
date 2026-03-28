@@ -1,6 +1,6 @@
 package com.daedan.festabook.presentation.placeMap.intent.state
 
-import com.daedan.festabook.presentation.placeMap.intent.FakePlaceDetailUiModel
+import com.daedan.festabook.presentation.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.model.PlaceCategoryUiModel
 
 sealed interface LoadState<out T> {
@@ -17,4 +17,4 @@ sealed interface LoadState<out T> {
     ) : LoadState<Nothing>
 }
 
-val LoadState.Success<FakePlaceDetailUiModel>.isSecondary get() = value.place.category in PlaceCategoryUiModel.SECONDARY_CATEGORIES
+val LoadState.Success<PlaceDetailUiModel>.isSecondary get() = value.place.category in PlaceCategoryUiModel.SECONDARY_CATEGORIES

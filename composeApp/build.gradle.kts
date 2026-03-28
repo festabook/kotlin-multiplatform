@@ -36,6 +36,15 @@ private val appVersionName = providers.gradleProperty("APP_VERSION_NAME").orNull
 private val appVersionCode = providers.gradleProperty("APP_VERSION_CODE").orNull
     ?: error("APP_VERSION_CODE가 gradle.properties에 없음")
 
+private val appBundleId =
+    getLocalProperty("APP_BUNDLE_ID") ?: error("APP_BUNDLE_ID가 local.properties에 없음")
+
+private val appBundleIdDev =
+    getLocalProperty("APP_BUNDLE_ID_DEV") ?: error("APP_BUNDLE_ID_DEV가 local.properties에 없음")
+
+private val buildFlavor =
+    project.properties["buildkonfig.flavor"]?.toString() ?: "dev"
+
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -50,6 +59,8 @@ plugins {
     alias(libs.plugins.mokkery)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.kotlinCocoapods)
+    alias(libs.plugins.firebaseCrashlytcis)
+    alias(libs.plugins.google.gms.services)
 }
 
 kotlin {
@@ -59,11 +70,11 @@ kotlin {
         version = "2.0.1"
         summary = "festabook"
         homepage = "https://landing.festabook.app/"
-        ios.deploymentTarget = "16.0"
+        ios.deploymentTarget = "17.0"
 
-        pod("NMapsMap") {
-            version = "3.23.1"
-        }
+        pod("NMapsMap")
+        pod("FirebaseCrashlytics")
+        pod("FirebaseAnalytics")
     }
     androidTarget {
         compilerOptions {
@@ -85,13 +96,20 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            implementation(libs.app.update.ktx)
             implementation(libs.map.sdk)
+            implementation(libs.play.services.location)
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.androidx.appcompat)
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.firebase.crashlytics.ndk)
+            implementation(libs.firebase.analytics)
         }
         commonMain.dependencies {
+            implementation(libs.compose.navigationevent)
+            implementation(libs.compose.navigation)
             implementation(libs.coil.compose)
             implementation(libs.landscapist.coil3)
             implementation(libs.landscapist.placeholder)
@@ -128,6 +146,7 @@ buildkonfig {
     packageName = "com.daedan.festabook"
 
     defaultConfigs {
+        buildConfigField(STRING, "BUILD_FLAVOR", buildFlavor)
         buildConfigField(STRING, "NAVER_MAP_STYLE_ID", naverMapStyleId)
         buildConfigField(STRING, "NAVER_MAP_CLIENT_ID", naverMapClientId)
         buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
@@ -153,6 +172,18 @@ buildkonfig {
             buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
             buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
         }
+        buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
+        buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
+        buildConfigField(STRING, "APP_BUNDLE_ID", appBundleIdDev)
+    }
+
+    defaultConfigs("release") {
+        buildConfigField(STRING, "BUILD_FLAVOR", buildFlavor)
+        buildConfigField(STRING, "NAVER_MAP_STYLE_ID", naverMapStyleId)
+        buildConfigField(STRING, "NAVER_MAP_CLIENT_ID", naverMapClientId)
+        buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
+        buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
+        buildConfigField(STRING, "APP_BUNDLE_ID", appBundleId)
     }
 }
 

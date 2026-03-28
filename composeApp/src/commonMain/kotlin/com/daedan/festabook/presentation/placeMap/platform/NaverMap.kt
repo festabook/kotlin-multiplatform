@@ -1,5 +1,8 @@
 package com.daedan.festabook.presentation.placeMap.platform
 
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+
 expect class NaverMap {
     var isIndoorEnabled: Boolean
     var symbolScale: Double
@@ -8,17 +11,22 @@ expect class NaverMap {
     val uiSettings: UiSettings
     val cameraPosition: CameraPosition
 
+    var locationSource: LocationSource?
+
     fun moveCamera(cameraUpdate: CameraUpdate)
 
     fun addOnCameraChangeListener(listener: OnCameraChangeListener)
 
+    fun addOnLocationChangeListener(listener: OnLocationChangeListener)
+
     fun setOnMapClickListener(onClick: (LatLng) -> Unit)
 
     fun setContentPadding(
-        left: Int,
-        top: Int,
-        right: Int,
-        bottom: Int,
+        left: Dp,
+        top: Dp,
+        right: Dp,
+        bottom: Dp,
+        density: Density,
         animate: Boolean,
     )
 
@@ -27,6 +35,10 @@ expect class NaverMap {
             reason: Int,
             animated: Boolean,
         )
+    }
+
+    fun interface OnLocationChangeListener {
+        fun onLocationChange()
     }
 
     class UiSettings {

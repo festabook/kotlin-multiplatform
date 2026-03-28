@@ -19,11 +19,11 @@ actual class PolygonOverlay actual constructor(
     private var commonMap: NaverMap? = null
 
     private val polygon =
-        NMGPolygon(
-            ring = NMGLineString(coords.map { it.platform }),
+        NMGPolygon.polygonWithRing(
+            exteriorRing = NMGLineString(coords.map { it.platform }),
             interiorRings =
-                holes.map {
-                    NMGLineString(it.map { it.platform })
+                holes.map { hole ->
+                    NMGLineString(hole.map { it.platform })
                 },
         )
     val platform = NMFPolygonOverlay.polygonOverlay(polygon)
@@ -36,7 +36,7 @@ actual class PolygonOverlay actual constructor(
     actual var outlineWidth: Int
         get() = platform!!.outlineWidth.toInt()
         set(value) {
-            platform!!.outlineWidth = value.toULong()
+            platform!!.outlineWidth = (value / 2).toULong()
         }
     actual var map: NaverMap?
         get() = commonMap

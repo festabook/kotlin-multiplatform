@@ -34,7 +34,7 @@ class MapManager(
             uiSettings.isScaleBarEnabled = false
             cameraManager.setCameraInitialPosition()
             setInitialPolygon(settingUiModel.border)
-            setContentPaddingBottom(INITIAL_PADDING.toPx())
+            setContentPaddingBottom(INITIAL_PADDING)
             setLogoMarginBottom()
 
             setOnMapClickListener {
@@ -44,13 +44,14 @@ class MapManager(
         }
     }
 
-    private fun setContentPaddingBottom(height: Int) {
+    private fun setContentPaddingBottom(height: Dp) {
         map.setContentPadding(
-            0,
-            0,
-            0,
-            height,
-            true,
+            left = 0.dp,
+            top = 0.dp,
+            right = 0.dp,
+            bottom = height,
+            density = density,
+            animate = true,
         )
     }
 

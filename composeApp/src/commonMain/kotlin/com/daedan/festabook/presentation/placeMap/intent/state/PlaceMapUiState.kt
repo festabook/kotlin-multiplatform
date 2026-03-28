@@ -1,7 +1,7 @@
 package com.daedan.festabook.presentation.placeMap.intent.state
 
 import com.daedan.festabook.domain.model.TimeTag
-import com.daedan.festabook.presentation.placeMap.intent.FakePlaceDetailUiModel
+import com.daedan.festabook.presentation.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.model.InitialMapSettingUiModel
 import com.daedan.festabook.presentation.placeMap.model.PlaceCategoryUiModel
 import com.daedan.festabook.presentation.placeMap.model.PlaceCoordinateUiModel
@@ -12,7 +12,7 @@ data class PlaceMapUiState(
     val placeGeographies: LoadState<List<PlaceCoordinateUiModel>> = LoadState.Loading,
     val timeTags: LoadState<List<TimeTag>> = LoadState.Empty,
     val selectedTimeTag: LoadState<TimeTag> = LoadState.Empty,
-    val selectedPlace: LoadState<FakePlaceDetailUiModel> = LoadState.Empty,
+    val selectedPlace: LoadState<PlaceDetailUiModel> = LoadState.Empty,
     val places: ListLoadState<List<PlaceUiModel>> = ListLoadState.Loading,
     val isExceededMaxLength: Boolean = false,
     val selectedCategories: Set<PlaceCategoryUiModel> = emptySet(),
