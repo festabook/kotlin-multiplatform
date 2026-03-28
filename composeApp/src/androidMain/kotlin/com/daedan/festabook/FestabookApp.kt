@@ -14,7 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class FestabookApp : Application() {
-    val festabookAppGraph by lazy {
+    val androidAppGraph by lazy {
         createGraphFactory<AndroidAppGraph.Factory>().create(this)
     }
 
@@ -28,7 +28,7 @@ class FestabookApp : Application() {
     private lateinit var applicationScope: CoroutineScope
 
     override fun onCreate() {
-        festabookAppGraph.inject(this)
+        androidAppGraph.inject(this)
         super.onCreate()
         setupNaverSdk()
         sendUnsentReports()

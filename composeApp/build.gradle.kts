@@ -1,7 +1,6 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import com.google.devtools.ksp.gradle.KspAATask
 import dev.mokkery.gradle.ApplicationRule
-import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.compose.internal.utils.getLocalProperty
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jlleitschuh.gradle.ktlint.tasks.KtLintCheckTask
@@ -31,6 +30,11 @@ private val naverMapStyleId =
 
 private val naverMapClientId =
     getLocalProperty("NAVER_MAP_CLIENT_ID") ?: error("NAVER_MAP_CLIENT_ID가 local.properties에 없음")
+
+private val appVersionName = providers.gradleProperty("APP_VERSION_NAME").orNull
+    ?: error("APP_VERSION_NAME가 gradle.properties에 없음")
+private val appVersionCode = providers.gradleProperty("APP_VERSION_CODE").orNull
+    ?: error("APP_VERSION_CODE가 gradle.properties에 없음")
 
 private val appBundleId =
     getLocalProperty("APP_BUNDLE_ID") ?: error("APP_BUNDLE_ID가 local.properties에 없음")
@@ -81,6 +85,7 @@ kotlin {
     }
 
     listOf(
+        iosX64(),
         iosArm64(),
         iosSimulatorArm64(),
     ).forEach { iosTarget ->
@@ -147,11 +152,11 @@ buildkonfig {
         buildConfigField(STRING, "BUILD_FLAVOR", buildFlavor)
         buildConfigField(STRING, "NAVER_MAP_STYLE_ID", naverMapStyleId)
         buildConfigField(STRING, "NAVER_MAP_CLIENT_ID", naverMapClientId)
+        buildConfigField(STRING, "APP_VERSION_NAME", appVersionName)
         buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
         buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
         buildConfigField(STRING, "APP_BUNDLE_ID", appBundleIdDev)
     }
-
     defaultConfigs("release") {
         buildConfigField(STRING, "BUILD_FLAVOR", buildFlavor)
         buildConfigField(STRING, "NAVER_MAP_STYLE_ID", naverMapStyleId)
@@ -160,6 +165,27 @@ buildkonfig {
         buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
         buildConfigField(STRING, "APP_BUNDLE_ID", appBundleId)
     }
+    targetConfigs {
+        // android용 입니다.
+        create("debug") {
+            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
+            buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
+        }
+        create("release") {
+            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
+            buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
+        }
+        // ios용 입니다.
+        create("Debug") {
+            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
+            buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
+        }
+        create("Release") {
+            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
+            buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
+        }
+    }
+
 }
 
 android {
@@ -188,8 +214,8 @@ android {
             libs.versions.android.targetSdk
                 .get()
                 .toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = appVersionCode.toInt()
+        versionName = appVersionName
     }
     packaging {
         resources {
@@ -246,4 +272,41 @@ mokkery {
 
 ktorfit {
     compilerPluginVersion.set("2.3.3")
+}
+
+val updateIosVersion by tasks.registering {
+
+    val plistFile = rootProject.layout.projectDirectory.file("iosApp/iosApp/Info.plist")
+    val versionName = providers.gradleProperty("APP_VERSION_NAME")
+    val versionCode = providers.gradleProperty("APP_VERSION_CODE")
+
+    inputs.file(plistFile)
+    inputs.property("versionName", versionName)
+    inputs.property("versionCode", versionCode)
+
+    doLast {
+        val file = plistFile.asFile
+
+        var text = file.readText()
+
+        text = text.replace(
+            Regex("<key>CFBundleShortVersionString</key>\\s*<string>.*</string>"),
+            "<key>CFBundleShortVersionString</key>\n\t\t<string>${versionName.get()}</string>"
+        )
+
+        text = text.replace(
+            Regex("<key>CFBundleVersion</key>\\s*<string>.*</string>"),
+            "<key>CFBundleVersion</key>\n\t\t<string>${versionCode.get()}</string>"
+        )
+
+        file.writeText(text)
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile>().configureEach {
+    dependsOn(updateIosVersion)
+}
+
+tasks.named("build") {
+    dependsOn(updateIosVersion)
 }

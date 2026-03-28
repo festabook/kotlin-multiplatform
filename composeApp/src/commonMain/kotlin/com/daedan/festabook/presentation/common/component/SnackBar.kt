@@ -4,6 +4,7 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -16,6 +17,8 @@ import festabookkmp.composeapp.generated.resources.error_network_exception
 import festabookkmp.composeapp.generated.resources.error_server_exception
 import festabookkmp.composeapp.generated.resources.error_unknown_exception
 import festabookkmp.composeapp.generated.resources.fail_snackbar_confirm
+import festabookkmp.composeapp.generated.resources.move_to_setting_text
+import festabookkmp.composeapp.generated.resources.notification_permission_denied_message
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -39,6 +42,8 @@ class SnackbarManager(
     private val actionLabel: String,
     private val errorMessages: Map<KClass<out ApiResultException>, String>,
     private val defaultErrorMessage: String,
+    private val permissionDeniedMessage: String,
+    private val moveToSettingLabel: String,
 ) {
     fun show(message: String) {
         hostState.currentSnackbarData?.dismiss()
@@ -55,6 +60,21 @@ class SnackbarManager(
         val message = errorMessages[throwable::class] ?: defaultErrorMessage
         show(message)
     }
+
+    fun showPermissionDeniedSnackbar(onOpenSettings: () -> Unit) {
+        hostState.currentSnackbarData?.dismiss()
+        scope.launch {
+            val result =
+                hostState.showSnackbar(
+                    message = permissionDeniedMessage,
+                    actionLabel = moveToSettingLabel,
+                    duration = SnackbarDuration.Short,
+                )
+            if (result == SnackbarResult.ActionPerformed) {
+                onOpenSettings()
+            }
+        }
+    }
 }
 
 @Composable
@@ -67,6 +87,8 @@ fun rememberAppSnackbarManager(
     val networkErrorMessage = stringResource(Res.string.error_network_exception)
     val unknownErrorMessage = stringResource(Res.string.error_unknown_exception)
     val actionLabel = stringResource(Res.string.fail_snackbar_confirm)
+    val permissionDeniedMessage = stringResource(Res.string.notification_permission_denied_message)
+    val moveToSettingLabel = stringResource(Res.string.move_to_setting_text)
 
     val errorMessages =
         remember {
@@ -79,6 +101,14 @@ fun rememberAppSnackbarManager(
         }
 
     return remember(snackbarHostState, scope) {
-        SnackbarManager(snackbarHostState, scope, actionLabel, errorMessages, unknownErrorMessage)
+        SnackbarManager(
+            hostState = snackbarHostState,
+            scope = scope,
+            actionLabel = actionLabel,
+            errorMessages = errorMessages,
+            defaultErrorMessage = unknownErrorMessage,
+            permissionDeniedMessage = permissionDeniedMessage,
+            moveToSettingLabel = moveToSettingLabel,
+        )
     }
 }

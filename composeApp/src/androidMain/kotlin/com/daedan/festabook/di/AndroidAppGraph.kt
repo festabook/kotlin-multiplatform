@@ -31,4 +31,4 @@ interface AndroidAppGraph : FestabookAppGraph {
     fun provideFirebaseMessaging(): FirebaseMessaging = FirebaseMessaging.getInstance()
 }
 
-val Context.appGraph get() = (applicationContext as FestabookApp).festabookAppGraph
+val Context.androidAppGraph get() = (applicationContext as FestabookApp).androidAppGraph

@@ -1,0 +1,116 @@
+package com.daedan.festabook.presentation.setting
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.daedan.festabook.di.viewmodel.ViewModelKey
+import com.daedan.festabook.domain.repository.FestivalNotificationRepository
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+
+@ContributesIntoMap(AppScope::class)
+@ViewModelKey(SettingViewModel::class)
+@Inject
+class SettingViewModel(
+    private val festivalNotificationRepository: FestivalNotificationRepository,
+) : ViewModel() {
+    private val _permissionCheckEvent: MutableSharedFlow<Unit> = MutableSharedFlow()
+    val permissionCheckEvent: SharedFlow<Unit> = _permissionCheckEvent.asSharedFlow()
+
+    private val _isAllowed = MutableStateFlow(false)
+    val isAllowed: StateFlow<Boolean> = _isAllowed.asStateFlow()
+
+    private val _error: MutableSharedFlow<Throwable> = MutableSharedFlow()
+    val error: SharedFlow<Throwable> = _error.asSharedFlow()
+
+    private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _success: MutableSharedFlow<Unit> = MutableSharedFlow()
+    val success = _success.asSharedFlow()
+
+    init {
+        viewModelScope.launch {
+            festivalNotificationRepository
+                .getFestivalNotificationIsAllow()
+                .collect { _isAllowed.value = it }
+        }
+    }
+
+    fun notificationAllowClick() {
+        if (!_isAllowed.value) {
+            viewModelScope.launch {
+                _permissionCheckEvent.emit(Unit)
+            }
+        } else {
+            deleteNotificationId()
+        }
+    }
+
+    private suspend fun saveNotificationIsAllowed(isAllowed: Boolean) {
+        val result = festivalNotificationRepository.saveFestivalNotificationIsAllow(isAllowed)
+
+        result
+            .onSuccess {
+                updateNotificationIsAllowed(isAllowed)
+            }.onFailure {
+                _error.emit(it)
+            }
+    }
+
+    private fun updateNotificationIsAllowed(allowed: Boolean) {
+        _isAllowed.value = allowed
+    }
+
+    fun saveNotificationId() {
+        if (_isLoading.value) return
+        _isLoading.value = true
+
+        // Optimistic UI 적용, 요청 실패 시 원복
+        viewModelScope.launch {
+            saveNotificationIsAllowed(true)
+
+            val result =
+                festivalNotificationRepository.saveFestivalNotification()
+
+            result
+                .onSuccess {
+                    _success.emit(Unit)
+                }.onFailure {
+                    _error.emit(it)
+                    saveNotificationIsAllowed(false)
+//                    Timber.e(it, "${this::class.java.simpleName} NotificationId 저장 실패")
+                }.also {
+                    _isLoading.value = false
+                }
+        }
+    }
+
+    private fun deleteNotificationId() {
+        if (_isLoading.value) return
+        _isLoading.value = true
+
+        // Optimistic UI 적용, 요청 실패 시 원복
+        viewModelScope.launch {
+            saveNotificationIsAllowed(false)
+            val result =
+                festivalNotificationRepository.deleteFestivalNotification()
+
+            result
+                .onFailure {
+                    _error.emit(it)
+                    saveNotificationIsAllowed(true)
+//                    Timber.e(it, "${this::class.java.simpleName} NotificationId 삭제 실패")
+                }.also {
+                    _isLoading.value = false
+                }
+        }
+    }
+}

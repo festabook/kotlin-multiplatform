@@ -2,7 +2,6 @@ package com.daedan.festabook.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
 import com.daedan.festabook.di.FestabookAppGraph
@@ -14,13 +13,14 @@ import com.daedan.festabook.presentation.platform.rememberAppVersionManager
 import com.daedan.festabook.presentation.platform.rememberLocationSource
 import com.daedan.festabook.presentation.splash.SplashViewModel
 import com.daedan.festabook.presentation.splash.navigation.splashNavGraph
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 @Composable
 fun FestabookScreen(
     onAppFinish: () -> Unit,
     modifier: Modifier = Modifier,
     appGraph: FestabookAppGraph = rememberAppGraph(),
-    splashViewModel: SplashViewModel = viewModel(factory = appGraph.metroViewModelFactory),
+    splashViewModel: SplashViewModel = metroViewModel(),
 ) {
     val locationSource = rememberLocationSource()
     val festabookNavigator = rememberFestabookNavigator()
