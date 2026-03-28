@@ -49,6 +49,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 
 @Composable
+@Suppress("ktlint:compose:vm-forwarding-check")
 fun PlaceMapRoute(
     placeMapViewModel: PlaceMapViewModel,
     onStartPlaceDetail: (PlaceMapSideEffect.StartPlaceDetail) -> Unit,

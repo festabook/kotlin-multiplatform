@@ -1,6 +1,5 @@
 package com.daedan.festabook.presentation.main.navigation
 
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.daedan.festabook.di.FestabookAppGraph

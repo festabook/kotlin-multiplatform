@@ -45,7 +45,6 @@ import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTheme
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import com.daedan.festabook.presentation.theme.festabookSpacing
-import dev.zacsweers.metrox.viewmodel.metroViewModel
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.ic_arrow_forward_right
 import festabookkmp.composeapp.generated.resources.move
@@ -73,9 +72,9 @@ fun SettingRoute(
     notificationPermissionManager: NotificationPermissionManager,
     onShowSnackBar: (String) -> Unit,
     onShowErrorSnackBar: (Throwable) -> Unit,
-    modifier: Modifier = Modifier,
     settingViewModel: SettingViewModel,
     homeViewModel: HomeViewModel,
+    modifier: Modifier = Modifier,
 ) {
     val festival by homeViewModel.festivalUiState.collectAsStateWithLifecycle()
     val isUniversitySubscribed by settingViewModel.isAllowed.collectAsStateWithLifecycle()
