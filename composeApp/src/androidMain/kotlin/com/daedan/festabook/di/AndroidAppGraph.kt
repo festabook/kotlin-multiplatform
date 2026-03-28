@@ -33,4 +33,4 @@ interface AndroidAppGraph : FestabookAppGraph {
     fun provideCoroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 }
 
-val Context.appGraph get() = (applicationContext as FestabookApp).festabookAppGraph
+val Context.androidAppGraph get() = (applicationContext as FestabookApp).androidAppGraph
