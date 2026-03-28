@@ -13,12 +13,18 @@
 
         <key>CFBundleVersion</key>
 		<string>20100</string>
-   
+
         <key>CADisableMinimumFrameDurationOnPhone</key>
         <true />
         <key>LSApplicationQueriesSchemes</key>
         <array>
             <string>itms-apps</string>
         </array>
+        <key>UIBackgroundModes</key>
+        <array>
+            <string>remote-notification</string>
+        </array>
+        <key>FirebaseAppDelegateProxyEnabled</key>
+        <false/>
     </dict>
 </plist>

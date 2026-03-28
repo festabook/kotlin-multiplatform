@@ -1,5 +1,7 @@
 package com.daedan.festabook
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -31,9 +33,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             FestabookTheme {
-//                FestabookScreen(
-//                    onAppFinish = ::finish,
-//                )
                 val snackbarHostState = remember { SnackbarHostState() }
                 val snackbarManager = rememberAppSnackbarManager(snackbarHostState)
                 val openAppSettings = rememberOpenAppSettings()
@@ -62,6 +61,13 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    companion object {
+        fun newIntent(context: Context) =
+            Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
     }
 }
 

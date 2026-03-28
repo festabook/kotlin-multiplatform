@@ -50,7 +50,4 @@ fun MainViewController() =
                 )
             }
         }
-//            FestabookScreen(
-//                onAppFinish = { exit(0) },
-//            )
     }
