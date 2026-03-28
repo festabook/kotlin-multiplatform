@@ -1,0 +1,59 @@
+name: RELEASE CD
+
+on:
+  workflow_run:
+    workflows: ["RELEASE CI"]
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  deploy-android:
+    name: Deploy Android → Play Store (Internal)
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download AAB artifact
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          run_id: ${{ github.event.workflow_run.id }}
+          name: android-release-aab
+          path: artifacts/android
+
+      - name: Upload to Play Store (Internal Track)
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
+          packageName: com.daedan.festabook
+          releaseFiles: artifacts/android/*.aab
+          track: internal
+
+  deploy-ios:
+    name: Deploy iOS → TestFlight
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: macos-latest
+
+    steps:
+      - name: Download IPA artifact
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          run_id: ${{ github.event.workflow_run.id }}
+          name: ios-release-ipa
+          path: artifacts/ios
+
+      - name: Upload to TestFlight
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+        run: |
+          echo -n "$APP_STORE_CONNECT_API_KEY_CONTENT" | base64 --decode > /tmp/AuthKey.p8
+
+          xcrun altool --upload-app \
+            --type ios \
+            --file "$(ls artifacts/ios/*.ipa)" \
+            --apiKey "$APP_STORE_CONNECT_API_KEY_ID" \
+            --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID" \
+            --apiKeyPath /tmp/AuthKey.p8
