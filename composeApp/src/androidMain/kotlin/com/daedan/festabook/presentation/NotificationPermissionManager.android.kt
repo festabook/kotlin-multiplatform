@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -26,22 +25,29 @@ actual class NotificationPermissionManager(
     }
 
     actual suspend fun checkPermission(): PermissionState {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            return PermissionState.GRANTED
-        }
-        val permission =
-            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
-        val rationale = shouldShowRationale(Manifest.permission.POST_NOTIFICATIONS)
+        runIfAtLeastTiramisu {
+            val permission =
+                ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+            val rationale = shouldShowRationale(Manifest.permission.POST_NOTIFICATIONS)
 
-        return when {
-            permission == PackageManager.PERMISSION_GRANTED -> PermissionState.GRANTED
-            rationale -> PermissionState.NEED_RATIONALE
-            else -> PermissionState.DENIED
+            return when {
+                permission == PackageManager.PERMISSION_GRANTED -> PermissionState.GRANTED
+                rationale -> PermissionState.NEED_RATIONALE
+                else -> PermissionState.DENIED
+            }
+        }
+        return PermissionState.GRANTED
+    }
+
+    actual fun requestPermission() {
+        runIfAtLeastTiramisu {
+            launchPermission(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    actual fun requestPermission() {
-        launchPermission(Manifest.permission.POST_NOTIFICATIONS)
+    private inline fun runIfAtLeastTiramisu(action: () -> Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            action()
+        }
     }
 }
