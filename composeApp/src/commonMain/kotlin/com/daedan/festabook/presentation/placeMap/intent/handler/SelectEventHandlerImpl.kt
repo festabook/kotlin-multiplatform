@@ -16,14 +16,16 @@ import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+interface SelectEventHandler : EventHandler<SelectEvent, PlaceMapUiState>
+
 @Inject
 @ContributesBinding(PlaceMapViewModelScope::class)
-class SelectEventHandler(
+class SelectEventHandlerImpl(
     private val context: EventHandlerContext,
     private val filterActionHandler: FilterEventHandler,
 //    private val logger: DefaultFirebaseLogger,
     private val placeDetailRepository: PlaceDetailRepository,
-) : EventHandler<SelectEvent, PlaceMapUiState> {
+) : SelectEventHandler {
     override val uiState: StateFlow<PlaceMapUiState> = context.uiState
     override val onUpdateState = context.onUpdateState
 
