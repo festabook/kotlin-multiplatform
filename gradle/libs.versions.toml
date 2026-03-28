@@ -31,6 +31,7 @@ ktlintVersion = "0.5.0"
 mokkery = "3.2.0"
 landscapistCoil3 = "2.9.5"
 mapSdk = "3.22.1"
+napier = "2.7.1"
 playServicesLocation = "21.3.0"
 composeNavigationEvent = "1.0.1"
 crashlytics = "3.0.6"
@@ -74,6 +75,7 @@ landscapist-zoomable = { module = "com.github.skydoves:landscapist-zoomable", ve
 compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }
 ktlint = { module = "io.nlopez.compose.rules:ktlint", version.ref = "ktlintVersion" }
 metrox-viewmodel-compose = { module = "dev.zacsweers.metro:metrox-viewmodel-compose", version.ref = "metro" }
+napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-crashlytics-ndk = { module = "com.google.firebase:firebase-crashlytics-ndk" }

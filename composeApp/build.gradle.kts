@@ -111,6 +111,7 @@ kotlin {
             implementation(libs.firebase.messaging)
         }
         commonMain.dependencies {
+            implementation(libs.napier)
             implementation(libs.compose.navigationevent)
             implementation(libs.compose.navigation)
             implementation(libs.coil.compose)

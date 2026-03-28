@@ -10,6 +10,8 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.naver.maps.map.NaverMapSdk
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.createGraphFactory
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -31,6 +33,7 @@ class FestabookApp : Application() {
         androidAppGraph.inject(this)
         super.onCreate()
         setupNaverSdk()
+        setupNapier()
         sendUnsentReports()
         setupNotificationChannel()
         setupDeviceIdentifiers()
@@ -66,5 +69,11 @@ class FestabookApp : Application() {
     private fun setupNaverSdk() {
         NaverMapSdk.getInstance(this).client =
             NaverMapSdk.NcpKeyClient(BuildKonfig.NAVER_MAP_CLIENT_ID)
+    }
+
+    private fun setupNapier() {
+        if (BuildConfig.DEBUG) {
+            Napier.base(DebugAntilog())
+        }
     }
 }
