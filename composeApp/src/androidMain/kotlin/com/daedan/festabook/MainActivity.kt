@@ -11,6 +11,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import com.daedan.festabook.presentation.FestabookScreen
 import com.daedan.festabook.presentation.common.component.FestabookSnackbar
 import com.daedan.festabook.presentation.common.component.rememberAppSnackbarManager
 import com.daedan.festabook.presentation.setting.SettingViewModel
@@ -33,32 +34,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             FestabookTheme {
-                val snackbarHostState = remember { SnackbarHostState() }
-                val snackbarManager = rememberAppSnackbarManager(snackbarHostState)
-                val openAppSettings = rememberOpenAppSettings()
-                Scaffold(snackbarHost = {
-                    SnackbarHost(hostState = snackbarHostState) { data ->
-                        FestabookSnackbar(data)
-                    }
-                }) { innerPadding ->
-                    val viewModel = metroViewModel<SettingViewModel>()
-                    SettingRoute(
-                        notificationPermissionManager =
-                            rememberNotificationPermissionManager(
-                                notificationPermissionManagerFactory = notificationPermissionManagerFactory,
-                                onPermissionGrant = {
-                                    viewModel.saveNotificationId()
-                                },
-                                onPermissionDeny = {
-                                    snackbarManager.showPermissionDeniedSnackbar(
-                                        openAppSettings,
-                                    )
-                                },
-                            ),
-                        onShowSnackBar = {},
-                        onShowErrorSnackBar = {},
-                    )
-                }
+                FestabookScreen(
+                    onAppFinish = { finish() },
+                )
             }
         }
     }

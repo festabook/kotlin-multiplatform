@@ -3,16 +3,16 @@ package com.daedan.festabook.presentation.main.navigation
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.daedan.festabook.di.FestaBookAppGraph
+import com.daedan.festabook.di.FestabookAppGraph
 import com.daedan.festabook.presentation.main.FestabookNavigator
 import com.daedan.festabook.presentation.main.FestabookRoute
 import com.daedan.festabook.presentation.main.component.MainScreen
-import com.naver.maps.map.util.FusedLocationSource
+import com.daedan.festabook.presentation.placeMap.platform.LocationSource
 
 fun NavGraphBuilder.mainNavGraph(
     onAppFinish: () -> Unit,
-    appGraph: FestaBookAppGraph,
-    locationSource: FusedLocationSource,
+    appGraph: FestabookAppGraph,
+    locationSource: LocationSource,
     festabookNavigator: FestabookNavigator,
 ) {
     composable<FestabookRoute.Main> {

@@ -9,8 +9,19 @@ import platform.Foundation.NSOperationQueue
 import platform.Foundation.NSURL
 
 actual class Intent(
-    val url: NSURL,
-)
+    val notificationToExpand: Long,
+    val canNavigateToNews: Boolean,
+) {
+    actual fun getLongExtra(
+        key: String,
+        defaultValue: Long,
+    ): Long = notificationToExpand
+
+    actual fun getBooleanExtra(
+        key: String,
+        defaultValue: Boolean,
+    ): Boolean = canNavigateToNews
+}
 
 @Composable
 actual fun RememberDeepLinkHandler(onDeepLink: (Intent) -> Unit) {
@@ -19,12 +30,17 @@ actual fun RememberDeepLinkHandler(onDeepLink: (Intent) -> Unit) {
     DisposableEffect(Unit) {
         val observer =
             NSNotificationCenter.defaultCenter.addObserverForName(
-                name = "OpenURLNotification", // 커스텀 알림 이름 (AppDelegate에서 쏴줘야 함)
+                name = "fcmNewsNotification", // 커스텀 알림 이름 (AppDelegate에서 쏴줘야 함)
                 `object` = null,
                 queue = NSOperationQueue.mainQueue,
             ) { notification ->
-                val url = notification?.userInfo?.get("url") as? NSURL ?: return@addObserverForName
-                currentOnDeepLink(Intent(url))
+                val notificationToExpand =
+                    notification
+                        ?.userInfo
+                        ?.get("announcementId")
+                        ?.toString()
+                        ?.toLongOrNull() ?: return@addObserverForName
+                currentOnDeepLink(Intent(notificationToExpand, true))
             }
 
         onDispose {

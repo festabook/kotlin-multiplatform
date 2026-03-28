@@ -17,12 +17,8 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.daedan.festabook.R
 import com.daedan.festabook.domain.model.Festival
 import com.daedan.festabook.domain.model.Organization
 import com.daedan.festabook.domain.model.Poster
@@ -30,15 +26,24 @@ import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
 import com.daedan.festabook.presentation.common.formatFestivalPeriod
+import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.LineUpItemGroupUiModel
 import com.daedan.festabook.presentation.home.LineupItemUiModel
 import com.daedan.festabook.presentation.home.LineupUiState
-import com.daedan.festabook.presentation.home.adapter.FestivalUiState
 import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.theme.FestabookColor
-import java.time.LocalDate
-import java.time.LocalDateTime
+import festabookkmp.composeapp.generated.resources.Res
+import festabookkmp.composeapp.generated.resources.error_fail_to_load_info
+import festabookkmp.composeapp.generated.resources.setting_notice_enabled
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayIn
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.time.Clock
 
 @Composable
 fun HomeScreen(
@@ -50,17 +55,17 @@ fun HomeScreen(
     onShowErrorSnackbar: (Throwable) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
     val festivalUiState by viewModel.festivalUiState.collectAsStateWithLifecycle()
     val lineupUiState by viewModel.lineupUiState.collectAsStateWithLifecycle()
     val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
+    val settingEnabledText = stringResource(Res.string.setting_notice_enabled)
 
     ObserveAsEvents(flow = settingViewModel.permissionCheckEvent) {
-        notificationPermissionManager.requestNotificationPermission(context)
+        notificationPermissionManager.requestPermission()
     }
 
     ObserveAsEvents(flow = settingViewModel.success) {
-        onShowSnackBar(context.getString(R.string.setting_notice_enabled))
+        onShowSnackBar(settingEnabledText)
     }
 
     ObserveAsEvents(flow = settingViewModel.error) {
@@ -87,7 +92,7 @@ fun HomeScreen(
         is FestivalUiState.Error -> {
             Box(modifier = modifier.fillMaxSize()) {
                 Text(
-                    text = stringResource(R.string.error_fail_to_load_info),
+                    text = stringResource(Res.string.error_fail_to_load_info),
                     modifier = Modifier.align(Alignment.Center),
                 )
             }
@@ -113,7 +118,7 @@ private fun FestivalOverview(
     onNavigateToSchedule: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val universityName = festivalUiState.organization.universityName
+    val universityName = festivalUiState.organization.organizationName
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -215,12 +220,15 @@ private fun FestivalOverviewPreview() {
     val sampleFestival =
         Organization(
             id = 1,
-            universityName = "가천대학교",
+            organizationName = "가천대학교",
             festival =
                 Festival(
                     festivalName = "2025 가천 Water Festival\n: AQUA WAVE",
-                    startDate = LocalDate.now(),
-                    endDate = LocalDate.now().plusDays(2),
+                    startDate = Clock.System.todayIn(TimeZone.currentSystemDefault()),
+                    endDate =
+                        Clock.System
+                            .todayIn(TimeZone.currentSystemDefault())
+                            .plus(DatePeriod(days = 1)),
                     festivalImages =
                         listOf(
                             Poster(1, "sample", 1),
@@ -233,14 +241,37 @@ private fun FestivalOverviewPreview() {
         LineUpItemGroupUiModel(
             group =
                 mapOf(
-                    LocalDate.now() to
+                    Clock.System.todayIn(TimeZone.currentSystemDefault()) to
                         listOf(
-                            LineupItemUiModel(1, "sample", "실리카겔", LocalDateTime.now()),
-                            LineupItemUiModel(2, "sample", "아이유", LocalDateTime.now()),
+                            LineupItemUiModel(
+                                1,
+                                "sample",
+                                "실리카겔",
+                                Clock.System
+                                    .now()
+                                    .toLocalDateTime(TimeZone.currentSystemDefault()),
+                            ),
+                            LineupItemUiModel(
+                                2,
+                                "sample",
+                                "아이유",
+                                Clock.System
+                                    .now()
+                                    .toLocalDateTime(TimeZone.currentSystemDefault()),
+                            ),
                         ),
-                    LocalDate.now().plusDays(1) to
+                    Clock.System
+                        .todayIn(TimeZone.currentSystemDefault())
+                        .plus(DatePeriod(days = 1)) to
                         listOf(
-                            LineupItemUiModel(3, "sample", "뉴진스", LocalDateTime.now()),
+                            LineupItemUiModel(
+                                3,
+                                "sample",
+                                "뉴진스",
+                                Clock.System
+                                    .now()
+                                    .toLocalDateTime(TimeZone.currentSystemDefault()),
+                            ),
                         ),
                 ),
         )
