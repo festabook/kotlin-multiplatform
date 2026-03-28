@@ -33,8 +33,8 @@ class PlaceDetailViewModel(
     interface Factory : ViewModelAssistedFactory {
         override fun create(extras: CreationExtras): PlaceDetailViewModel =
             create(
-                place = extras.get<PlaceUiModel?>("place"),
-                receivedPlaceDetail = extras.get<PlaceDetailUiModel?>("receivedPlaceDetail"),
+                place = extras[PlaceKey],
+                receivedPlaceDetail = extras[PlaceDetailKey],
             )
 
         fun create(
@@ -95,6 +95,10 @@ class PlaceDetailViewModel(
                     ),
             )
     }
+
+    object PlaceKey : CreationExtras.Key<PlaceUiModel?>
+
+    object PlaceDetailKey : CreationExtras.Key<PlaceDetailUiModel?>
 
 //    companion object {
 //        fun factory(

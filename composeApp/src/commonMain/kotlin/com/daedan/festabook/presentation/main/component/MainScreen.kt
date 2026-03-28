@@ -1,20 +1,20 @@
 package com.daedan.festabook.presentation.main.component
 
-import android.content.Intent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.navigation.compose.NavHost
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.compose.NavigationBackHandler
+import androidx.navigationevent.compose.rememberNavigationEventState
 import com.daedan.festabook.di.FestabookAppGraph
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.common.ObserveAsEvents
@@ -31,13 +31,13 @@ import com.daedan.festabook.presentation.main.MainViewModel
 import com.daedan.festabook.presentation.main.rememberFestabookNavigator
 import com.daedan.festabook.presentation.news.NewsViewModel
 import com.daedan.festabook.presentation.news.navigation.newsNavGraph
-import com.daedan.festabook.presentation.placeDetail.PlaceDetailViewModel
 import com.daedan.festabook.presentation.placeMap.PlaceMapViewModel
 import com.daedan.festabook.presentation.placeMap.component.PlaceMapRoute
 import com.daedan.festabook.presentation.placeMap.intent.event.SelectEvent
 import com.daedan.festabook.presentation.placeMap.navigation.placeMapNavGraph
 import com.daedan.festabook.presentation.placeMap.platform.LocationSource
 import com.daedan.festabook.presentation.platform.DeepLinkKeys
+import com.daedan.festabook.presentation.platform.Intent
 import com.daedan.festabook.presentation.platform.RememberDeepLinkHandler
 import com.daedan.festabook.presentation.schedule.ScheduleViewModel
 import com.daedan.festabook.presentation.schedule.navigation.scheduleNavGraph
@@ -70,6 +70,7 @@ fun MainScreen(
     val snackbarManager = rememberAppSnackbarManager(snackbarHostState)
     val backPressExitMessage = stringResource(Res.string.back_press_exit_message)
     val openAppSettings = rememberOpenAppSettings()
+    val state = rememberNavigationEventState(NavigationEventInfo.None)
 
     val notificationPermissionManager =
         rememberNotificationPermissionManager(
@@ -92,11 +93,9 @@ fun MainScreen(
         mainNavigator.navigateToMainTab(FestabookMainTab.SCHEDULE)
     }
 
-    LaunchedEffect(Unit) {
-        mainViewModel.registerDeviceAndFcmToken()
-    }
-
-    BackHandler {
+    NavigationBackHandler(
+        state = state,
+    ) {
         mainViewModel.onBackPressed()
     }
 
@@ -173,7 +172,6 @@ fun MainScreen(
             homeViewModel = homeViewModel,
             scheduleViewModel = scheduleViewModel,
             settingViewModel = settingViewModel,
-            placeDetailViewModelFactory = appGraph.placeDetailViewModelFactory,
             newsViewModel = newsViewModel,
             notificationPermissionManager = notificationPermissionManager,
             snackbarManager = snackbarManager,
@@ -188,7 +186,6 @@ private fun FestabookNavHost(
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
     scheduleViewModel: ScheduleViewModel,
-    placeDetailViewModelFactory: PlaceDetailViewModel.Factory,
     newsViewModel: NewsViewModel,
     settingViewModel: SettingViewModel,
     notificationPermissionManager: NotificationPermissionManager,
@@ -218,7 +215,6 @@ private fun FestabookNavHost(
             onShowErrorSnackbar = snackbarManager::showError,
         )
         placeMapNavGraph(
-            placeDetailViewModelFactory = placeDetailViewModelFactory,
             onBackToPreviousClick = { navigator.popBackStack() },
             onShowErrorSnackbar = snackbarManager::showError,
         )
