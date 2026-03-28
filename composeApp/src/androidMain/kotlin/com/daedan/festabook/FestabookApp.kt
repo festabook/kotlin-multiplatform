@@ -10,10 +10,10 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.naver.maps.map.NaverMapSdk
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.createGraphFactory
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class FestabookApp : Application() {
     val androidAppGraph by lazy {
