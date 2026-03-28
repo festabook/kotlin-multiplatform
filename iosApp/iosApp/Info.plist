@@ -9,10 +9,10 @@
         <true />
 
         <key>CFBundleShortVersionString</key>
-        <string>2.1.0</string>
+		<string>2.1.0</string>
 
         <key>CFBundleVersion</key>
-        <string>20100</string>
+		<string>20100</string>
    
         <key>CADisableMinimumFrameDurationOnPhone</key>
         <true />
