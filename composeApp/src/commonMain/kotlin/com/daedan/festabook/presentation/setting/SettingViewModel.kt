@@ -76,13 +76,14 @@ class SettingViewModel(
         // Optimistic UI 적용, 요청 실패 시 원복
         viewModelScope.launch {
             saveNotificationIsAllowed(true)
-            _success.emit(Unit)
 
             val result =
                 festivalNotificationRepository.saveFestivalNotification()
 
             result
-                .onFailure {
+                .onSuccess {
+                    _success.emit(Unit)
+                }.onFailure {
                     _error.emit(it)
                     saveNotificationIsAllowed(false)
 //                    Timber.e(it, "${this::class.java.simpleName} NotificationId 저장 실패")
