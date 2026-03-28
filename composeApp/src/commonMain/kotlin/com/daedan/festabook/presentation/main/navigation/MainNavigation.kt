@@ -8,6 +8,7 @@ import com.daedan.festabook.presentation.main.FestabookNavigator
 import com.daedan.festabook.presentation.main.FestabookRoute
 import com.daedan.festabook.presentation.main.component.MainScreen
 import com.daedan.festabook.presentation.placeMap.platform.LocationSource
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 fun NavGraphBuilder.mainNavGraph(
     onAppFinish: () -> Unit,
@@ -23,12 +24,12 @@ fun NavGraphBuilder.mainNavGraph(
             locationSource = locationSource,
             onAppFinish = onAppFinish,
             festabookNavigator = festabookNavigator,
-            homeViewModel = viewModel(mainBackEntry, factory = appGraph.metroViewModelFactory),
-            scheduleViewModel = viewModel(mainBackEntry, factory = appGraph.metroViewModelFactory),
-            placeMapViewModel = viewModel(mainBackEntry, factory = appGraph.metroViewModelFactory),
-            settingViewModel = viewModel(mainBackEntry, factory = appGraph.metroViewModelFactory),
-            mainViewModel = viewModel(mainBackEntry, factory = appGraph.metroViewModelFactory),
-            newsViewModel = viewModel(mainBackEntry, factory = appGraph.metroViewModelFactory),
+            homeViewModel = metroViewModel(mainBackEntry),
+            scheduleViewModel = metroViewModel(mainBackEntry),
+            placeMapViewModel = metroViewModel(mainBackEntry),
+            settingViewModel = metroViewModel(mainBackEntry),
+            mainViewModel = metroViewModel(mainBackEntry),
+            newsViewModel = metroViewModel(mainBackEntry),
         )
     }
 }

@@ -89,4 +89,6 @@ private inline fun <reified T> defaultNavType() =
             }
 
         override fun parseValue(value: String): T = Json.decodeFromString(value)
+
+        override fun serializeAsValue(value: T): String = Json.encodeToString(value)
     }

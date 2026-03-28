@@ -74,8 +74,8 @@ fun SettingRoute(
     onShowSnackBar: (String) -> Unit,
     onShowErrorSnackBar: (Throwable) -> Unit,
     modifier: Modifier = Modifier,
-    settingViewModel: SettingViewModel = metroViewModel(),
-    homeViewModel: HomeViewModel = metroViewModel(),
+    settingViewModel: SettingViewModel,
+    homeViewModel: HomeViewModel,
 ) {
     val festival by homeViewModel.festivalUiState.collectAsStateWithLifecycle()
     val isUniversitySubscribed by settingViewModel.isAllowed.collectAsStateWithLifecycle()
@@ -90,7 +90,10 @@ fun SettingRoute(
         val permission = notificationPermissionManager.checkPermission()
 
         when (permission) {
-            PermissionState.GRANTED -> {}
+            PermissionState.GRANTED -> {
+                settingViewModel.saveNotificationId()
+                onShowSnackBar(enableMessage)
+            }
 
             PermissionState.NEED_RATIONALE -> {
                 showPermissionDialog = true
@@ -100,10 +103,6 @@ fun SettingRoute(
                 notificationPermissionManager.requestPermission()
             }
         }
-    }
-
-    ObserveAsEvents(flow = settingViewModel.success) {
-        onShowSnackBar(enableMessage)
     }
 
     ObserveAsEvents(flow = settingViewModel.error) {
