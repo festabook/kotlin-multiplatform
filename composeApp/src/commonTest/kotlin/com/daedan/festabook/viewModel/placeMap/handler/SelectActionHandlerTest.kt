@@ -171,7 +171,7 @@ class SelectActionHandlerTest {
         }
 
     @Test
-    fun `현재 플레이스를 선택 후, 플레이스 상세로 이벤트를 발생시킬 수 있다`() =
+    fun `현재 플레이스를 선택 후에 플레이스 상세로 이벤트를 발생시킬 수 있다`() =
         runTest {
             // given
             everySuspend {

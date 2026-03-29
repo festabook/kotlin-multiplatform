@@ -91,7 +91,7 @@ class PlaceDetailViewModelTest {
         }
 
     @Test
-    fun `처음 뷰모델 생성 시, 플레이스 상세 정보가 있다면 서버에 요청하지 않는다`() =
+    fun `처음 뷰모델 생성 시에 플레이스 상세 정보가 있다면 서버에 요청하지 않는다`() =
         runTest {
             // given
             val expected = FAKE_PLACE_DETAIL.toUiModel()

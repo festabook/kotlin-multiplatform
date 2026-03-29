@@ -63,7 +63,7 @@ class ScheduleViewModelTest {
             verifySuspend { scheduleRepository.fetchAllScheduleDates() }
             verifySuspend { scheduleRepository.fetchScheduleEventsById(dateId) }
             assertTrue(stateResult is ScheduleUiState.Content.Success)
-            assertEquals(expectedDate, (stateResult as ScheduleUiState.Content.Success).dates)
+            assertEquals(expectedDate, stateResult.dates)
         }
 
     @Test

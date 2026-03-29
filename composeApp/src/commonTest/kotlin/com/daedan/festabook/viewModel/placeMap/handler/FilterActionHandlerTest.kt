@@ -79,7 +79,7 @@ class FilterActionHandlerTest {
     }
 
     @Test
-    fun `선택된 카테고리 값을 선택하면 카테고리 필터 이벤트가 방출되고, 카테고리를 필터링 할 수 있다`() =
+    fun `선택된 카테고리 값을 선택하면 카테고리 필터 이벤트가 방출되고 카테고리를 필터링 할 수 있다`() =
         runTest {
             // given
             val categories = setOf(PlaceCategoryUiModel.BOOTH)
@@ -110,7 +110,7 @@ class FilterActionHandlerTest {
         }
 
     @Test
-    fun `선택된 카테고리가 부스, 주점, 푸드트럭에 해당되지 않을 때 전체 목록을 불러온다`() =
+    fun `선택된 카테고리가 부스 주점 푸드트럭에 해당되지 않을 때 전체 목록을 불러온다`() =
         runTest {
             // given
             val targetCategories =

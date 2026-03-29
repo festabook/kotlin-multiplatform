@@ -75,7 +75,7 @@ class PlaceMapViewModelTest {
     }
 
     @Test
-    fun `뷰모델을 생성했을 때 전체 타임태그, 선택된 타임태그를 불러올 수 있다`() =
+    fun `뷰모델을 생성했을 때 전체 타임태그와 선택된 타임태그를 불러올 수 있다`() =
         runTest {
             // given - when
             placeMapViewModel =
