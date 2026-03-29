@@ -3,6 +3,7 @@ import com.google.devtools.ksp.gradle.KspAATask
 import dev.mokkery.gradle.ApplicationRule
 import org.jetbrains.compose.internal.utils.getLocalProperty
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jlleitschuh.gradle.ktlint.tasks.KtLintCheckTask
 import org.jlleitschuh.gradle.ktlint.tasks.KtLintFormatTask
 
@@ -71,6 +72,9 @@ kotlin {
         summary = "festabook"
         homepage = "https://landing.festabook.app/"
         ios.deploymentTarget = "17.0"
+
+        // Staging은 Release 수준으로 Kotlin 컴파일, buildkonfig.flavor는 build phase에서 dev로 주입
+        xcodeConfigurationToNativeBuildType["Staging"] = NativeBuildType.RELEASE
 
         pod("NMapsMap")
         pod("FirebaseCrashlytics")

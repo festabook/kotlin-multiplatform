@@ -1,0 +1,181 @@
+name: RELEASE BUILD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  bump-version:
+    name: Bump Version Code
+    runs-on: ubuntu-latest
+    outputs:
+      version_code: ${{ steps.bump.outputs.version_code }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bump version code
+        id: bump
+        run: |
+          CURRENT=$(grep "^APP_VERSION_CODE=" gradle.properties | cut -d= -f2)
+          NEW=$((CURRENT + 1))
+          sed -i "s/^APP_VERSION_CODE=.*/APP_VERSION_CODE=$NEW/" gradle.properties
+          echo "version_code=$NEW" >> $GITHUB_OUTPUT
+          echo "APP_VERSION_CODE: $CURRENT → $NEW"
+
+      - name: Commit bumped version
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add gradle.properties
+          git commit -m "chore: bump version code to ${{ steps.bump.outputs.version_code }} [skip ci]"
+          git push
+
+  build-android:
+    name: Build Android (Release AAB)
+    needs: bump-version
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Setup Gradle environment
+        uses: ./.github/actions/setup-gradle
+        with:
+          base-url: ${{ secrets.BASE_URL }}
+          base-url-dev: ${{ secrets.BASE_URL_DEV }}
+          image-base-url: ${{ secrets.IMAGE_BASE_URL }}
+          image-base-url-dev: ${{ secrets.IMAGE_BASE_URL_DEV }}
+          naver-map-client-id: ${{ secrets.NAVER_MAP_CLIENT_ID }}
+          naver-map-style-id: ${{ secrets.NAVER_MAP_STYLE_ID }}
+          app-bundle-id: ${{ secrets.APP_BUNDLE_ID }}
+          app-bundle-id-dev: ${{ secrets.APP_BUNDLE_ID_DEV }}
+          store-password: ${{ secrets.STORE_PASSWORD }}
+          key-alias: ${{ secrets.KEY_ALIAS }}
+          key-password: ${{ secrets.KEY_PASSWORD }}
+          keystore-base64: ${{ secrets.KEYSTORE_BASE64 }}
+          google-services-json: ${{ secrets.GOOGLE_SERVICES_JSON }}
+
+      - name: Build release AAB
+        run: ./gradlew :composeApp:bundleRelease -Pbuildkonfig.flavor=release
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-aab
+          path: composeApp/build/outputs/bundle/release/*.aab
+          retention-days: 7
+
+  build-ios:
+    name: Build iOS (Release IPA)
+    needs: bump-version
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Setup Gradle environment
+        uses: ./.github/actions/setup-gradle
+        with:
+          base-url: ${{ secrets.BASE_URL }}
+          base-url-dev: ${{ secrets.BASE_URL_DEV }}
+          image-base-url: ${{ secrets.IMAGE_BASE_URL }}
+          image-base-url-dev: ${{ secrets.IMAGE_BASE_URL_DEV }}
+          naver-map-client-id: ${{ secrets.NAVER_MAP_CLIENT_ID }}
+          naver-map-style-id: ${{ secrets.NAVER_MAP_STYLE_ID }}
+          app-bundle-id: ${{ secrets.APP_BUNDLE_ID }}
+          app-bundle-id-dev: ${{ secrets.APP_BUNDLE_ID_DEV }}
+          store-password: ${{ secrets.STORE_PASSWORD }}
+          key-alias: ${{ secrets.KEY_ALIAS }}
+          key-password: ${{ secrets.KEY_PASSWORD }}
+          keystore-base64: ${{ secrets.KEYSTORE_BASE64 }}
+          google-services-json: ${{ secrets.GOOGLE_SERVICES_JSON }}
+
+      - name: Install CocoaPods
+        run: sudo gem install cocoapods
+
+      - name: Install certificates and provisioning profile
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.IOS_RELEASE_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.IOS_P12_PASSWORD }}
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_RELEASE_PROVISIONING_PROFILE_BASE64 }}
+          KEYCHAIN_PASSWORD: ${{ secrets.IOS_KEYCHAIN_PASSWORD }}
+        run: |
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+          echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode -o $PP_PATH
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+
+      - name: Load GoogleService-Info.plist
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICE_INFO_PLIST_DEBUG }}" | base64 --decode > iosApp/iosApp/GoogleService-Info-DEBUG.plist
+          echo "${{ secrets.GOOGLE_SERVICE_INFO_PLIST_RELEASE }}" | base64 --decode > iosApp/iosApp/GoogleService-Info-RELEASE.plist
+
+      - name: Pod install
+        working-directory: iosApp
+        run: pod install
+
+      - name: Build & Archive (Release)
+        run: |
+          xcodebuild archive \
+            -workspace iosApp/iosApp.xcworkspace \
+            -scheme iosApp \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath $RUNNER_TEMP/festabook-release.xcarchive \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="iPhone Distribution" \
+            PROVISIONING_PROFILE_SPECIFIER="${{ secrets.IOS_RELEASE_PROVISIONING_PROFILE_NAME }}"
+
+      - name: Export IPA (App Store)
+        run: |
+          cat > $RUNNER_TEMP/ExportOptions.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>eoehdeksruf.festabook</key>
+              <string>${{ secrets.IOS_RELEASE_PROVISIONING_PROFILE_NAME }}</string>
+            </dict>
+          </dict>
+          </plist>
+          EOF
+
+          xcodebuild -exportArchive \
+            -archivePath $RUNNER_TEMP/festabook-release.xcarchive \
+            -exportOptionsPlist $RUNNER_TEMP/ExportOptions.plist \
+            -exportPath $RUNNER_TEMP/ipa-release
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-release-ipa
+          path: ${{ runner.temp }}/ipa-release/*.ipa
+          retention-days: 7

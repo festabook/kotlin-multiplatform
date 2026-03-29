@@ -3,6 +3,9 @@
 
 platform :ios, '17.0'
 
+# Staging 빌드는 Release용 pod 설정을 사용
+xcodeproj 'iosApp', 'Staging' => :release
+
 target 'iosApp' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
