@@ -76,11 +76,10 @@ object DefaultFestabookAppDelegate : FestabookAppDelegate {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun setLightTheme(application: UIApplication) {
-        application.windows.forEach { window ->
-            (window as? UIWindow)?.overrideUserInterfaceStyle =
-                UIUserInterfaceStyle.UIUserInterfaceStyleLight
-        }
+        UIWindow.appearance().overrideUserInterfaceStyle =
+            UIUserInterfaceStyle.UIUserInterfaceStyleLight
     }
 
     private fun setGlobalExceptionHandler() {
