@@ -7,20 +7,25 @@ import com.daedan.festabook.delegate.DefaultFirebaseMessagingDelegate
 import com.daedan.festabook.delegate.DefaultUserNotificationDelegate
 import com.daedan.festabook.delegate.FestabookAppDelegate
 import com.daedan.festabook.di.IosAppGraph
+import com.daedan.festabook.logging.FirebaseCrashlytics
 import dev.zacsweers.metro.createGraph
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.staticCFunction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import platform.Foundation.NSData
+import platform.Foundation.NSException
+import platform.Foundation.NSSetUncaughtExceptionHandler
 import platform.UIKit.UIApplication
 import platform.UIKit.UIBackgroundFetchResult
+import platform.UIKit.UIUserInterfaceStyle
+import platform.UIKit.UIWindow
 import platform.UserNotifications.UNUserNotificationCenter
-import kotlin.experimental.ExperimentalObjCName
 
-@OptIn(ExperimentalForeignApi::class, ExperimentalObjCName::class)
+@OptIn(ExperimentalForeignApi::class)
 object DefaultFestabookAppDelegate : FestabookAppDelegate {
     override val appGraph: IosAppGraph = createGraph()
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
@@ -37,12 +42,14 @@ object DefaultFestabookAppDelegate : FestabookAppDelegate {
         application: UIApplication,
         launchOptions: Map<Any?, *>?,
     ): Boolean {
+        setGlobalExceptionHandler()
         FIRApp.configure()
         setupNapier()
         NMFAuthManager.shared().ncpKeyId = BuildKonfig.NAVER_MAP_CLIENT_ID
         FIRMessaging.messaging().delegate = firebaseMessagingDelegate
         val center = UNUserNotificationCenter.currentNotificationCenter()
         center.delegate = userNotificationDelegate
+        setLightTheme(application)
         return true
     }
 
@@ -67,5 +74,22 @@ object DefaultFestabookAppDelegate : FestabookAppDelegate {
         if (BuildKonfig.BUILD_FLAVOR == "dev") {
             Napier.base(DebugAntilog())
         }
+    }
+
+    private fun setLightTheme(application: UIApplication) {
+        application.windows.forEach { window ->
+            (window as? UIWindow)?.overrideUserInterfaceStyle =
+                UIUserInterfaceStyle.UIUserInterfaceStyleLight
+        }
+    }
+
+    private fun setGlobalExceptionHandler() {
+        NSSetUncaughtExceptionHandler(
+            staticCFunction { exception: NSException? ->
+                val message =
+                    "${exception?.name ?: "Unknown"}: ${exception?.reason ?: "Unknown error"}"
+                FirebaseCrashlytics.recordException(Exception(message))
+            },
+        )
     }
 }
