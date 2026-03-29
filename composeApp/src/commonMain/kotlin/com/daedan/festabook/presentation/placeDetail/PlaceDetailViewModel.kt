@@ -99,16 +99,4 @@ class PlaceDetailViewModel(
     object PlaceKey : CreationExtras.Key<PlaceUiModel?>
 
     object PlaceDetailKey : CreationExtras.Key<PlaceDetailUiModel?>
-
-//    companion object {
-//        fun factory(
-//            factory: Factory,
-//            place: PlaceUiModel?,
-//            receivedPlaceDetail: PlaceDetailUiModel?,
-//        ) = viewModelFactory {
-//            initializer {
-//                factory.create(place, receivedPlaceDetail)
-//            }
-//        }
-//    }
 }
