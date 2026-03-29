@@ -3,6 +3,7 @@ package com.daedan.festabook.data.service.api
 import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
 import dev.zacsweers.metro.Inject
 import io.ktor.client.plugins.api.createClientPlugin
+import kotlinx.coroutines.flow.firstOrNull
 
 @Inject
 class FestaBookAuthPlugin(
@@ -11,10 +12,7 @@ class FestaBookAuthPlugin(
     val plugin =
         createClientPlugin(name = "FestaBookAuthPlugin") {
             onRequest { request, _ ->
-//                val festivalId = festivalLocalDataSource.getFestivalId()
-//                헤더가 필요한데 현재 탐색화면에서 id를 고를 수가 없어서 임시로 하드 코딩 해놨습니다!!!
-                val festivalId = 1
-
+                val festivalId = festivalLocalDataSource.getFestivalId().firstOrNull() ?: return@onRequest
                 request.headers["festival"] = festivalId.toString()
             }
         }

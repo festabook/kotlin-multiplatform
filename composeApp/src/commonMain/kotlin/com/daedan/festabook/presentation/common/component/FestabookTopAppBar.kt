@@ -1,10 +1,7 @@
 package com.daedan.festabook.presentation.common.component
 
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,7 +22,6 @@ fun FestabookTopAppBar(
         modifier =
             modifier
                 .fillMaxWidth()
-                .windowInsetsPadding(WindowInsets.statusBars)
                 .padding(
                     top = festabookSpacing.paddingTitleHorizontal,
                     bottom = festabookSpacing.paddingBody4,

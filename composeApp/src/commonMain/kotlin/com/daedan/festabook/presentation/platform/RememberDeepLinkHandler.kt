@@ -8,7 +8,17 @@ object DeepLinkKeys {
     const val INITIALIZED_ID = -1L
 }
 
-expect class Intent
+expect class Intent {
+    fun getLongExtra(
+        key: String,
+        defaultValue: Long,
+    ): Long
+
+    fun getBooleanExtra(
+        key: String,
+        defaultValue: Boolean,
+    ): Boolean
+}
 
 @Composable
 expect fun RememberDeepLinkHandler(onDeepLink: (Intent) -> Unit)

@@ -7,6 +7,7 @@ import androidx.navigation.navOptions
 import com.daedan.festabook.di.FestabookAppGraph
 import com.daedan.festabook.presentation.explore.navigation.exploreNavGraph
 import com.daedan.festabook.presentation.main.FestabookRoute
+import com.daedan.festabook.presentation.main.navigation.mainNavGraph
 import com.daedan.festabook.presentation.main.rememberFestabookNavigator
 import com.daedan.festabook.presentation.platform.rememberAppGraph
 import com.daedan.festabook.presentation.platform.rememberAppVersionManager
@@ -56,11 +57,11 @@ fun FestabookScreen(
             onBackClick = { festabookNavigator.popBackStack() },
             onNavigateToMain = { festabookNavigator.navigate(FestabookRoute.Main) },
         )
-//        mainNavGraph(
-//            appGraph = appGraph,
-//            onAppFinish = onAppFinish,
-//            locationSource = locationSource,
-//            festabookNavigator = festabookNavigator,
-//        )
+        mainNavGraph(
+            appGraph = appGraph,
+            onAppFinish = onAppFinish,
+            locationSource = locationSource,
+            festabookNavigator = festabookNavigator,
+        )
     }
 }

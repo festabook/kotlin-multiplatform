@@ -6,11 +6,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSOperationQueue
-import platform.Foundation.NSURL
 
 actual class Intent(
-    val url: NSURL,
-)
+    val extras: Map<String, Any> = emptyMap(),
+) {
+    actual fun getLongExtra(
+        key: String,
+        defaultValue: Long,
+    ): Long = extras[key] as? Long ?: defaultValue
+
+    actual fun getBooleanExtra(
+        key: String,
+        defaultValue: Boolean,
+    ): Boolean = extras[key] as? Boolean ?: defaultValue
+}
 
 @Composable
 actual fun RememberDeepLinkHandler(onDeepLink: (Intent) -> Unit) {
@@ -19,12 +28,24 @@ actual fun RememberDeepLinkHandler(onDeepLink: (Intent) -> Unit) {
     DisposableEffect(Unit) {
         val observer =
             NSNotificationCenter.defaultCenter.addObserverForName(
-                name = "OpenURLNotification", // 커스텀 알림 이름 (AppDelegate에서 쏴줘야 함)
+                name = "fcmNewsNotification", // 커스텀 알림 이름 (AppDelegate에서 쏴줘야 함)
                 `object` = null,
                 queue = NSOperationQueue.mainQueue,
             ) { notification ->
-                val url = notification?.userInfo?.get("url") as? NSURL ?: return@addObserverForName
-                currentOnDeepLink(Intent(url))
+                val notificationToExpand =
+                    notification
+                        ?.userInfo
+                        ?.get("announcementId")
+                        ?.toString()
+                        ?.toLongOrNull() ?: return@addObserverForName
+                currentOnDeepLink(
+                    Intent(
+                        mapOf(
+                            DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND to notificationToExpand,
+                            DeepLinkKeys.KEY_CAN_NAVIGATE_TO_NEWS to true,
+                        ),
+                    ),
+                )
             }
 
         onDispose {

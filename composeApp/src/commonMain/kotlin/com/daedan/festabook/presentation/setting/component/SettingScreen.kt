@@ -45,7 +45,6 @@ import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTheme
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import com.daedan.festabook.presentation.theme.festabookSpacing
-import dev.zacsweers.metrox.viewmodel.metroViewModel
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.ic_arrow_forward_right
 import festabookkmp.composeapp.generated.resources.move
@@ -73,9 +72,9 @@ fun SettingRoute(
     notificationPermissionManager: NotificationPermissionManager,
     onShowSnackBar: (String) -> Unit,
     onShowErrorSnackBar: (Throwable) -> Unit,
+    settingViewModel: SettingViewModel,
+    homeViewModel: HomeViewModel,
     modifier: Modifier = Modifier,
-    settingViewModel: SettingViewModel = metroViewModel(),
-    homeViewModel: HomeViewModel = metroViewModel(),
 ) {
     val festival by homeViewModel.festivalUiState.collectAsStateWithLifecycle()
     val isUniversitySubscribed by settingViewModel.isAllowed.collectAsStateWithLifecycle()
@@ -90,7 +89,10 @@ fun SettingRoute(
         val permission = notificationPermissionManager.checkPermission()
 
         when (permission) {
-            PermissionState.GRANTED -> {}
+            PermissionState.GRANTED -> {
+                settingViewModel.saveNotificationId()
+                onShowSnackBar(enableMessage)
+            }
 
             PermissionState.NEED_RATIONALE -> {
                 showPermissionDialog = true
@@ -100,10 +102,6 @@ fun SettingRoute(
                 notificationPermissionManager.requestPermission()
             }
         }
-    }
-
-    ObserveAsEvents(flow = settingViewModel.success) {
-        onShowSnackBar(enableMessage)
     }
 
     ObserveAsEvents(flow = settingViewModel.error) {
