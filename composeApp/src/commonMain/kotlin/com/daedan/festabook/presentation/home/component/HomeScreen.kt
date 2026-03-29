@@ -122,7 +122,7 @@ private fun FestivalOverview(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        containerColor = Color.White,
+        containerColor = FestabookColor.white,
     ) { innerPadding ->
         Column(
             modifier =

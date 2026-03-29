@@ -8,18 +8,17 @@ import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSOperationQueue
 
 actual class Intent(
-    val notificationToExpand: Long,
-    val canNavigateToNews: Boolean,
+    val extras: Map<String, Any> = emptyMap(),
 ) {
     actual fun getLongExtra(
         key: String,
         defaultValue: Long,
-    ): Long = notificationToExpand
+    ): Long = extras[key] as? Long ?: defaultValue
 
     actual fun getBooleanExtra(
         key: String,
         defaultValue: Boolean,
-    ): Boolean = canNavigateToNews
+    ): Boolean = extras[key] as? Boolean ?: defaultValue
 }
 
 @Composable
@@ -39,7 +38,14 @@ actual fun RememberDeepLinkHandler(onDeepLink: (Intent) -> Unit) {
                         ?.get("announcementId")
                         ?.toString()
                         ?.toLongOrNull() ?: return@addObserverForName
-                currentOnDeepLink(Intent(notificationToExpand, true))
+                currentOnDeepLink(
+                    Intent(
+                        mapOf(
+                            DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND to notificationToExpand,
+                            DeepLinkKeys.KEY_CAN_NAVIGATE_TO_NEWS to true,
+                        ),
+                    ),
+                )
             }
 
         onDispose {
