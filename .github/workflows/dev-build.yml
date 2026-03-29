@@ -1,7 +1,12 @@
 name: DEV BUILD
-
+#
+#on:
+#  push:
+#    branches:
+#      - develop
+# 테스트용입니다.
 on:
-  push:
+  pull_request:
     branches:
       - develop
 
