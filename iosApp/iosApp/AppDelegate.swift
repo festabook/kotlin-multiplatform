@@ -10,6 +10,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         return festabookAppDelegate.application(application: application, launchOptions: launchOptions)
     }
+
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        return .portrait
+    }
     
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {

@@ -1,8 +1,10 @@
 package com.daedan.festabook
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import com.daedan.festabook.di.AndroidAppGraph
 import com.daedan.festabook.domain.repository.DeviceRepository
+import com.daedan.festabook.presentation.error.FestabookGlobalExceptionHandler
 import com.daedan.festabook.service.NotificationHelper
 import com.google.firebase.Firebase
 import com.google.firebase.crashlytics.crashlytics
@@ -37,6 +39,8 @@ class FestabookApp : Application() {
         sendUnsentReports()
         setupNotificationChannel()
         setupDeviceIdentifiers()
+        setLightTheme()
+        setGlobalExceptionHandler()
     }
 
     private fun sendUnsentReports() {
@@ -75,5 +79,13 @@ class FestabookApp : Application() {
         if (BuildConfig.DEBUG) {
             Napier.base(DebugAntilog())
         }
+    }
+
+    private fun setLightTheme() {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+    }
+
+    private fun setGlobalExceptionHandler() {
+        Thread.setDefaultUncaughtExceptionHandler(FestabookGlobalExceptionHandler(this))
     }
 }
