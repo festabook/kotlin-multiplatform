@@ -10,7 +10,7 @@ fun MainViewController() =
     ComposeUIViewController {
         FestabookTheme {
             FestabookScreen(
-                onAppFinish = { exit(0) },
+                onAppFinish = { },
             )
         }
     }
