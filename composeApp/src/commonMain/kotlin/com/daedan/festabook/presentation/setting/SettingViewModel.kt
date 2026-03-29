@@ -39,8 +39,10 @@ class SettingViewModel(
     init {
         viewModelScope.launch {
             festivalNotificationRepository
-                .getFestivalNotificationIsAllow()
-                .collect { _isAllowed.value = it }
+                .syncFestivalNotificationIsAllow()
+                .onSuccess {
+                    _isAllowed.emit(it)
+                }
         }
     }
 
@@ -76,6 +78,7 @@ class SettingViewModel(
         // Optimistic UI 적용, 요청 실패 시 원복
         viewModelScope.launch {
             saveNotificationIsAllowed(true)
+            updateNotificationIsAllowed(true)
 
             val result =
                 festivalNotificationRepository.saveFestivalNotification()
@@ -86,6 +89,7 @@ class SettingViewModel(
                 }.onFailure {
                     _error.emit(it)
                     saveNotificationIsAllowed(false)
+                    updateNotificationIsAllowed(false)
 //                    Timber.e(it, "${this::class.java.simpleName} NotificationId 저장 실패")
                 }.also {
                     _isLoading.value = false
@@ -100,6 +104,7 @@ class SettingViewModel(
         // Optimistic UI 적용, 요청 실패 시 원복
         viewModelScope.launch {
             saveNotificationIsAllowed(false)
+            updateNotificationIsAllowed(false)
             val result =
                 festivalNotificationRepository.deleteFestivalNotification()
 
@@ -107,6 +112,7 @@ class SettingViewModel(
                 .onFailure {
                     _error.emit(it)
                     saveNotificationIsAllowed(true)
+                    updateNotificationIsAllowed(true)
 //                    Timber.e(it, "${this::class.java.simpleName} NotificationId 삭제 실패")
                 }.also {
                     _isLoading.value = false

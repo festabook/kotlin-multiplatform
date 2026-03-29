@@ -78,6 +78,39 @@ class FestivalNotificationRepositoryImpl(
             }
     }
 
+    override suspend fun syncFestivalNotificationIsAllow(): Result<Boolean> {
+        val deviceId =
+            deviceLocalDataSource.getDeviceId().firstOrNull() ?: return Result.failure(
+                IllegalArgumentException(NO_DEVICE_ID_EXCEPTION),
+            )
+        val festivalId =
+            festivalLocalDataSource.getFestivalId().firstOrNull() ?: return Result.failure(
+                IllegalArgumentException(NO_FESTIVAL_ID_EXCEPTION),
+            )
+
+        return festivalNotificationRemoteDataSource
+            .getFestivalNotification(deviceId)
+            .toResult()
+            .mapCatching { response ->
+                val notificationId =
+                    response.find { it.festivalId == festivalId }?.festivalNotificationId
+                val isAllowed = notificationId != null
+                festivalNotificationLocalDataSource.saveFestivalNotificationIsAllowed(
+                    festivalId,
+                    isAllowed,
+                )
+                if (isAllowed) {
+                    festivalNotificationLocalDataSource.saveFestivalNotificationId(
+                        festivalId,
+                        notificationId,
+                    )
+                } else {
+                    festivalNotificationLocalDataSource.deleteFestivalNotificationId(festivalId)
+                }
+                isAllowed
+            }
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getFestivalNotificationIsAllow(): Flow<Boolean> =
         festivalLocalDataSource.getFestivalId().flatMapLatest { festivalId ->
@@ -102,5 +135,12 @@ class FestivalNotificationRepositoryImpl(
                 isAllowed = isAllowed,
             )
         }
+    }
+
+    companion object {
+        private val NO_FESTIVAL_ID_EXCEPTION =
+            "${::FestivalNotificationRepositoryImpl.name}: FestivalId가 없습니다."
+        private val NO_DEVICE_ID_EXCEPTION =
+            "${::FestivalNotificationRepositoryImpl.name}: DeviceId가 없습니다."
     }
 }
