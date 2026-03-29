@@ -12,7 +12,7 @@ class FestaBookAuthPlugin(
     val plugin =
         createClientPlugin(name = "FestaBookAuthPlugin") {
             onRequest { request, _ ->
-                val festivalId = festivalLocalDataSource.getFestivalId().firstOrNull()
+                val festivalId = festivalLocalDataSource.getFestivalId().firstOrNull() ?: return@onRequest
                 request.headers["festival"] = festivalId.toString()
             }
         }
