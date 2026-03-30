@@ -155,6 +155,7 @@ jobs:
             -archivePath $RUNNER_TEMP/festabook-staging.xcarchive \
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="Apple Distribution" \
+            PRODUCT_BUNDLE_IDENTIFIER="${{ secrets.APP_BUNDLE_ID_DEV }}" \
             PROVISIONING_PROFILE_SPECIFIER="${{ secrets.IOS_STAGING_PROVISIONING_PROFILE_NAME }}" \
             STAGING_PROVISIONING_PROFILE_NAME="${{ secrets.IOS_STAGING_PROVISIONING_PROFILE_NAME }}"
 
@@ -171,7 +172,7 @@ jobs:
             <string>manual</string>
             <key>provisioningProfiles</key>
             <dict>
-              <key>eoehdeksruf.festabook</key>
+              <key>${{ secrets.APP_BUNDLE_ID_DEV }}</key>
               <string>${{ secrets.IOS_STAGING_PROVISIONING_PROFILE_NAME }}</string>
             </dict>
           </dict>
