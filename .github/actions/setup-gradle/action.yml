@@ -70,4 +70,4 @@ runs:
 
     - name: Load google-services.json
       shell: bash
-      run: printf '%s' "${{ inputs.google-services-json }}" > composeApp/google-services.json
+      run: echo "${{ inputs.google-services-json }}" | base64 --decode > composeApp/google-services.json
