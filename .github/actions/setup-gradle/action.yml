@@ -68,6 +68,8 @@ runs:
       shell: bash
       run: echo "${{ inputs.keystore-base64 }}" | base64 --decode > ./composeApp/festabook_appkey.jks
 
-    - name: Load google-services.json
+    - name: Load Google Service file
       shell: bash
-      run: echo "${{ inputs.google-services-json }}" | base64 --decode > composeApp/google-services.json
+      env:
+        DATA: ${{ inputs.google-services-json }}
+      run: echo "$DATA" > composeApp/google-services.json
