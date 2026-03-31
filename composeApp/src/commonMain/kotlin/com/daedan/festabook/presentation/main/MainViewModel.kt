@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
 
@@ -42,8 +43,11 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-            festivalRepository.getIsFirstVisit().collect {
+            val isFirstVisit = festivalRepository.getIsFirstVisit().firstOrNull()
+            isFirstVisit?.let {
                 _isFirstVisit.value = it
+            } ?: run {
+                // TODO 로그
             }
         }
     }
