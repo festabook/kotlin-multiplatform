@@ -1,4 +1,4 @@
-package com.daedan.festabook.main
+package com.daedan.festabook.viewModel.main
 
 import com.daedan.festabook.domain.repository.FestivalRepository
 import com.daedan.festabook.observeMultipleEvent
