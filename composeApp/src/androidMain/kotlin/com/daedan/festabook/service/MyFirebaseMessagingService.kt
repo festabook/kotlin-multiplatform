@@ -1,10 +1,24 @@
 package com.daedan.festabook.service
 
 import com.daedan.festabook.R
+import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
+import com.daedan.festabook.di.androidAppGraph
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+    @Inject
+    private lateinit var festivalLocalDataSource: FestivalLocalDataSource
+
+    override fun onCreate() {
+        super.onCreate()
+        applicationContext.androidAppGraph.inject(this)
+    }
+
     override fun onNewToken(token: String) {
 //        Timber.d("Refreshed token: $token")
     }
@@ -20,8 +34,29 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             val content =
                 remoteMessage.data["body"] ?: getString(R.string.default_notification_body)
             val noticeIdToExpand = remoteMessage.data["announcementId"] ?: "-1"
+            val festivalId = remoteMessage.data["festivalId"] ?: "-1"
 
-            NotificationHelper.showNotification(this, title, content, noticeIdToExpand)
+            handleMessageData(festivalId, title, content, noticeIdToExpand)
+        }
+    }
+
+    private fun handleMessageData(
+        festivalId: String,
+        title: String,
+        content: String,
+        noticeIdToExpand: String,
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            festivalId.toLongOrNull()?.let { id ->
+                festivalLocalDataSource.saveFestivalId(id)
+            }
+
+            NotificationHelper.showNotification(
+                context = applicationContext,
+                title = title,
+                content = content,
+                announcementId = noticeIdToExpand,
+            )
         }
     }
 }
