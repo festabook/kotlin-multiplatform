@@ -1,12 +1,10 @@
 package com.daedan.festabook.data.model.response.lineup
 
 import com.daedan.festabook.domain.model.LineupItem
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 @Serializable
 data class LineupResponse(
@@ -26,5 +24,5 @@ fun LineupResponse.toDomain(): LineupItem =
         id = lineupId,
         imageUrl = imageUrl,
         name = name,
-        performanceAt = Instant.parse(performanceAt).toLocalDateTime(TimeZone.UTC),
+        performanceAt = LocalDateTime.parse(performanceAt),
     )
