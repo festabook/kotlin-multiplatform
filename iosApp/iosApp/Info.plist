@@ -2,20 +2,10 @@
     "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
     <dict>
-        <key>CFBundleName</key>
-        <string>festabook</string>
-
         <key>CADisableMinimumFrameDurationOnPhone</key>
         <true />
-
-        <key>CFBundleShortVersionString</key>
-		<string>2.1.0</string>
-
-        <key>CFBundleVersion</key>
-		<string>20100</string>
-
-        <key>CADisableMinimumFrameDurationOnPhone</key>
-        <true />
+        <key>FirebaseAppDelegateProxyEnabled</key>
+        <false />
         <key>LSApplicationQueriesSchemes</key>
         <array>
             <string>itms-apps</string>
@@ -24,7 +14,5 @@
         <array>
             <string>remote-notification</string>
         </array>
-        <key>FirebaseAppDelegateProxyEnabled</key>
-        <false/>
     </dict>
 </plist>
