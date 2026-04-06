@@ -32,11 +32,13 @@ class ExploreViewModel(
     private val _uiState = MutableStateFlow(ExploreUiState())
     val uiState: StateFlow<ExploreUiState> = _uiState.asStateFlow()
 
-    private val _sideEffect = MutableSharedFlow<ExploreSideEffect>(replay = 0, extraBufferCapacity = 1)
+    private val _sideEffect =
+        MutableSharedFlow<ExploreSideEffect>(replay = 0, extraBufferCapacity = 1)
     val sideEffect = _sideEffect.asSharedFlow()
 
     init {
         checkFestivalId()
+        observeRecentSearches()
         observeSearchQuery()
     }
 
@@ -91,5 +93,14 @@ class ExploreViewModel(
 
     fun onTextInputChanged(query: String) {
         _uiState.update { it.copy(query = query) }
+    }
+
+    private fun observeRecentSearches() {
+        viewModelScope.launch {
+            exploreRepository.getRecentFestivalSearches().collect { festivalSearchItems ->
+                val recentSearches = festivalSearchItems.map { it.toUiModel() }
+                _uiState.update { it.copy(recentSearches = recentSearches) }
+            }
+        }
     }
 }
