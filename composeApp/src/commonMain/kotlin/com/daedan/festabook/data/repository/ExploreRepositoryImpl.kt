@@ -48,4 +48,8 @@ class ExploreRepositoryImpl(
         festivalLocalDataSource.getRecentFestivalSearches().map { entites ->
             entites.map { it.toDomain() }
         }
+
+    override suspend fun clearRecentFestivalSearches() {
+        festivalLocalDataSource.clearRecentFestivalSearches()
+    }
 }

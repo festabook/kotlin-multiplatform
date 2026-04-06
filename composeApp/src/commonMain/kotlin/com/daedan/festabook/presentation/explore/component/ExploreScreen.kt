@@ -64,6 +64,7 @@ fun ExploreScreen(
             onQueryChange = viewModel::onTextInputChanged,
             onUniversitySelect = viewModel::onUniversitySelected,
             onBackClick = onBackClick,
+            onClearRecentSearches = viewModel::onClearRecentSearches,
         )
     } else {
         ExploreLandingScreen(
@@ -71,6 +72,7 @@ fun ExploreScreen(
             exploreUiState = exploreUiState,
             onQueryChange = viewModel::onTextInputChanged,
             onUniversitySelect = viewModel::onUniversitySelected,
+            onClearRecentSearches = viewModel::onClearRecentSearches,
         )
     }
 }
@@ -81,6 +83,7 @@ fun ExploreSearchScreen(
     exploreUiState: ExploreUiState,
     onQueryChange: (String) -> Unit,
     onUniversitySelect: (SearchResultUiModel) -> Unit,
+    onClearRecentSearches: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -106,6 +109,7 @@ fun ExploreSearchScreen(
                 exploreUiState = exploreUiState,
                 onQueryChange = onQueryChange,
                 onUniversitySelect = onUniversitySelect,
+                onClearRecentSearches = onClearRecentSearches,
             )
         }
     }
@@ -117,6 +121,7 @@ fun ExploreLandingScreen(
     exploreUiState: ExploreUiState,
     onQueryChange: (String) -> Unit,
     onUniversitySelect: (SearchResultUiModel) -> Unit,
+    onClearRecentSearches: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -170,6 +175,7 @@ fun ExploreLandingScreen(
                     isSearchMode = isSearchMode,
                     exploreUiState = exploreUiState,
                     onUniversitySelect = onUniversitySelect,
+                    onClearRecentSearches = onClearRecentSearches,
                 )
 
                 Spacer(modifier = Modifier.weight(0.7f))
@@ -188,6 +194,7 @@ private fun ExploreSearchScreenPreview() {
             onQueryChange = {},
             onUniversitySelect = {},
             onBackClick = {},
+            onClearRecentSearches = {},
         )
     }
 }
@@ -201,6 +208,7 @@ private fun ExploreLandingScreenPreview() {
             exploreUiState = ExploreUiState(searchState = SearchUiState.Idle),
             onQueryChange = {},
             onUniversitySelect = {},
+            onClearRecentSearches = {},
         )
     }
 }

@@ -65,6 +65,13 @@ class FestivalLocalDataSourceImpl(
                 if (json.isEmpty()) emptyList() else Json.decodeFromString(json)
             }
 
+    override suspend fun clearRecentFestivalSearches() {
+        dataStore.edit { preferences ->
+            preferences[FESTIVAL_SEARCH_ITEM] =
+                Json.encodeToString(emptyList<FestivalSearchItemEntity>())
+        }
+    }
+
     override fun getIsFirstVisit(): Flow<Boolean> =
         getFestivalId().map { festivalId ->
             val key = booleanPreferencesKey("${KEY_IS_FIRST_VISIT}_$festivalId")
@@ -79,7 +86,7 @@ class FestivalLocalDataSourceImpl(
 
     companion object {
         private const val KEY_IS_FIRST_VISIT = "is_first_visit"
-        private const val MAX_RECENT_SEARCH_COUNT = 10
+        private const val MAX_RECENT_SEARCH_COUNT = 5
         private val FESTIVAL_SEARCH_ITEM = stringPreferencesKey("festival_search_item")
         private val KEY_FESTIVAL_ID = longPreferencesKey("festival_id")
     }

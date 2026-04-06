@@ -20,6 +20,7 @@ fun ExploreSearchContent(
     exploreUiState: ExploreUiState,
     onQueryChange: (String) -> Unit,
     onUniversitySelect: (SearchResultUiModel) -> Unit,
+    onClearRecentSearches: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -42,6 +43,7 @@ fun ExploreSearchContent(
         ExploreSearchResultList(
             exploreUiState = exploreUiState,
             onUniversitySelect = onUniversitySelect,
+            onClearRecentSearches = onClearRecentSearches,
             modifier = Modifier.weight(1f),
         )
     }
@@ -65,6 +67,7 @@ private fun ExploreSearchContentPreview() {
                 ),
             onQueryChange = {},
             onUniversitySelect = {},
+            onClearRecentSearches = {},
         )
     }
 }

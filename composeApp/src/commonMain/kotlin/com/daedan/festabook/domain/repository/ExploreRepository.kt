@@ -13,4 +13,6 @@ interface ExploreRepository {
     suspend fun saveRecentFestivalSearch(festivalSearchItem: FestivalSearchItem)
 
     fun getRecentFestivalSearches(): Flow<List<FestivalSearchItem>>
+
+    suspend fun clearRecentFestivalSearches()
 }

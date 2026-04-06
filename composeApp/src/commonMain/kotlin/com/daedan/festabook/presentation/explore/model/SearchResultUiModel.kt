@@ -14,3 +14,12 @@ fun FestivalSearchItem.toUiModel(): SearchResultUiModel =
         universityName = organizationName,
         festivalName = festivalName.replace("\n", " "),
     )
+
+fun SearchResultUiModel.toDomain(): FestivalSearchItem =
+    FestivalSearchItem(
+        festivalId = festivalId,
+        organizationName = universityName,
+        festivalName = festivalName,
+        startDate = "",
+        endDate = "",
+    )

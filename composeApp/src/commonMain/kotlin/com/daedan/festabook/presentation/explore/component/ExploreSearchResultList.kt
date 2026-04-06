@@ -22,16 +22,16 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun ExploreSearchResultList(
     exploreUiState: ExploreUiState,
     onUniversitySelect: (SearchResultUiModel) -> Unit,
+    onClearRecentSearches: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val searchUiState = exploreUiState.searchState
     LazyColumn(
         modifier =
             modifier
                 .fillMaxSize()
                 .padding(horizontal = 20.dp),
     ) {
-        when (searchUiState) {
+        when (val searchUiState = exploreUiState.searchState) {
             is SearchUiState.Loading -> {
                 item {
                     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -59,7 +59,10 @@ fun ExploreSearchResultList(
 
             is SearchUiState.Idle -> {
                 item {
-                    RecentSearchTitle(onClick = { }, modifier = Modifier.padding(bottom = 10.dp))
+                    RecentSearchTitle(
+                        onClick = onClearRecentSearches,
+                        modifier = Modifier.padding(bottom = 10.dp),
+                    )
                 }
                 items(
                     items = exploreUiState.recentSearches,
@@ -82,6 +85,7 @@ private fun ExploreSearchResultListLoadingPreview() {
         ExploreSearchResultList(
             exploreUiState = ExploreUiState(searchState = SearchUiState.Loading),
             onUniversitySelect = {},
+            onClearRecentSearches = {},
         )
     }
 }
@@ -104,6 +108,7 @@ private fun ExploreSearchResultListSuccessPreview() {
                         ),
                 ),
             onUniversitySelect = {},
+            onClearRecentSearches = {},
         )
     }
 }

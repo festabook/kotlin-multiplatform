@@ -12,5 +12,7 @@ interface FestivalLocalDataSource {
 
     fun getRecentFestivalSearches(): Flow<List<FestivalSearchItemEntity>>
 
+    suspend fun clearRecentFestivalSearches()
+
     fun getIsFirstVisit(): Flow<Boolean>
 }

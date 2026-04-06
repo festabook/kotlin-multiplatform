@@ -5,10 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.daedan.festabook.di.viewmodel.ViewModelKey
 import com.daedan.festabook.domain.repository.ExploreRepository
 import com.daedan.festabook.presentation.explore.model.SearchResultUiModel
+import com.daedan.festabook.presentation.explore.model.toDomain
 import com.daedan.festabook.presentation.explore.model.toUiModel
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,6 +42,24 @@ class ExploreViewModel(
         checkFestivalId()
         observeRecentSearches()
         observeSearchQuery()
+    }
+
+    fun onUniversitySelected(university: SearchResultUiModel) {
+        viewModelScope.launch {
+            exploreRepository.saveFestivalId(university.festivalId)
+            _sideEffect.emit(ExploreSideEffect.NavigateToMain(university))
+            exploreRepository.saveRecentFestivalSearch(university.toDomain())
+        }
+    }
+
+    fun onTextInputChanged(query: String) {
+        _uiState.update { it.copy(query = query) }
+    }
+
+    fun onClearRecentSearches() {
+        viewModelScope.launch {
+            exploreRepository.clearRecentFestivalSearches()
+        }
     }
 
     private fun checkFestivalId() {
@@ -84,21 +104,11 @@ class ExploreViewModel(
         }
     }
 
-    fun onUniversitySelected(university: SearchResultUiModel) {
-        viewModelScope.launch {
-            exploreRepository.saveFestivalId(university.festivalId)
-            _sideEffect.emit(ExploreSideEffect.NavigateToMain(university))
-        }
-    }
-
-    fun onTextInputChanged(query: String) {
-        _uiState.update { it.copy(query = query) }
-    }
-
     private fun observeRecentSearches() {
         viewModelScope.launch {
             exploreRepository.getRecentFestivalSearches().collect { festivalSearchItems ->
                 val recentSearches = festivalSearchItems.map { it.toUiModel() }
+                Napier.d("recentSearches: $recentSearches")
                 _uiState.update { it.copy(recentSearches = recentSearches) }
             }
         }
