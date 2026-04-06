@@ -10,6 +10,7 @@ import com.daedan.festabook.data.service.LostItemService
 import com.daedan.festabook.data.service.NoticeService
 import com.daedan.festabook.data.service.PlaceService
 import com.daedan.festabook.data.service.ScheduleService
+import com.daedan.festabook.data.service.WaitingService
 import com.daedan.festabook.data.service.api.FestaBookAuthPlugin
 import com.daedan.festabook.data.service.createDeviceService
 import com.daedan.festabook.data.service.createFAQService
@@ -20,6 +21,7 @@ import com.daedan.festabook.data.service.createLostItemService
 import com.daedan.festabook.data.service.createNoticeService
 import com.daedan.festabook.data.service.createPlaceService
 import com.daedan.festabook.data.service.createScheduleService
+import com.daedan.festabook.data.service.createWaitingService
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.converter.ResponseConverterFactory
 import de.jensklingenberg.ktorfit.ktorfit
@@ -95,4 +97,7 @@ object NetworkBindings {
 
     @Provides
     fun provideFestivalLineupService(ktorfit: Ktorfit): FestivalLineupService = ktorfit.createFestivalLineupService()
+
+    @Provides
+    fun provideWaitingService(ktorfit: Ktorfit): WaitingService = ktorfit.createWaitingService()
 }
