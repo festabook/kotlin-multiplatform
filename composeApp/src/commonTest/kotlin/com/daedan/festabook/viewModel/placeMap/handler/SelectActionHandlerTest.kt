@@ -3,10 +3,10 @@ package com.daedan.festabook.placeMap.handler
 import com.daedan.festabook.domain.model.TimeTag
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
 import com.daedan.festabook.observeEvent
-import com.daedan.festabook.placeDetail.FAKE_ETC_PLACE_DETAIL
-import com.daedan.festabook.placeDetail.FAKE_PLACE_DETAIL
+import com.daedan.festabook.placeMap.placeDetail.FAKE_ETC_PLACE_DETAIL
+import com.daedan.festabook.placeMap.placeDetail.FAKE_PLACE_DETAIL
 import com.daedan.festabook.placeMap.FAKE_TIME_TAG
-import com.daedan.festabook.presentation.placeDetail.model.toUiModel
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.toUiModel
 import com.daedan.festabook.presentation.placeMap.intent.event.SelectEvent
 import com.daedan.festabook.presentation.placeMap.intent.handler.EventHandlerContext
 import com.daedan.festabook.presentation.placeMap.intent.handler.SelectEventHandlerImpl

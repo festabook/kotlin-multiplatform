@@ -1,14 +1,14 @@
-package com.daedan.festabook.presentation.placeDetail
+package com.daedan.festabook.presentation.placeMap.placeDetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
 import com.daedan.festabook.presentation.news.notice.model.NoticeUiModel
-import com.daedan.festabook.presentation.placeDetail.model.ImageUiModel
-import com.daedan.festabook.presentation.placeDetail.model.PlaceDetailUiModel
-import com.daedan.festabook.presentation.placeDetail.model.PlaceDetailUiState
-import com.daedan.festabook.presentation.placeDetail.model.toUiModel
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.ImageUiModel
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiState
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.toUiModel
 import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted

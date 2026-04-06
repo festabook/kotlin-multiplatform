@@ -1,4 +1,4 @@
-package com.daedan.festabook.presentation.placeDetail.model
+package com.daedan.festabook.presentation.placeMap.placeDetail.model
 
 import com.daedan.festabook.domain.model.PlaceDetail
 import com.daedan.festabook.presentation.news.notice.model.NoticeUiModel

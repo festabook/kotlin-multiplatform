@@ -1,6 +1,6 @@
 package com.daedan.festabook.presentation.main
 
-import com.daedan.festabook.presentation.placeDetail.model.PlaceDetailUiModel
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
 import kotlinx.serialization.Serializable
 
