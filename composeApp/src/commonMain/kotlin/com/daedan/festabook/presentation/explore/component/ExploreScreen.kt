@@ -1,10 +1,5 @@
 package com.daedan.festabook.presentation.explore.component
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ContentTransform
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -27,6 +22,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daedan.festabook.presentation.explore.ExploreSideEffect
+import com.daedan.festabook.presentation.explore.ExploreUiState
 import com.daedan.festabook.presentation.explore.ExploreViewModel
 import com.daedan.festabook.presentation.explore.SearchUiState
 import com.daedan.festabook.presentation.explore.model.SearchResultUiModel
@@ -44,7 +40,7 @@ fun ExploreScreen(
     onBackClick: () -> Unit,
     viewModel: ExploreViewModel,
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val exploreUiState by viewModel.uiState.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val latestNavigateToMain by rememberUpdatedState(onNavigateToMain)
@@ -61,18 +57,18 @@ fun ExploreScreen(
         }
     }
 
-    if (uiState.hasFestivalId) {
+    if (exploreUiState.hasFestivalId) {
         ExploreSearchScreen(
-            query = uiState.query,
-            searchState = uiState.searchState,
+            query = exploreUiState.query,
+            exploreUiState = exploreUiState,
             onQueryChange = viewModel::onTextInputChanged,
             onUniversitySelect = viewModel::onUniversitySelected,
             onBackClick = onBackClick,
         )
     } else {
         ExploreLandingScreen(
-            query = uiState.query,
-            searchState = uiState.searchState,
+            query = exploreUiState.query,
+            exploreUiState = exploreUiState,
             onQueryChange = viewModel::onTextInputChanged,
             onUniversitySelect = viewModel::onUniversitySelected,
         )
@@ -82,7 +78,7 @@ fun ExploreScreen(
 @Composable
 fun ExploreSearchScreen(
     query: String,
-    searchState: SearchUiState,
+    exploreUiState: ExploreUiState,
     onQueryChange: (String) -> Unit,
     onUniversitySelect: (SearchResultUiModel) -> Unit,
     onBackClick: () -> Unit,
@@ -107,7 +103,7 @@ fun ExploreSearchScreen(
         ) {
             ExploreSearchContent(
                 query = query,
-                searchState = searchState,
+                exploreUiState = exploreUiState,
                 onQueryChange = onQueryChange,
                 onUniversitySelect = onUniversitySelect,
             )
@@ -118,13 +114,13 @@ fun ExploreSearchScreen(
 @Composable
 fun ExploreLandingScreen(
     query: String,
-    searchState: SearchUiState,
+    exploreUiState: ExploreUiState,
     onQueryChange: (String) -> Unit,
     onUniversitySelect: (SearchResultUiModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    val isError = searchState.shouldShowErrorUi
+    val isError = exploreUiState.searchState.shouldShowErrorUi
 
     val isSearchMode = query.isNotBlank()
 
@@ -166,30 +162,15 @@ fun ExploreLandingScreen(
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
-                ExploreSearchBar(
+                ExploreLandingContent(
                     query = query,
                     onQueryChange = onQueryChange,
-                    onSearch = { keyboardController?.hide() },
+                    keyboardController = keyboardController,
                     isError = isError,
-                    modifier = Modifier.padding(horizontal = 20.dp),
+                    isSearchMode = isSearchMode,
+                    exploreUiState = exploreUiState,
+                    onUniversitySelect = onUniversitySelect,
                 )
-
-                AnimatedContent(
-                    targetState = isSearchMode,
-                    transitionSpec = {
-                        ContentTransform(
-                            targetContentEnter = fadeIn(tween(200)),
-                            initialContentExit = fadeOut(tween(200)),
-                        )
-                    },
-                ) { searching ->
-                    if (searching) {
-                        ExploreSearchResultList(
-                            searchState = searchState,
-                            onUniversitySelect = onUniversitySelect,
-                        )
-                    }
-                }
 
                 Spacer(modifier = Modifier.weight(0.7f))
             }
@@ -203,7 +184,7 @@ private fun ExploreSearchScreenPreview() {
     FestabookTheme {
         ExploreSearchScreen(
             query = "서울",
-            searchState = SearchUiState.Idle,
+            exploreUiState = ExploreUiState(searchState = SearchUiState.Idle),
             onQueryChange = {},
             onUniversitySelect = {},
             onBackClick = {},
@@ -217,7 +198,7 @@ private fun ExploreLandingScreenPreview() {
     FestabookTheme {
         ExploreLandingScreen(
             query = "ㅇㄹㅇ",
-            searchState = SearchUiState.Idle,
+            exploreUiState = ExploreUiState(searchState = SearchUiState.Idle),
             onQueryChange = {},
             onUniversitySelect = {},
         )

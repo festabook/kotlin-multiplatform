@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.daedan.festabook.presentation.explore.ExploreUiState
 import com.daedan.festabook.presentation.explore.SearchUiState
 import com.daedan.festabook.presentation.explore.model.SearchResultUiModel
 import com.daedan.festabook.presentation.theme.FestabookColor
@@ -19,17 +20,18 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ExploreSearchResultList(
-    searchState: SearchUiState,
+    exploreUiState: ExploreUiState,
     onUniversitySelect: (SearchResultUiModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val searchUiState = exploreUiState.searchState
     LazyColumn(
         modifier =
             modifier
                 .fillMaxSize()
                 .padding(horizontal = 20.dp),
     ) {
-        when (searchState) {
+        when (searchUiState) {
             is SearchUiState.Loading -> {
                 item {
                     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -42,7 +44,10 @@ fun ExploreSearchResultList(
             }
 
             is SearchUiState.Success -> {
-                items(searchState.universitiesFound) { university ->
+                items(
+                    items = searchUiState.universitiesFound,
+                    key = { it.festivalId },
+                ) { university ->
                     ExploreResultItem(
                         university = university,
                         onItemClick = onUniversitySelect,
@@ -52,7 +57,20 @@ fun ExploreSearchResultList(
 
             is SearchUiState.Error -> {}
 
-            is SearchUiState.Idle -> {}
+            is SearchUiState.Idle -> {
+                item {
+                    RecentSearchTitle(onClick = { }, modifier = Modifier.padding(bottom = 10.dp))
+                }
+                items(
+                    items = exploreUiState.recentSearches,
+                    key = { it.festivalId },
+                ) { recentSearch ->
+                    ExploreResultItem(
+                        university = recentSearch,
+                        onItemClick = onUniversitySelect,
+                    )
+                }
+            }
         }
     }
 }
@@ -62,7 +80,7 @@ fun ExploreSearchResultList(
 private fun ExploreSearchResultListLoadingPreview() {
     FestabookTheme {
         ExploreSearchResultList(
-            searchState = SearchUiState.Loading,
+            exploreUiState = ExploreUiState(searchState = SearchUiState.Loading),
             onUniversitySelect = {},
         )
     }
@@ -78,9 +96,12 @@ private fun ExploreSearchResultListSuccessPreview() {
         )
     FestabookTheme {
         ExploreSearchResultList(
-            searchState =
-                SearchUiState.Success(
-                    universitiesFound = fakeUniversities,
+            exploreUiState =
+                ExploreUiState(
+                    searchState =
+                        SearchUiState.Success(
+                            universitiesFound = fakeUniversities,
+                        ),
                 ),
             onUniversitySelect = {},
         )
