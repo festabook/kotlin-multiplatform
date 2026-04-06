@@ -22,6 +22,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun ExploreSearchResultList(
     exploreUiState: ExploreUiState,
     onUniversitySelect: (SearchResultUiModel) -> Unit,
+    onUniversityDelete: (SearchResultUiModel) -> Unit,
     onClearRecentSearches: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -59,9 +60,10 @@ fun ExploreSearchResultList(
 
             is SearchUiState.Idle -> {
                 item {
-                    RecentSearchTitle(
+                    RecentSearchMessageView(
                         onClick = onClearRecentSearches,
                         modifier = Modifier.padding(bottom = 10.dp),
+                        isExist = exploreUiState.recentSearches.isNotEmpty(),
                     )
                 }
                 items(
@@ -71,6 +73,8 @@ fun ExploreSearchResultList(
                     ExploreResultItem(
                         university = recentSearch,
                         onItemClick = onUniversitySelect,
+                        canDelete = true,
+                        onDeleteClick = onUniversityDelete,
                     )
                 }
             }
@@ -86,6 +90,7 @@ private fun ExploreSearchResultListLoadingPreview() {
             exploreUiState = ExploreUiState(searchState = SearchUiState.Loading),
             onUniversitySelect = {},
             onClearRecentSearches = {},
+            onUniversityDelete = {},
         )
     }
 }
@@ -109,6 +114,7 @@ private fun ExploreSearchResultListSuccessPreview() {
                 ),
             onUniversitySelect = {},
             onClearRecentSearches = {},
+            onUniversityDelete = {},
         )
     }
 }

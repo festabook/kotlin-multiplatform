@@ -1,6 +1,7 @@
 package com.daedan.festabook.presentation.explore.component
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,14 +15,28 @@ import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.clear_all
+import festabookkmp.composeapp.generated.resources.no_recent_searches_message
 import festabookkmp.composeapp.generated.resources.recent_searches
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun RecentSearchTitle(
+fun RecentSearchMessageView(
     onClick: () -> Unit,
+    isExist: Boolean,
     modifier: Modifier = Modifier,
+) {
+    if (isExist) {
+        RecentSearchTitle(modifier = modifier, onClick = onClick)
+    } else {
+        NoRecentSearchTitle(modifier = modifier)
+    }
+}
+
+@Composable
+private fun RecentSearchTitle(
+    modifier: Modifier,
+    onClick: () -> Unit,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -44,7 +59,18 @@ fun RecentSearchTitle(
 }
 
 @Composable
+private fun NoRecentSearchTitle(modifier: Modifier = Modifier) {
+    Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Text(
+            text = stringResource(Res.string.no_recent_searches_message),
+            style = FestabookTypography.bodyLarge,
+            color = FestabookColor.gray800,
+        )
+    }
+}
+
+@Composable
 @Preview(showBackground = true)
 private fun RecentSearchTitlePreview() {
-    RecentSearchTitle(onClick = {})
+    RecentSearchMessageView(onClick = {}, isExist = false)
 }

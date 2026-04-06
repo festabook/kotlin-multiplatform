@@ -20,6 +20,7 @@ fun ExploreSearchContent(
     exploreUiState: ExploreUiState,
     onQueryChange: (String) -> Unit,
     onUniversitySelect: (SearchResultUiModel) -> Unit,
+    onUniversityDelete: (SearchResultUiModel) -> Unit,
     onClearRecentSearches: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -44,6 +45,7 @@ fun ExploreSearchContent(
             exploreUiState = exploreUiState,
             onUniversitySelect = onUniversitySelect,
             onClearRecentSearches = onClearRecentSearches,
+            onUniversityDelete = onUniversityDelete,
             modifier = Modifier.weight(1f),
         )
     }
@@ -68,6 +70,7 @@ private fun ExploreSearchContentPreview() {
             onQueryChange = {},
             onUniversitySelect = {},
             onClearRecentSearches = {},
+            onUniversityDelete = {},
         )
     }
 }

@@ -22,6 +22,7 @@ fun ExploreLandingContent(
     isSearchMode: Boolean,
     exploreUiState: ExploreUiState,
     onUniversitySelect: (SearchResultUiModel) -> Unit,
+    onUniversityDelete: (SearchResultUiModel) -> Unit,
     onClearRecentSearches: () -> Unit,
 ) {
     ExploreSearchBar(
@@ -46,6 +47,7 @@ fun ExploreLandingContent(
                 exploreUiState = exploreUiState,
                 onUniversitySelect = onUniversitySelect,
                 onClearRecentSearches = onClearRecentSearches,
+                onUniversityDelete = onUniversityDelete,
             )
         }
     }

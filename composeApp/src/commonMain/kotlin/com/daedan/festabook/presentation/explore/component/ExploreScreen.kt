@@ -65,6 +65,7 @@ fun ExploreScreen(
             onUniversitySelect = viewModel::onUniversitySelected,
             onBackClick = onBackClick,
             onClearRecentSearches = viewModel::onClearRecentSearches,
+            onUniversityDelete = viewModel::onRecentSearchDelete,
         )
     } else {
         ExploreLandingScreen(
@@ -73,6 +74,7 @@ fun ExploreScreen(
             onQueryChange = viewModel::onTextInputChanged,
             onUniversitySelect = viewModel::onUniversitySelected,
             onClearRecentSearches = viewModel::onClearRecentSearches,
+            onUniversityDelete = viewModel::onRecentSearchDelete,
         )
     }
 }
@@ -83,6 +85,7 @@ fun ExploreSearchScreen(
     exploreUiState: ExploreUiState,
     onQueryChange: (String) -> Unit,
     onUniversitySelect: (SearchResultUiModel) -> Unit,
+    onUniversityDelete: (SearchResultUiModel) -> Unit,
     onClearRecentSearches: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -110,6 +113,7 @@ fun ExploreSearchScreen(
                 onQueryChange = onQueryChange,
                 onUniversitySelect = onUniversitySelect,
                 onClearRecentSearches = onClearRecentSearches,
+                onUniversityDelete = onUniversityDelete,
             )
         }
     }
@@ -121,6 +125,7 @@ fun ExploreLandingScreen(
     exploreUiState: ExploreUiState,
     onQueryChange: (String) -> Unit,
     onUniversitySelect: (SearchResultUiModel) -> Unit,
+    onUniversityDelete: (SearchResultUiModel) -> Unit,
     onClearRecentSearches: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -176,6 +181,7 @@ fun ExploreLandingScreen(
                     exploreUiState = exploreUiState,
                     onUniversitySelect = onUniversitySelect,
                     onClearRecentSearches = onClearRecentSearches,
+                    onUniversityDelete = onUniversityDelete,
                 )
 
                 Spacer(modifier = Modifier.weight(0.7f))
@@ -195,6 +201,7 @@ private fun ExploreSearchScreenPreview() {
             onUniversitySelect = {},
             onBackClick = {},
             onClearRecentSearches = {},
+            onUniversityDelete = {},
         )
     }
 }
@@ -209,6 +216,7 @@ private fun ExploreLandingScreenPreview() {
             onQueryChange = {},
             onUniversitySelect = {},
             onClearRecentSearches = {},
+            onUniversityDelete = {},
         )
     }
 }
