@@ -10,7 +10,6 @@ import com.daedan.festabook.presentation.explore.model.toUiModel
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -114,7 +113,6 @@ class ExploreViewModel(
         viewModelScope.launch {
             exploreRepository.getRecentFestivalSearches().collect { festivalSearchItems ->
                 val recentSearches = festivalSearchItems.map { it.toUiModel() }
-                Napier.d("recentSearches: $recentSearches")
                 _uiState.update { it.copy(recentSearches = recentSearches) }
             }
         }

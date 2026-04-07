@@ -77,10 +77,10 @@ class FestivalLocalDataSourceImpl(
             val currentJson = preferences[FESTIVAL_SEARCH_ITEM] ?: ""
 
             val festivalSearchItemEntities =
-                if (currentJson.isNotEmpty()) {
-                    Json.decodeFromString<MutableList<FestivalSearchItemEntity>>(currentJson)
-                } else {
+                if (currentJson.isEmpty()) {
                     mutableListOf()
+                } else {
+                    Json.decodeFromString<MutableList<FestivalSearchItemEntity>>(currentJson)
                 }
 
             festivalSearchItemEntities.remove(festivalSearchItemEntity)
