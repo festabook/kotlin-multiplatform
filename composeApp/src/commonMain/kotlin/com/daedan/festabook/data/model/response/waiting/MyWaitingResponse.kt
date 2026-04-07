@@ -1,8 +1,6 @@
 package com.daedan.festabook.data.model.response.waiting
 
 import com.daedan.festabook.domain.model.MyWaiting
-import com.daedan.festabook.domain.model.WaitingInfo
-import com.daedan.festabook.domain.model.WaitingRegisterInfo
 import com.daedan.festabook.domain.model.WaitingStatus
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -11,35 +9,27 @@ import kotlinx.serialization.Serializable
 data class MyWaitingResponse(
     @SerialName("waitingId")
     val waitingId: Long,
+    @SerialName("waitingOrder")
+    val waitingOrder: Int,
+    @SerialName("partySize")
+    val partySize: Int,
     @SerialName("waitingStatus")
-    val waitingStatus: String,
-    @SerialName("placeId")
-    val placeId: Long,
-    @SerialName("placeName")
-    val placeName: String,
-    @SerialName("headCount")
-    val headCount: Int,
+    val waitingStatus: WaitingStatus,
+    @SerialName("totalWaitingTeams")
+    val totalWaitingTeams: Int,
+    @SerialName("estimatedWaitTime")
+    val estimatedWaitTime: Int,
     @SerialName("phoneNumber")
     val phoneNumber: String,
-    @SerialName("currentWaitingOrder")
-    val currentWaitingOrder: Int,
-    @SerialName("totalWaitingAmount")
-    val totalWaitingAmount: Int,
-    @SerialName("estimatedWaitingTime")
-    val estimatedWaitingTime: Int,
 )
 
-fun MyWaitingResponse.toDomain() = MyWaiting(
-    waitingId = waitingId,
-    waitingRegisterInfo = WaitingRegisterInfo(
-        placeId = placeId,
-        placeName = placeName,
-        headCount = headCount,
-        waitingInfo = WaitingInfo(phoneNumber = phoneNumber),
-    ),
-    currentWaitingOrder = currentWaitingOrder,
-    totalWaitingAmount = totalWaitingAmount,
-    estimatedWaitingTime = estimatedWaitingTime,
-    waitingStatus = runCatching { WaitingStatus.valueOf(waitingStatus) }
-        .getOrDefault(WaitingStatus.WAITING),
-)
+fun MyWaitingResponse.toDomain() =
+    MyWaiting(
+        waitingId = waitingId,
+        waitingOrder = waitingOrder,
+        partySize = partySize,
+        waitingStatus = waitingStatus,
+        totalWaitingTeams = totalWaitingTeams,
+        estimatedWaitTime = estimatedWaitTime,
+        phoneNumber = phoneNumber,
+    )

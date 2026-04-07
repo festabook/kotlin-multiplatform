@@ -6,8 +6,14 @@ import com.daedan.festabook.data.model.response.waiting.MyWaitingResponse
 import com.daedan.festabook.data.model.response.waiting.PlaceWaitingResponse
 
 interface WaitingRemoteDataSource {
-    suspend fun fetchMyWaiting(festivalId: Long): ApiResult<MyWaitingResponse>
+    suspend fun fetchMyWaiting(): ApiResult<MyWaitingResponse>
+
     suspend fun fetchPlaceWaiting(placeId: Long): ApiResult<PlaceWaitingResponse>
+
     suspend fun cancelWaiting(waitingId: Long): ApiResult<Unit>
-    suspend fun registerWaiting(placeId: Long, request: WaitingRegisterRequest): ApiResult<MyWaitingResponse>
+
+    suspend fun registerWaiting(
+        placeId: Long,
+        request: WaitingRegisterRequest,
+    ): ApiResult<MyWaitingResponse>
 }

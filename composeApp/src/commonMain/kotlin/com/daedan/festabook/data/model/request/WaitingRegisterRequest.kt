@@ -5,8 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class WaitingRegisterRequest(
-    @SerialName("headCount")
-    val headCount: Int,
-    @SerialName("phoneNumber")
-    val phoneNumber: String,
+    @SerialName("partySize")
+    val partySize: Int,
 )

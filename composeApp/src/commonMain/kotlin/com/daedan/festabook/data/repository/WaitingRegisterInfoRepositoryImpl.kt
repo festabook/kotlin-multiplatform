@@ -16,7 +16,6 @@ import dev.zacsweers.metro.Inject
 class WaitingRegisterInfoRepositoryImpl(
     private val waitingRemoteDataSource: WaitingRemoteDataSource,
 ) : WaitingRegisterInfoRepository {
-
     override suspend fun getPlaceWaiting(placeId: Long): Result<PlaceWaiting> {
         val response = waitingRemoteDataSource.fetchPlaceWaiting(placeId).toResult()
         return response.mapCatching { it.toDomain() }
@@ -24,10 +23,9 @@ class WaitingRegisterInfoRepositoryImpl(
 
     override suspend fun registerWaiting(
         placeId: Long,
-        headCount: Int,
-        phoneNumber: String,
+        partySize: Int,
     ): Result<MyWaiting> {
-        val request = WaitingRegisterRequest(headCount = headCount, phoneNumber = phoneNumber)
+        val request = WaitingRegisterRequest(partySize = partySize)
         val response = waitingRemoteDataSource.registerWaiting(placeId, request).toResult()
         return response.mapCatching { it.toDomain() }
     }

@@ -2,9 +2,10 @@ package com.daedan.festabook.domain.model
 
 data class MyWaiting(
     val waitingId: Long,
-    val waitingRegisterInfo: WaitingRegisterInfo,
-    val currentWaitingOrder: Int,
-    val totalWaitingAmount: Int,
-    val estimatedWaitingTime: Int,
+    val waitingOrder: Int,
+    val partySize: Int,
     val waitingStatus: WaitingStatus,
+    val totalWaitingTeams: Int,
+    val estimatedWaitTime: Int,
+    val phoneNumber: String,
 )

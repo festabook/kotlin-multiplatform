@@ -6,19 +6,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PlaceWaitingResponse(
-    @SerialName("totalWaitingAmount")
-    val totalWaitingAmount: Int,
-    @SerialName("estimatedWaitingTime")
-    val estimatedWaitingTime: Int,
-    @SerialName("isWaitingAvailable")
-    val isWaitingAvailable: Boolean,
-    @SerialName("hasMyWaiting")
-    val hasMyWaiting: Boolean,
+    @SerialName("totalWaitingTeams")
+    val totalWaitingTeams: Int,
+    @SerialName("estimatedWaitTime")
+    val estimatedWaitTime: Int,
 )
 
-fun PlaceWaitingResponse.toDomain() = PlaceWaiting(
-    totalWaitingAmount = totalWaitingAmount,
-    estimatedWaitingTime = estimatedWaitingTime,
-    isWaitingAvailable = isWaitingAvailable,
-    hasMyWaiting = hasMyWaiting,
-)
+fun PlaceWaitingResponse.toDomain() =
+    PlaceWaiting(
+        totalWaitingTeams = totalWaitingTeams,
+        estimatedWaitTime = estimatedWaitTime,
+    )

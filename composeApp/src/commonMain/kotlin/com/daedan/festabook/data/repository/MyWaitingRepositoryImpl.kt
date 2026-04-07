@@ -15,15 +15,16 @@ import dev.zacsweers.metro.Inject
 class MyWaitingRepositoryImpl(
     private val waitingRemoteDataSource: WaitingRemoteDataSource,
 ) : MyWaitingRepository {
-
-    override suspend fun getMyWaiting(festivalId: Long): Result<MyWaiting?> {
-        return when (val apiResult = waitingRemoteDataSource.fetchMyWaiting(festivalId)) {
-            is ApiResult.ClientError -> if (apiResult.code == 404) Result.success(null)
-                else apiResult.toResult()
+    override suspend fun getMyWaiting(): Result<MyWaiting?> =
+        when (val apiResult = waitingRemoteDataSource.fetchMyWaiting()) {
+            is ApiResult.ClientError ->
+                if (apiResult.code == 404) {
+                    Result.success(null)
+                } else {
+                    apiResult.toResult()
+                }
             else -> apiResult.toResult().mapCatching { it.toDomain() }
         }
-    }
 
-    override suspend fun cancelWaiting(waitingId: Long): Result<Unit> =
-        waitingRemoteDataSource.cancelWaiting(waitingId).toResult()
+    override suspend fun cancelWaiting(waitingId: Long): Result<Unit> = waitingRemoteDataSource.cancelWaiting(waitingId).toResult()
 }
