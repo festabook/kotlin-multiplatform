@@ -67,6 +67,7 @@ val FAKE_PLACE_DETAIL: PlaceDetailResponse =
                     timeTagId = 1L,
                 ),
             ),
+        isWaitingActive = true,
     )
 
 val FAKE_PLACES: List<PlaceResponse> =
