@@ -73,3 +73,4 @@ GoogleService-Info-RELEASE.plist
 
 /iosApp/Configuration/Debug.xcconfig
 /iosApp/Configuration/Release.xcconfig
+.worktrees/
