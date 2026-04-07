@@ -1,7 +1,7 @@
 package com.daedan.festabook.presentation.placeMap.intent.state
 
-import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.model.PlaceCategoryUiModel
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 
 sealed interface LoadState<out T> {
     data object Loading : LoadState<Nothing>

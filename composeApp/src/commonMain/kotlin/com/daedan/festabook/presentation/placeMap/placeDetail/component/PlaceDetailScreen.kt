@@ -52,13 +52,13 @@ import com.daedan.festabook.presentation.common.component.EmptyStateScreen
 import com.daedan.festabook.presentation.common.component.FestabookImage
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
 import com.daedan.festabook.presentation.common.component.URLText
+import com.daedan.festabook.presentation.placeMap.component.PlaceCategoryLabel
+import com.daedan.festabook.presentation.placeMap.model.PlaceCategoryUiModel
+import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.PlaceDetailViewModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.ImageUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiState
-import com.daedan.festabook.presentation.placeMap.component.PlaceCategoryLabel
-import com.daedan.festabook.presentation.placeMap.model.PlaceCategoryUiModel
-import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTheme
 import com.daedan.festabook.presentation.theme.FestabookTypography

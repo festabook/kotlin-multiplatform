@@ -4,10 +4,10 @@ import com.daedan.festabook.domain.repository.PlaceDetailRepository
 import com.daedan.festabook.news.FAKE_NOTICES
 import com.daedan.festabook.placeMap.FAKE_PLACES
 import com.daedan.festabook.presentation.news.notice.model.toUiModel
+import com.daedan.festabook.presentation.placeMap.model.toUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.PlaceDetailViewModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiState
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.toUiModel
-import com.daedan.festabook.presentation.placeMap.model.toUiModel
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
@@ -75,7 +75,10 @@ class PlaceDetailViewModelTest {
         runTest {
             // given
             val exception = Throwable("테스트")
-            everySuspend { placeDetailRepository.getPlaceDetail(any()) } returns Result.failure(exception)
+            everySuspend { placeDetailRepository.getPlaceDetail(any()) } returns
+                Result.failure(
+                    exception,
+                )
 
             // then
             placeDetailViewModel.loadPlaceDetail(

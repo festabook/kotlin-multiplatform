@@ -17,10 +17,10 @@ import androidx.savedstate.read
 import androidx.savedstate.write
 import com.daedan.festabook.presentation.main.FestabookRoute
 import com.daedan.festabook.presentation.main.MainTabRoute
+import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.PlaceDetailViewModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.component.PlaceDetailRoute
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
-import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.serialization.json.Json
 import kotlin.reflect.typeOf
