@@ -17,13 +17,13 @@ import com.daedan.festabook.presentation.explore.model.SearchResultUiModel
 fun ExploreLandingContent(
     query: String,
     onQueryChange: (String) -> Unit,
+    onUniversitySelect: (SearchResultUiModel) -> Unit,
+    onUniversityDelete: (SearchResultUiModel) -> Unit,
+    onClearRecentSearches: () -> Unit,
     keyboardController: SoftwareKeyboardController?,
     isError: Boolean,
     isSearchMode: Boolean,
     exploreUiState: ExploreUiState,
-    onUniversitySelect: (SearchResultUiModel) -> Unit,
-    onUniversityDelete: (SearchResultUiModel) -> Unit,
-    onClearRecentSearches: () -> Unit,
 ) {
     ExploreSearchBar(
         query = query,

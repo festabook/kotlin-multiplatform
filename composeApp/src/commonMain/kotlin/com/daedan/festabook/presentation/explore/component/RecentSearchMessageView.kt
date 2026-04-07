@@ -35,8 +35,8 @@ fun RecentSearchMessageView(
 
 @Composable
 private fun RecentSearchTitle(
-    modifier: Modifier,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
