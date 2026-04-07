@@ -72,6 +72,23 @@ class FestivalLocalDataSourceImpl(
         }
     }
 
+    override suspend fun deleteRecentFestivalSearch(festivalSearchItemEntity: FestivalSearchItemEntity) {
+        dataStore.edit { preferences ->
+            val currentJson = preferences[FESTIVAL_SEARCH_ITEM] ?: ""
+
+            val festivalSearchItemEntities =
+                if (currentJson.isNotEmpty()) {
+                    Json.decodeFromString<MutableList<FestivalSearchItemEntity>>(currentJson)
+                } else {
+                    mutableListOf()
+                }
+
+            festivalSearchItemEntities.remove(festivalSearchItemEntity)
+
+            preferences[FESTIVAL_SEARCH_ITEM] = Json.encodeToString(festivalSearchItemEntities)
+        }
+    }
+
     override fun getIsFirstVisit(): Flow<Boolean> =
         getFestivalId().map { festivalId ->
             val key = booleanPreferencesKey("${KEY_IS_FIRST_VISIT}_$festivalId")

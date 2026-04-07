@@ -64,7 +64,7 @@ class ExploreViewModel(
 
     fun onRecentSearchDelete(university: SearchResultUiModel) {
         viewModelScope.launch {
-            // TODO 제거 로직 구현 필요
+            exploreRepository.deleteRecentFestivalSearch(university.toDomain())
         }
     }
 

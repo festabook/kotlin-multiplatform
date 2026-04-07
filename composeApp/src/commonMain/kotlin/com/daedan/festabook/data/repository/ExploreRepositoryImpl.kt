@@ -45,11 +45,12 @@ class ExploreRepositoryImpl(
         festivalLocalDataSource.saveRecentFestivalSearch(festivalSearchItem.toEntity())
 
     override fun getRecentFestivalSearches(): Flow<List<FestivalSearchItem>> =
-        festivalLocalDataSource.getRecentFestivalSearches().map { entites ->
-            entites.map { it.toDomain() }
+        festivalLocalDataSource.getRecentFestivalSearches().map { entities ->
+            entities.map { it.toDomain() }
         }
 
-    override suspend fun clearRecentFestivalSearches() {
-        festivalLocalDataSource.clearRecentFestivalSearches()
-    }
+    override suspend fun clearRecentFestivalSearches() = festivalLocalDataSource.clearRecentFestivalSearches()
+
+    override suspend fun deleteRecentFestivalSearch(festivalSearchItem: FestivalSearchItem) =
+        festivalLocalDataSource.deleteRecentFestivalSearch(festivalSearchItem.toEntity())
 }

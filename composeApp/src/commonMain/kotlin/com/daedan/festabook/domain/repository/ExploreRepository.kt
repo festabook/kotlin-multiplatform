@@ -15,4 +15,6 @@ interface ExploreRepository {
     fun getRecentFestivalSearches(): Flow<List<FestivalSearchItem>>
 
     suspend fun clearRecentFestivalSearches()
+
+    suspend fun deleteRecentFestivalSearch(festivalSearchItem: FestivalSearchItem)
 }
