@@ -11,6 +11,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,6 +38,8 @@ class ExploreViewModel(
         MutableSharedFlow<ExploreSideEffect>(replay = 0, extraBufferCapacity = 1)
     val sideEffect = _sideEffect.asSharedFlow()
 
+    private var recentSearchJob: Job? = null
+
     init {
         checkFestivalId()
         observeRecentSearches()
@@ -44,10 +47,11 @@ class ExploreViewModel(
     }
 
     fun onUniversitySelected(university: SearchResultUiModel) {
+        recentSearchJob?.cancel()
         viewModelScope.launch {
             exploreRepository.saveFestivalId(university.festivalId)
-            _sideEffect.emit(ExploreSideEffect.NavigateToMain(university))
             exploreRepository.saveRecentFestivalSearch(university.toDomain())
+            _sideEffect.emit(ExploreSideEffect.NavigateToMain(university))
         }
     }
 
@@ -110,11 +114,12 @@ class ExploreViewModel(
     }
 
     private fun observeRecentSearches() {
-        viewModelScope.launch {
-            exploreRepository.getRecentFestivalSearches().collect { festivalSearchItems ->
-                val recentSearches = festivalSearchItems.map { it.toUiModel() }
-                _uiState.update { it.copy(recentSearches = recentSearches) }
+        recentSearchJob =
+            viewModelScope.launch {
+                exploreRepository.getRecentFestivalSearches().collect { festivalSearchItems ->
+                    val recentSearches = festivalSearchItems.map { it.toUiModel() }
+                    _uiState.update { it.copy(recentSearches = recentSearches) }
+                }
             }
-        }
     }
 }
