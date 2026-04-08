@@ -281,28 +281,48 @@ val updateIosVersion by tasks.registering {
     val versionName = providers.gradleProperty("APP_VERSION_NAME")
     val versionCode = providers.gradleProperty("APP_VERSION_CODE")
 
-    inputs.file(plistFile)
-    inputs.property("versionName", versionName)
-    inputs.property("versionCode", versionCode)
-
     doLast {
         val file = plistFile.asFile
-
         var text = file.readText()
 
-        text = text.replace(
-            Regex("<key>CFBundleShortVersionString</key>\\s*<string>.*</string>"),
-            "<key>CFBundleShortVersionString</key>\n\t\t<string>${versionName.get()}</string>"
-        )
+        // CFBundleShortVersionString
+        text = if (text.contains("<key>CFBundleShortVersionString</key>")) {
+            text.replace(
+                Regex("<key>CFBundleShortVersionString</key>\\s*<string>.*</string>"),
+                "<key>CFBundleShortVersionString</key>\n\t\t<string>${versionName.get()}</string>"
+            )
+        } else {
+            text.replace(
+                "</dict>",
+                """
+                    <key>CFBundleShortVersionString</key>
+                    <string>${versionName.get()}</string>
+                    </dict>
+                    """.trimIndent()
+            )
+        }
 
-        text = text.replace(
-            Regex("<key>CFBundleVersion</key>\\s*<string>.*</string>"),
-            "<key>CFBundleVersion</key>\n\t\t<string>${versionCode.get()}</string>"
-        )
+        // CFBundleVersion
+        text = if (text.contains("<key>CFBundleVersion</key>")) {
+            text.replace(
+                Regex("<key>CFBundleVersion</key>\\s*<string>.*</string>"),
+                "<key>CFBundleVersion</key>\n\t\t<string>${versionCode.get()}</string>"
+            )
+        } else {
+            text.replace(
+                "</dict>",
+                """
+                    <key>CFBundleVersion</key>
+                    <string>${versionCode.get()}</string>
+                    </dict>
+                    """.trimIndent()
+            )
+        }
 
         file.writeText(text)
     }
 }
+
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile>().configureEach {
     dependsOn(updateIosVersion)
