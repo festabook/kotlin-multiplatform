@@ -39,11 +39,8 @@ class FestivalLocalDataSourceImpl(
             val currentJson = preferences[FESTIVAL_SEARCH_ITEM] ?: ""
 
             val currentList =
-                if (currentJson.isEmpty()) {
-                    emptyList<FestivalSearchItemEntity>()
-                } else {
-                    Json.decodeFromString(currentJson)
-                }
+                decodeFromStringOrDefault<List<FestivalSearchItemEntity>>(currentJson, emptyList())
+
             val updatedList =
                 (
                     listOf(festivalSearchItemEntity) +
@@ -76,11 +73,10 @@ class FestivalLocalDataSourceImpl(
             val currentJson = preferences[FESTIVAL_SEARCH_ITEM] ?: ""
 
             val festivalSearchItemEntities =
-                if (currentJson.isEmpty()) {
-                    mutableListOf()
-                } else {
-                    Json.decodeFromString<MutableList<FestivalSearchItemEntity>>(currentJson)
-                }
+                decodeFromStringOrDefault<MutableList<FestivalSearchItemEntity>>(
+                    currentJson,
+                    mutableListOf(),
+                )
 
             festivalSearchItemEntities.remove(festivalSearchItemEntity)
 
@@ -105,5 +101,17 @@ class FestivalLocalDataSourceImpl(
         private const val MAX_RECENT_SEARCH_COUNT = 5
         private val FESTIVAL_SEARCH_ITEM = stringPreferencesKey("festival_search_item")
         private val KEY_FESTIVAL_ID = longPreferencesKey("festival_id")
+
+        private inline fun <reified T> decodeFromStringOrDefault(
+            json: String,
+            default: T,
+        ): T =
+            runCatching {
+                Json.decodeFromString<T>(json)
+            }.onFailure {
+                // TODO 실패 로그 필요
+            }.getOrElse {
+                default
+            }
     }
 }
