@@ -47,10 +47,9 @@ class FestivalLocalDataSourceImpl(
             val updatedList =
                 (
                     listOf(festivalSearchItemEntity) +
-                        currentList
-                            .filter { it.festivalId != festivalSearchItemEntity.festivalId }
-                            .take(MAX_RECENT_SEARCH_COUNT)
-                )
+                        currentList.filter { it.festivalId != festivalSearchItemEntity.festivalId }
+
+                ).take(MAX_RECENT_SEARCH_COUNT)
 
             preferences[FESTIVAL_SEARCH_ITEM] = Json.encodeToString(updatedList)
         }
