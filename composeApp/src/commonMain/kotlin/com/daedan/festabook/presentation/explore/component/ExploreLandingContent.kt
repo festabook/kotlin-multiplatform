@@ -24,13 +24,14 @@ fun ExploreLandingContent(
     isError: Boolean,
     isSearchMode: Boolean,
     exploreUiState: ExploreUiState,
+    modifier: Modifier = Modifier,
 ) {
     ExploreSearchBar(
         query = query,
         onQueryChange = onQueryChange,
         onSearch = { keyboardController?.hide() },
         isError = isError,
-        modifier = Modifier.padding(horizontal = 20.dp),
+        modifier = modifier.padding(horizontal = 20.dp),
     )
 
     AnimatedContent(
@@ -41,6 +42,7 @@ fun ExploreLandingContent(
                 initialContentExit = fadeOut(tween(200)),
             )
         },
+        modifier = modifier,
     ) { searching ->
         if (searching) {
             ExploreSearchResultList(
