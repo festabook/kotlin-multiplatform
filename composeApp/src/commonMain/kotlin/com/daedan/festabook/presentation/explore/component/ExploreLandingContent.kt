@@ -5,6 +5,7 @@ import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,31 +27,32 @@ fun ExploreLandingContent(
     exploreUiState: ExploreUiState,
     modifier: Modifier = Modifier,
 ) {
-    ExploreSearchBar(
-        query = query,
-        onQueryChange = onQueryChange,
-        onSearch = { keyboardController?.hide() },
-        isError = isError,
-        modifier = modifier.padding(horizontal = 20.dp),
-    )
+    Column(modifier = modifier) {
+        ExploreSearchBar(
+            query = query,
+            onQueryChange = onQueryChange,
+            onSearch = { keyboardController?.hide() },
+            isError = isError,
+            modifier = Modifier.padding(horizontal = 20.dp),
+        )
 
-    AnimatedContent(
-        targetState = isSearchMode,
-        transitionSpec = {
-            ContentTransform(
-                targetContentEnter = fadeIn(tween(200)),
-                initialContentExit = fadeOut(tween(200)),
-            )
-        },
-        modifier = modifier,
-    ) { searching ->
-        if (searching) {
-            ExploreSearchResultList(
-                exploreUiState = exploreUiState,
-                onUniversitySelect = onUniversitySelect,
-                onClearRecentSearches = onClearRecentSearches,
-                onUniversityDelete = onUniversityDelete,
-            )
+        AnimatedContent(
+            targetState = isSearchMode,
+            transitionSpec = {
+                ContentTransform(
+                    targetContentEnter = fadeIn(tween(200)),
+                    initialContentExit = fadeOut(tween(200)),
+                )
+            },
+        ) { searching ->
+            if (searching) {
+                ExploreSearchResultList(
+                    exploreUiState = exploreUiState,
+                    onUniversitySelect = onUniversitySelect,
+                    onClearRecentSearches = onClearRecentSearches,
+                    onUniversityDelete = onUniversityDelete,
+                )
+            }
         }
     }
 }
