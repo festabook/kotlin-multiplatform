@@ -61,7 +61,7 @@ fun ExploreSearchResultList(
             is SearchUiState.Idle -> {
                 item {
                     RecentSearchMessageView(
-                        onClick = onClearRecentSearches,
+                        onClearAllClick = onClearRecentSearches,
                         modifier = Modifier.padding(bottom = 10.dp),
                         isExist = exploreUiState.recentSearches.isNotEmpty(),
                     )

@@ -22,12 +22,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun RecentSearchMessageView(
-    onClick: () -> Unit,
+    onClearAllClick: () -> Unit,
     isExist: Boolean,
     modifier: Modifier = Modifier,
 ) {
     if (isExist) {
-        RecentSearchTitle(modifier = modifier, onClick = onClick)
+        RecentSearchTitle(modifier = modifier, onClearAllClick = onClearAllClick)
     } else {
         NoRecentSearchTitle(modifier = modifier)
     }
@@ -35,7 +35,7 @@ fun RecentSearchMessageView(
 
 @Composable
 private fun RecentSearchTitle(
-    onClick: () -> Unit,
+    onClearAllClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -48,7 +48,7 @@ private fun RecentSearchTitle(
             style = FestabookTypography.titleLarge,
             color = FestabookColor.gray800,
         )
-        TextButton(onClick = onClick, contentPadding = PaddingValues(0.dp)) {
+        TextButton(onClick = onClearAllClick, contentPadding = PaddingValues(0.dp)) {
             Text(
                 text = stringResource(Res.string.clear_all),
                 style = FestabookTypography.bodyLarge,
@@ -72,5 +72,5 @@ private fun NoRecentSearchTitle(modifier: Modifier = Modifier) {
 @Composable
 @Preview(showBackground = true)
 private fun RecentSearchTitlePreview() {
-    RecentSearchMessageView(onClick = {}, isExist = false)
+    RecentSearchMessageView(onClearAllClick = {}, isExist = false)
 }
