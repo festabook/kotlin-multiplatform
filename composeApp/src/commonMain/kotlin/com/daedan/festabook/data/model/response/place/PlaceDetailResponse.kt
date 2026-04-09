@@ -69,7 +69,7 @@ fun PlaceDetailResponse.toDomain() =
         startTime = startTime.toLocalTime(),
         endTime = endTime.toLocalTime(),
         images = toPlaceDetailImages(),
-        isWaitingAvailable = isWaitingActive,
+        isWaitingActive = isWaitingActive,
     )
 
 private fun PlaceDetailResponse.toPlace() =

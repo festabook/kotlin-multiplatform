@@ -10,7 +10,7 @@ data class PlaceDetail(
     val startTime: LocalTime?,
     val endTime: LocalTime?,
     private val images: List<PlaceDetailImage>,
-    val isWaitingAvailable: Boolean,
+    val isWaitingActive: Boolean,
 ) {
     val sortedNotices: List<Notice> =
         notices

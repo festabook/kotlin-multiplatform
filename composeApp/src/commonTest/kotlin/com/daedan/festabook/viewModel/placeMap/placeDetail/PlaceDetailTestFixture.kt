@@ -25,7 +25,7 @@ val FAKE_PLACE_DETAIL =
                     sequence = 1,
                 ),
             ),
-        isWaitingAvailable = true,
+        isWaitingActive = true,
     )
 
 val FAKE_ETC_PLACE_DETAIL =
@@ -52,5 +52,5 @@ val FAKE_ETC_PLACE_DETAIL =
         startTime = null,
         endTime = null,
         images = emptyList(),
-        isWaitingAvailable = false,
+        isWaitingActive = false,
     )
