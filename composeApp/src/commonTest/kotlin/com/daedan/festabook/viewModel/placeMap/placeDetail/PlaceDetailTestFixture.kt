@@ -1,4 +1,4 @@
-package com.daedan.festabook.placeDetail
+package com.daedan.festabook.placeMap.placeDetail
 
 import com.daedan.festabook.domain.model.Place
 import com.daedan.festabook.domain.model.PlaceCategory

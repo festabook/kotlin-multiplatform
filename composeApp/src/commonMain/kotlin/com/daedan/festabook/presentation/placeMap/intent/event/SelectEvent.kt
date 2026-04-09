@@ -1,8 +1,8 @@
 package com.daedan.festabook.presentation.placeMap.intent.event
 
 import com.daedan.festabook.domain.model.TimeTag
-import com.daedan.festabook.presentation.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.intent.state.LoadState
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 
 sealed interface SelectEvent : PlaceMapEvent {
     data class OnPlaceClick(
