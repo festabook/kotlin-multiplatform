@@ -30,6 +30,7 @@ fun fakePlaceDetailResponse(placeId: Long) =
                     timeTagId = 1L,
                 ),
             ),
+        isWaitingActive = false,
     )
 
 fun fakePlaceDetailResponseWithNotice(placeId: Long) =
@@ -59,6 +60,7 @@ fun fakePlaceDetailResponseWithNotice(placeId: Long) =
         placeImages = emptyList(),
         title = null,
         timeTags = emptyList(),
+        isWaitingActive = false,
     )
 
 fun fakePlaceDetailResponseWithImage(placeId: Long) =
@@ -86,4 +88,5 @@ fun fakePlaceDetailResponseWithImage(placeId: Long) =
             ),
         title = null,
         timeTags = emptyList(),
+        isWaitingActive = false,
     )

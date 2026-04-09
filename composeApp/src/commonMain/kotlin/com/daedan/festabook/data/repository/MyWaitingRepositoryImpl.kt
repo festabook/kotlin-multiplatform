@@ -1,6 +1,5 @@
 package com.daedan.festabook.data.repository
 
-import com.daedan.festabook.data.datasource.remote.ApiResult
 import com.daedan.festabook.data.datasource.remote.waiting.WaitingRemoteDataSource
 import com.daedan.festabook.data.model.response.waiting.toDomain
 import com.daedan.festabook.data.util.toResult
@@ -15,16 +14,11 @@ import dev.zacsweers.metro.Inject
 class MyWaitingRepositoryImpl(
     private val waitingRemoteDataSource: WaitingRemoteDataSource,
 ) : MyWaitingRepository {
-    override suspend fun getMyWaiting(): Result<MyWaiting?> =
-        when (val apiResult = waitingRemoteDataSource.fetchMyWaiting()) {
-            is ApiResult.ClientError ->
-                if (apiResult.code == 404) {
-                    Result.success(null)
-                } else {
-                    apiResult.toResult()
-                }
-            else -> apiResult.toResult().mapCatching { it.toDomain() }
-        }
+    override suspend fun getMyWaiting(): Result<MyWaiting?> {
+        val existResult = waitingRemoteDataSource.fetchMyWaitingExist().toResult().getOrElse { return Result.failure(it) }
+        if (!existResult.exists) return Result.success(null)
+        return waitingRemoteDataSource.fetchMyWaiting().toResult().mapCatching { it.toDomain() }
+    }
 
     override suspend fun cancelWaiting(waitingId: Long): Result<Unit> = waitingRemoteDataSource.cancelWaiting(waitingId).toResult()
 }

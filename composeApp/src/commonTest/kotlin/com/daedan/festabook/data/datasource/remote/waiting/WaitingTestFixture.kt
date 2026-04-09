@@ -3,6 +3,7 @@ package com.daedan.festabook.data.datasource.remote.waiting
 import com.daedan.festabook.data.model.request.WaitingRegisterRequest
 import com.daedan.festabook.data.model.response.waiting.MyWaitingResponse
 import com.daedan.festabook.data.model.response.waiting.PlaceWaitingResponse
+import com.daedan.festabook.data.model.response.waiting.WaitingExistResponse
 import com.daedan.festabook.domain.model.WaitingStatus
 import de.jensklingenberg.ktorfit.Response
 import dev.mokkery.answering.returns
@@ -44,6 +45,24 @@ val FAKE_MY_WAITING_RESPONSE_WRAPPED: Response<MyWaitingResponse> =
         rawResponse = FAKE_HTTP_RESPONSE,
         body = FAKE_MY_WAITING_RESPONSE,
     ) as Response<MyWaitingResponse>
+
+val FAKE_WAITING_EXIST_RESPONSE = WaitingExistResponse(exists = true)
+
+val FAKE_WAITING_NOT_EXIST_RESPONSE = WaitingExistResponse(exists = false)
+
+@Suppress("UNCHECKED_CAST")
+val FAKE_WAITING_EXIST_RESPONSE_WRAPPED: Response<WaitingExistResponse> =
+    Response.success(
+        rawResponse = FAKE_HTTP_RESPONSE,
+        body = FAKE_WAITING_EXIST_RESPONSE,
+    ) as Response<WaitingExistResponse>
+
+@Suppress("UNCHECKED_CAST")
+val FAKE_WAITING_NOT_EXIST_RESPONSE_WRAPPED: Response<WaitingExistResponse> =
+    Response.success(
+        rawResponse = FAKE_HTTP_RESPONSE,
+        body = FAKE_WAITING_NOT_EXIST_RESPONSE,
+    ) as Response<WaitingExistResponse>
 
 @Suppress("UNCHECKED_CAST")
 val FAKE_PLACE_WAITING_RESPONSE_WRAPPED: Response<PlaceWaitingResponse> =
