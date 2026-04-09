@@ -6,7 +6,6 @@ import com.daedan.festabook.DefaultFestabookAppDelegate
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import platform.Foundation.NSLog
 import platform.darwin.NSObject
 
 @OptIn(ExperimentalForeignApi::class)
@@ -21,10 +20,13 @@ class DefaultFirebaseMessagingDelegate(
         didReceiveRegistrationToken: String?,
     ) {
         // FCM 토큰 등록
-        didReceiveRegistrationToken?.let {
-            scope.launch {
-                val result = deviceRepository.registerDevice(it)
-                NSLog(result.toString())
+        FIRMessaging.messaging().tokenWithCompletion { token, error ->
+            token?.let {
+                println("최신 토큰: $it")
+                println("error: $error")
+                scope.launch {
+                    deviceRepository.registerDevice(it)
+                }
             }
         }
     }
