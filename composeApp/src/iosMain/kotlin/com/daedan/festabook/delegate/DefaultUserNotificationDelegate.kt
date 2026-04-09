@@ -1,5 +1,6 @@
 package com.daedan.festabook.delegate
 
+import dev.zacsweers.metro.Inject
 import platform.Foundation.NSNotificationCenter
 import platform.UserNotifications.UNNotification
 import platform.UserNotifications.UNNotificationPresentationOptionAlert
@@ -11,6 +12,7 @@ import platform.UserNotifications.UNUserNotificationCenterDelegateProtocol
 import platform.darwin.NSObject
 
 // 임시
+@Inject
 class DefaultUserNotificationDelegate :
     NSObject(),
     UNUserNotificationCenterDelegateProtocol {

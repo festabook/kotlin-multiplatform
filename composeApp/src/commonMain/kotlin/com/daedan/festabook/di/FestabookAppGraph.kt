@@ -2,6 +2,7 @@ package com.daedan.festabook.di
 
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Named
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metrox.viewmodel.MetroViewModelFactory
@@ -16,5 +17,6 @@ interface FestabookAppGraph {
 
     @Provides
     @SingleIn(AppScope::class)
-    fun provideCoroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    @Named("IO")
+    fun provideIOCoroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 }
