@@ -11,6 +11,7 @@ import com.google.firebase.crashlytics.crashlytics
 import com.google.firebase.messaging.FirebaseMessaging
 import com.naver.maps.map.NaverMapSdk
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.Named
 import dev.zacsweers.metro.createGraphFactory
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
@@ -29,6 +30,7 @@ class FestabookApp : Application() {
     private lateinit var deviceRepository: DeviceRepository
 
     @Inject
+    @Named("IO")
     private lateinit var applicationScope: CoroutineScope
 
     override fun onCreate() {
