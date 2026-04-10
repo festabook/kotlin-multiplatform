@@ -9,11 +9,7 @@ import com.daedan.festabook.presentation.splash.platform.AppVersionManager
 import de.jensklingenberg.ktorfit.Ktorfit
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
-import dev.zacsweers.metro.Named
 import dev.zacsweers.metro.Provides
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 
 @DependencyGraph(AppScope::class)
 interface IosAppGraph : FestabookAppGraph {
@@ -26,8 +22,4 @@ interface IosAppGraph : FestabookAppGraph {
 
     @Provides
     fun provideAppVersionService(ktorfit: Ktorfit): AppVersionService = ktorfit.createAppVersionService()
-
-    @Provides
-    @Named("Main")
-    fun provideMainCoroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 }

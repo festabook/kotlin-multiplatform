@@ -4,30 +4,45 @@ import cocoapods.FirebaseMessaging.FIRMessaging
 import cocoapods.FirebaseMessaging.FIRMessagingDelegateProtocol
 import com.daedan.festabook.domain.repository.DeviceRepository
 import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.Named
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import platform.darwin.NSObject
 
-@OptIn(ExperimentalForeignApi::class)
+@OptIn(ExperimentalForeignApi::class, FlowPreview::class)
 @Inject
 class DefaultFirebaseMessagingDelegate(
-    @param:Named("Main") private val scope: CoroutineScope,
+    private val scope: CoroutineScope,
     private val deviceRepository: DeviceRepository,
 ) : NSObject(),
     FIRMessagingDelegateProtocol {
+    private val currentToken = MutableSharedFlow<String>(replay = 1)
+
+    init {
+        scope.launch {
+            val savedToken = deviceRepository.getFcmToken()
+            currentToken
+                .debounce(3000L)
+                .distinctUntilChanged()
+                .collectLatest { token ->
+                    if (savedToken == token) return@collectLatest
+                    deviceRepository.registerDevice(token)
+                }
+        }
+    }
+
     override fun messaging(
         messaging: FIRMessaging,
         didReceiveRegistrationToken: String?,
     ) {
-        FIRMessaging.messaging().tokenWithCompletion { token, error ->
-            token?.let {
-                println("최신 토큰: $it")
-                println("error: $error")
-                scope.launch {
-                    deviceRepository.registerDevice(it)
-                }
+        didReceiveRegistrationToken?.let {
+            scope.launch {
+                currentToken.emit(it)
             }
         }
     }

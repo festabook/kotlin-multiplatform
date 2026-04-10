@@ -10,7 +10,6 @@ import com.daedan.festabook.domain.repository.DeviceRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.Named
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +24,7 @@ class DeviceRepositoryImpl(
     private val deviceRemoteDataSource: DeviceRemoteDataSource,
     private val deviceLocalDataSource: DeviceLocalDataSource,
     private val fcmDataSource: FcmDataSource,
-    @Named("IO") coroutineScope: CoroutineScope,
+    coroutineScope: CoroutineScope,
 ) : DeviceRepository {
     private val cachedFcmToken: StateFlow<String?> =
         fcmDataSource.getFcmToken().stateIn(
@@ -42,8 +41,6 @@ class DeviceRepositoryImpl(
         )
 
     override suspend fun registerDevice(fcmToken: String): Result<Unit> {
-        fcmDataSource.saveFcmToken(fcmToken)
-
         val deviceIdentifier =
             deviceLocalDataSource
                 .getUuid()
@@ -59,6 +56,7 @@ class DeviceRepositoryImpl(
             ).toResult()
             .onSuccess {
                 saveDeviceId(it.id)
+                fcmDataSource.saveFcmToken(fcmToken)
                 // Timber.d("기기 등록 성공! 서버에서 받은 ID: $id")
             }.onFailure {
                 // Timber.e(throwable, "MainViewModel: 기기 등록 실패: ${throwable.message}")

@@ -2,7 +2,6 @@ package com.daedan.festabook.delegate
 
 import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
 import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.Named
 import io.github.aakira.napier.Napier
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.CoroutineScope
@@ -23,11 +22,14 @@ import platform.UserNotifications.UNUserNotificationCenter
 import platform.UserNotifications.UNUserNotificationCenterDelegateProtocol
 import platform.darwin.NSObject
 
+private const val FESTIVAL_ID = "festivalId"
+private const val ANNOUNCEMENT_ID = "announcementId"
+
 // 임시
 @Inject
 class DefaultUserNotificationDelegate(
     private val festivalLocalDataSource: FestivalLocalDataSource,
-    @param:Named("IO") private val scope: CoroutineScope,
+    private val scope: CoroutineScope,
 ) : NSObject(),
     UNUserNotificationCenterDelegateProtocol {
     override fun userNotificationCenter(
@@ -48,17 +50,22 @@ class DefaultUserNotificationDelegate(
 
         val title = content.title.ifBlank { "기본 제목" }
         val body = content.body.ifBlank { "기본 내용" }
-        val festivalId = userInfo["festivalId"] as? String ?: "-1"
-        val announcementId = userInfo["announcementId"] as? String ?: "-1"
-        val imagePath = ""
+        val festivalId = userInfo[FESTIVAL_ID] as? String ?: "-1"
+        val announcementId = userInfo[ANNOUNCEMENT_ID] as? String ?: "-1"
+        val imagePath =
+            platform.Foundation.NSBundle.mainBundle.pathForResource(
+                name = "logo_festabook_icon",
+                ofType = "png",
+            )
 
-        showLocalNotificationWithImage(
+        showNotification(
             title = title,
             body = body,
             festivalId = festivalId,
             announcementId = announcementId,
             imagePath = imagePath,
         )
+
         withCompletionHandler(0u)
     }
 
@@ -68,9 +75,9 @@ class DefaultUserNotificationDelegate(
         withCompletionHandler: () -> Unit,
     ) {
         val userInfo = didReceiveNotificationResponse.notification.request.content.userInfo
-        val festivalId = userInfo["festivalId"] as? String ?: "-1"
+        val festivalId = userInfo[FESTIVAL_ID] as? String ?: "-1"
         val announcementId =
-            userInfo["announcementId"] ?: run {
+            userInfo[ANNOUNCEMENT_ID] ?: run {
                 withCompletionHandler()
                 return
             }
@@ -83,7 +90,7 @@ class DefaultUserNotificationDelegate(
             NSNotificationCenter.defaultCenter.postNotificationName(
                 aName = "fcmNewsNotification",
                 `object` = null,
-                userInfo = mapOf("announcementId" to announcementId),
+                userInfo = mapOf(ANNOUNCEMENT_ID to announcementId),
             )
         }
 
@@ -91,7 +98,7 @@ class DefaultUserNotificationDelegate(
     }
 
     @OptIn(ExperimentalForeignApi::class)
-    private fun showLocalNotificationWithImage(
+    private fun showNotification(
         title: String,
         body: String,
         festivalId: String,
@@ -102,7 +109,7 @@ class DefaultUserNotificationDelegate(
             UNMutableNotificationContent().apply {
                 setTitle(title)
                 setBody(body)
-                setUserInfo(mapOf("festivalId" to festivalId, "announcementId" to announcementId))
+                setUserInfo(mapOf(FESTIVAL_ID to festivalId, ANNOUNCEMENT_ID to announcementId))
 
                 imagePath?.let { path ->
                     val fileUrl = NSURL.fileURLWithPath(path)
@@ -131,10 +138,5 @@ class DefaultUserNotificationDelegate(
             .addNotificationRequest(request) { error ->
                 if (error != null) Napier.e("fcm 에러: $error")
             }
-    }
-
-    companion object {
-        private const val festivalId = "festivalId"
-        private const val announcementId = ""
     }
 }
