@@ -8,11 +8,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import platform.Foundation.NSDate
 import platform.Foundation.NSNotificationCenter
-import platform.Foundation.NSURL
 import platform.Foundation.timeIntervalSince1970
 import platform.UserNotifications.UNMutableNotificationContent
 import platform.UserNotifications.UNNotification
-import platform.UserNotifications.UNNotificationAttachment
 import platform.UserNotifications.UNNotificationPresentationOptionAlert
 import platform.UserNotifications.UNNotificationPresentationOptionSound
 import platform.UserNotifications.UNNotificationPresentationOptions
@@ -52,18 +50,12 @@ class DefaultUserNotificationDelegate(
         val body = content.body.ifBlank { "기본 내용" }
         val festivalId = userInfo[FESTIVAL_ID] as? String ?: "-1"
         val announcementId = userInfo[ANNOUNCEMENT_ID] as? String ?: "-1"
-        val imagePath =
-            platform.Foundation.NSBundle.mainBundle.pathForResource(
-                name = "logo_festabook_icon",
-                ofType = "png",
-            )
 
         showNotification(
             title = title,
             body = body,
             festivalId = festivalId,
             announcementId = announcementId,
-            imagePath = imagePath,
         )
 
         withCompletionHandler(0u)
@@ -103,27 +95,12 @@ class DefaultUserNotificationDelegate(
         body: String,
         festivalId: String,
         announcementId: String,
-        imagePath: String?,
     ) {
         val content =
             UNMutableNotificationContent().apply {
                 setTitle(title)
                 setBody(body)
                 setUserInfo(mapOf(FESTIVAL_ID to festivalId, ANNOUNCEMENT_ID to announcementId))
-
-                imagePath?.let { path ->
-                    val fileUrl = NSURL.fileURLWithPath(path)
-                    val attachment =
-                        UNNotificationAttachment.attachmentWithIdentifier(
-                            identifier = "image_attach_${NSDate().timeIntervalSince1970}",
-                            URL = fileUrl,
-                            options = null,
-                            error = null,
-                        )
-                    if (attachment != null) {
-                        setAttachments(listOf(attachment))
-                    }
-                }
             }
 
         val request =
