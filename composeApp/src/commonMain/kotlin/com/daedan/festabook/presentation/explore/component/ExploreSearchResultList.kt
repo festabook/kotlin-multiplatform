@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.daedan.festabook.presentation.explore.ExploreUiState
 import com.daedan.festabook.presentation.explore.SearchUiState
 import com.daedan.festabook.presentation.explore.model.SearchResultUiModel
 import com.daedan.festabook.presentation.theme.FestabookColor
@@ -19,8 +20,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ExploreSearchResultList(
-    searchState: SearchUiState,
+    exploreUiState: ExploreUiState,
     onUniversitySelect: (SearchResultUiModel) -> Unit,
+    onUniversityDelete: (SearchResultUiModel) -> Unit,
+    onClearRecentSearches: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -29,7 +32,7 @@ fun ExploreSearchResultList(
                 .fillMaxSize()
                 .padding(horizontal = 20.dp),
     ) {
-        when (searchState) {
+        when (val searchUiState = exploreUiState.searchState) {
             is SearchUiState.Loading -> {
                 item {
                     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -42,7 +45,10 @@ fun ExploreSearchResultList(
             }
 
             is SearchUiState.Success -> {
-                items(searchState.universitiesFound) { university ->
+                items(
+                    items = searchUiState.universitiesFound,
+                    key = { it.festivalId },
+                ) { university ->
                     ExploreResultItem(
                         university = university,
                         onItemClick = onUniversitySelect,
@@ -52,7 +58,26 @@ fun ExploreSearchResultList(
 
             is SearchUiState.Error -> {}
 
-            is SearchUiState.Idle -> {}
+            is SearchUiState.Idle -> {
+                item {
+                    RecentSearchMessageView(
+                        onClearAllClick = onClearRecentSearches,
+                        modifier = Modifier.padding(bottom = 10.dp),
+                        isExist = exploreUiState.recentSearches.isNotEmpty(),
+                    )
+                }
+                items(
+                    items = exploreUiState.recentSearches,
+                    key = { it.festivalId },
+                ) { recentSearch ->
+                    ExploreResultItem(
+                        university = recentSearch,
+                        onItemClick = onUniversitySelect,
+                        canDelete = true,
+                        onDeleteClick = onUniversityDelete,
+                    )
+                }
+            }
         }
     }
 }
@@ -62,8 +87,10 @@ fun ExploreSearchResultList(
 private fun ExploreSearchResultListLoadingPreview() {
     FestabookTheme {
         ExploreSearchResultList(
-            searchState = SearchUiState.Loading,
+            exploreUiState = ExploreUiState(searchState = SearchUiState.Loading),
             onUniversitySelect = {},
+            onClearRecentSearches = {},
+            onUniversityDelete = {},
         )
     }
 }
@@ -78,11 +105,16 @@ private fun ExploreSearchResultListSuccessPreview() {
         )
     FestabookTheme {
         ExploreSearchResultList(
-            searchState =
-                SearchUiState.Success(
-                    universitiesFound = fakeUniversities,
+            exploreUiState =
+                ExploreUiState(
+                    searchState =
+                        SearchUiState.Success(
+                            universitiesFound = fakeUniversities,
+                        ),
                 ),
             onUniversitySelect = {},
+            onClearRecentSearches = {},
+            onUniversityDelete = {},
         )
     }
 }
