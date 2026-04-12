@@ -33,6 +33,7 @@ object DefaultFestabookAppDelegate : FestabookAppDelegate {
         appGraph.userNotificationDelegate
     }
 
+    // 앱 최초 실행
     override fun application(
         application: UIApplication,
         launchOptions: Map<Any?, *>?,
@@ -53,6 +54,7 @@ object DefaultFestabookAppDelegate : FestabookAppDelegate {
         deviceToken: NSData,
     ) {
         FIRMessaging.messaging().APNSToken = deviceToken
+        firebaseMessagingDelegate.registerFcmToken()
     }
 
     // 백그라운드에서 실행

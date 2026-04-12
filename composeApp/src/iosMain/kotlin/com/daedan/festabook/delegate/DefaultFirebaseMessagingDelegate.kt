@@ -4,12 +4,10 @@ import cocoapods.FirebaseMessaging.FIRMessaging
 import cocoapods.FirebaseMessaging.FIRMessagingDelegateProtocol
 import com.daedan.festabook.domain.repository.DeviceRepository
 import dev.zacsweers.metro.Inject
+import io.github.aakira.napier.Napier
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import platform.darwin.NSObject
 
@@ -20,25 +18,22 @@ class DefaultFirebaseMessagingDelegate(
     private val deviceRepository: DeviceRepository,
 ) : NSObject(),
     FIRMessagingDelegateProtocol {
-    private val currentToken = MutableSharedFlow<String>(replay = 1)
-
-    init {
-        scope.launch {
-            currentToken
-                .debounce(3000L)
-                .collectLatest { token ->
-                    deviceRepository.registerDevice(token)
-                }
-        }
-    }
-
     override fun messaging(
         messaging: FIRMessaging,
         didReceiveRegistrationToken: String?,
     ) {
-        didReceiveRegistrationToken?.let {
-            scope.launch {
-                currentToken.emit(it)
+//        Napier.d("Refreshed token: $didReceiveRegistrationToken")
+    }
+
+    fun registerFcmToken() {
+        FIRMessaging.messaging().tokenWithCompletion { token, error ->
+            if (error != null) Napier.e("fcmTokenError: $error")
+            Napier.d("$token")
+
+            token?.let {
+                scope.launch {
+                    deviceRepository.registerDevice(it)
+                }
             }
         }
     }
