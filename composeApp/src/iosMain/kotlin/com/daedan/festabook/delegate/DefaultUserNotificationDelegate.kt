@@ -2,10 +2,14 @@ package com.daedan.festabook.delegate
 
 import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
 import dev.zacsweers.metro.Inject
+import festabookkmp.composeapp.generated.resources.Res
+import festabookkmp.composeapp.generated.resources.notification_default_body
+import festabookkmp.composeapp.generated.resources.notification_default_title
 import io.github.aakira.napier.Napier
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import platform.Foundation.NSDate
 import platform.Foundation.NSNotificationCenter
 import platform.Foundation.timeIntervalSince1970
@@ -46,19 +50,21 @@ class DefaultUserNotificationDelegate(
             return
         }
 
-        val title = content.title.ifBlank { "기본 제목" }
-        val body = content.body.ifBlank { "기본 내용" }
-        val festivalId = userInfo[FESTIVAL_ID] as? String ?: "-1"
-        val announcementId = userInfo[ANNOUNCEMENT_ID] as? String ?: "-1"
+        scope.launch {
+            val festivalId = userInfo[FESTIVAL_ID] as? String ?: "-1"
+            val announcementId = userInfo[ANNOUNCEMENT_ID] as? String ?: "-1"
+            val title = content.title.ifBlank { getString(Res.string.notification_default_title) }
+            val body = content.body.ifBlank { getString(Res.string.notification_default_body) }
 
-        showNotification(
-            title = title,
-            body = body,
-            festivalId = festivalId,
-            announcementId = announcementId,
-        )
+            showNotification(
+                title = title,
+                body = body,
+                festivalId = festivalId,
+                announcementId = announcementId,
+            )
 
-        withCompletionHandler(0u)
+            withCompletionHandler(0u)
+        }
     }
 
     override fun userNotificationCenter(
@@ -84,9 +90,8 @@ class DefaultUserNotificationDelegate(
                 `object` = null,
                 userInfo = mapOf(ANNOUNCEMENT_ID to announcementId),
             )
+            withCompletionHandler()
         }
-
-        withCompletionHandler()
     }
 
     @OptIn(ExperimentalForeignApi::class)

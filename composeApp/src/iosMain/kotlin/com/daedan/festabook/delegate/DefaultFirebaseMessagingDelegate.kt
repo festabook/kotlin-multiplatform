@@ -10,7 +10,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import platform.darwin.NSObject
 
@@ -28,7 +27,6 @@ class DefaultFirebaseMessagingDelegate(
             val savedToken = deviceRepository.getFcmToken()
             currentToken
                 .debounce(3000L)
-                .distinctUntilChanged()
                 .collectLatest { token ->
                     if (savedToken == token) return@collectLatest
                     deviceRepository.registerDevice(token)
