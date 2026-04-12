@@ -55,6 +55,8 @@ gen/
 # Gradle files
 .gradle
 .gradle/
+.claude/
+.omc/
 build/
 
 # Local configuration file

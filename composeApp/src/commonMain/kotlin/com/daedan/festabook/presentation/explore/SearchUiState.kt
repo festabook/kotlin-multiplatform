@@ -13,7 +13,6 @@ sealed interface SearchUiState {
 
     data class Success(
         val universitiesFound: List<SearchResultUiModel> = emptyList(),
-//        val selectedUniversity: University? = null,
     ) : SearchUiState {
         override val isEmptyResult: Boolean
             get() = universitiesFound.isEmpty()

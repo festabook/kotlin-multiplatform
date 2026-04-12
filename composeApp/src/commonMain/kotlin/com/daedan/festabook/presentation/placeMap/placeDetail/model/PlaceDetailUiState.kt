@@ -1,4 +1,4 @@
-package com.daedan.festabook.presentation.placeDetail.model
+package com.daedan.festabook.presentation.placeMap.placeDetail.model
 
 sealed interface PlaceDetailUiState {
     data object Loading : PlaceDetailUiState

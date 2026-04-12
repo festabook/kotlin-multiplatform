@@ -1,4 +1,4 @@
-package com.daedan.festabook.explore
+package com.daedan.festabook.viewModel.explore
 
 import com.daedan.festabook.domain.model.FestivalSearchItem
 import com.daedan.festabook.domain.repository.ExploreRepository
@@ -15,11 +15,10 @@ import dev.mokkery.mock
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -32,7 +31,7 @@ import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ExploreViewModelTest {
-    private val testDispatcher = StandardTestDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
     private lateinit var exploreRepository: ExploreRepository
     private lateinit var exploreViewModel: ExploreViewModel
 
@@ -41,6 +40,7 @@ class ExploreViewModelTest {
         Dispatchers.setMain(testDispatcher)
         exploreRepository = mock(MockMode.autofill)
         everySuspend { exploreRepository.search(any()) } returns Result.success(emptyList())
+        everySuspend { exploreRepository.getRecentFestivalSearches() } returns flowOf(emptyList())
     }
 
     @AfterTest
@@ -53,10 +53,8 @@ class ExploreViewModelTest {
         runTest {
             // given
             everySuspend { exploreRepository.getFestivalId() } returns 1L
-
             // when
             exploreViewModel = ExploreViewModel(exploreRepository)
-            advanceUntilIdle()
 
             // then
             verifySuspend { exploreRepository.getFestivalId() }
@@ -72,7 +70,6 @@ class ExploreViewModelTest {
 
             // when
             exploreViewModel.onTextInputChanged(query)
-            advanceUntilIdle()
 
             // then
             assertEquals(query, exploreViewModel.uiState.value.query)
@@ -108,7 +105,6 @@ class ExploreViewModelTest {
             // when
             exploreViewModel.onTextInputChanged(query)
             advanceTimeBy(500L)
-            advanceUntilIdle()
 
             // then
             verifySuspend { exploreRepository.search(query) }
@@ -124,12 +120,10 @@ class ExploreViewModelTest {
             exploreViewModel = ExploreViewModel(exploreRepository)
             exploreViewModel.onTextInputChanged("이전검색어")
             advanceTimeBy(500L)
-            advanceUntilIdle()
 
             // when
             exploreViewModel.onTextInputChanged("")
             advanceTimeBy(500L)
-            advanceUntilIdle()
 
             // then
             assertEquals(SearchUiState.Idle, exploreViewModel.uiState.value.searchState)
@@ -147,7 +141,6 @@ class ExploreViewModelTest {
             // when
             exploreViewModel.onTextInputChanged(query)
             advanceTimeBy(500L)
-            advanceUntilIdle()
 
             // then
             verifySuspend { exploreRepository.search(query) }
@@ -178,7 +171,6 @@ class ExploreViewModelTest {
 
             // when
             exploreViewModel.onUniversitySelected(searchResult)
-            advanceUntilIdle()
 
             // then
             verifySuspend { exploreRepository.saveFestivalId(searchResult.festivalId) }
