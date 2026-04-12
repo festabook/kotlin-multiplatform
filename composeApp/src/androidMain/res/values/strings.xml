@@ -1,7 +1,3 @@
 <resources>
     <string name="app_name">Festabookkmp</string>
-
-    <!--FCM-->
-    <string name="default_notification_title">알림</string>
-    <string name="default_notification_body">새로운 소식이 있습니다.</string>
 </resources>
