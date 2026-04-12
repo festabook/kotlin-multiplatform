@@ -37,12 +37,12 @@ object NotificationHelper {
         context: Context,
         title: String,
         content: String,
-        announcementId: String,
+        announcementId: Long,
     ) {
         val intent =
             MainActivity.newIntent(context).apply {
                 putExtra(DeepLinkKeys.KEY_CAN_NAVIGATE_TO_NEWS, true)
-                putExtra(DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND, announcementId.toLongOrNull())
+                putExtra(DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND, announcementId)
             }
 
         val pendingIntent =

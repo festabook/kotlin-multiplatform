@@ -1,6 +1,7 @@
 package com.daedan.festabook.delegate
 
 import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
+import com.daedan.festabook.presentation.platform.DeepLinkKeys
 import dev.zacsweers.metro.Inject
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.notification_default_body
@@ -51,8 +52,10 @@ class DefaultUserNotificationDelegate(
         }
 
         scope.launch {
-            val festivalId = userInfo[FESTIVAL_ID] as? String ?: "-1"
-            val announcementId = userInfo[ANNOUNCEMENT_ID] as? String ?: "-1"
+            val festivalId =
+                (userInfo[FESTIVAL_ID] as? String) ?: DeepLinkKeys.INITIALIZED_ID.toString()
+            val announcementId =
+                (userInfo[ANNOUNCEMENT_ID] as? String) ?: DeepLinkKeys.INITIALIZED_ID.toString()
             val title = content.title.ifBlank { getString(Res.string.notification_default_title) }
             val body = content.body.ifBlank { getString(Res.string.notification_default_body) }
 

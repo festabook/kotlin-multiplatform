@@ -2,6 +2,7 @@ package com.daedan.festabook.service
 
 import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
 import com.daedan.festabook.di.androidAppGraph
+import com.daedan.festabook.presentation.platform.DeepLinkKeys
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import festabookkmp.composeapp.generated.resources.Res
@@ -31,8 +32,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     remoteMessage.data["title"] ?: getString(Res.string.default_notification_title)
                 val content =
                     remoteMessage.data["body"] ?: getString(Res.string.default_notification_body)
-                val noticeIdToExpand = remoteMessage.data["announcementId"] ?: "-1"
-                val festivalId = remoteMessage.data["festivalId"] ?: "-1"
+                val noticeIdToExpand =
+                    remoteMessage.data["announcementId"]?.toLongOrNull()
+                        ?: DeepLinkKeys.INITIALIZED_ID
+                val festivalId =
+                    remoteMessage.data["festivalId"]?.toLongOrNull() ?: DeepLinkKeys.INITIALIZED_ID
 
                 handleMessageData(festivalId, title, content, noticeIdToExpand)
             }
@@ -40,14 +44,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private suspend fun handleMessageData(
-        festivalId: String,
+        festivalId: Long,
         title: String,
         content: String,
-        noticeIdToExpand: String,
+        noticeIdToExpand: Long,
     ) {
-        festivalId.toLongOrNull()?.let { id ->
-            if (id == -1L) return
-            festivalLocalDataSource.saveFestivalId(id)
+        if (festivalId != DeepLinkKeys.INITIALIZED_ID) {
+            festivalLocalDataSource.saveFestivalId(festivalId)
         }
 
         NotificationHelper.showNotification(
