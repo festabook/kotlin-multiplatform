@@ -2,6 +2,8 @@ package com.daedan.festabook.di
 
 import com.daedan.festabook.data.service.AppVersionService
 import com.daedan.festabook.data.service.createAppVersionService
+import com.daedan.festabook.delegate.DefaultFirebaseMessagingDelegate
+import com.daedan.festabook.delegate.DefaultUserNotificationDelegate
 import com.daedan.festabook.domain.repository.DeviceRepository
 import com.daedan.festabook.presentation.splash.platform.AppVersionManager
 import de.jensklingenberg.ktorfit.Ktorfit
@@ -12,6 +14,9 @@ import dev.zacsweers.metro.Provides
 @DependencyGraph(AppScope::class)
 interface IosAppGraph : FestabookAppGraph {
     val appVersionManager: AppVersionManager
+
+    val firebaseMessagingDelegate: DefaultFirebaseMessagingDelegate
+    val userNotificationDelegate: DefaultUserNotificationDelegate
 
     val deviceRepository: DeviceRepository
 

@@ -16,5 +16,5 @@ interface FestabookAppGraph {
 
     @Provides
     @SingleIn(AppScope::class)
-    fun provideCoroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    fun provideIOCoroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 }

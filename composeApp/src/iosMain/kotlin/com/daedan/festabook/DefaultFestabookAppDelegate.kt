@@ -13,9 +13,6 @@ import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.staticCFunction
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import platform.Foundation.NSData
 import platform.Foundation.NSException
 import platform.Foundation.NSSetUncaughtExceptionHandler
@@ -28,16 +25,15 @@ import platform.UserNotifications.UNUserNotificationCenter
 @OptIn(ExperimentalForeignApi::class)
 object DefaultFestabookAppDelegate : FestabookAppDelegate {
     override val appGraph: IosAppGraph = createGraph()
-    private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
-    private val firebaseMessagingDelegate by lazy {
-        DefaultFirebaseMessagingDelegate(appScope)
+    private val firebaseMessagingDelegate: DefaultFirebaseMessagingDelegate by lazy {
+        appGraph.firebaseMessagingDelegate
+    }
+    private val userNotificationDelegate: DefaultUserNotificationDelegate by lazy {
+        appGraph.userNotificationDelegate
     }
 
-    private val userNotificationDelegate by lazy {
-        DefaultUserNotificationDelegate()
-    }
-
+    // 앱 최초 실행
     override fun application(
         application: UIApplication,
         launchOptions: Map<Any?, *>?,
@@ -58,6 +54,7 @@ object DefaultFestabookAppDelegate : FestabookAppDelegate {
         deviceToken: NSData,
     ) {
         FIRMessaging.messaging().APNSToken = deviceToken
+        firebaseMessagingDelegate.registerFcmToken()
     }
 
     // 백그라운드에서 실행

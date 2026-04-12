@@ -41,8 +41,7 @@ class DeviceRepositoryImpl(
         )
 
     override suspend fun registerDevice(fcmToken: String): Result<Unit> {
-        fcmDataSource.saveFcmToken(fcmToken)
-
+        if (cachedFcmToken.value == fcmToken) return Result.success(Unit)
         val deviceIdentifier =
             deviceLocalDataSource
                 .getUuid()
@@ -58,6 +57,7 @@ class DeviceRepositoryImpl(
             ).toResult()
             .onSuccess {
                 saveDeviceId(it.id)
+                fcmDataSource.saveFcmToken(fcmToken)
                 // Timber.d("기기 등록 성공! 서버에서 받은 ID: $id")
             }.onFailure {
                 // Timber.e(throwable, "MainViewModel: 기기 등록 실패: ${throwable.message}")

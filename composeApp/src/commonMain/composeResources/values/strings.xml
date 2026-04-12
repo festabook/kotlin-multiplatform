@@ -2,6 +2,10 @@
 <resources>
     <string name="app_name">festabook</string>
 
+    <!--FCM-->
+    <string name="notification_default_title">알림</string>
+    <string name="notification_default_body">새로운 소식이 있습니다.</string>
+
     <!--공통-->
     <string name="empty_state_message">현재 표시할 항목이 없습니다.</string>
     <string name="loading_animation_content_description">로딩 애니메이션</string>

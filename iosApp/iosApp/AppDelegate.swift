@@ -6,23 +6,31 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
     func application(
         _ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        return festabookAppDelegate.application(application: application, launchOptions: launchOptions)
+        let result = festabookAppDelegate.application(application: application, launchOptions: launchOptions)
+
+        application.registerForRemoteNotifications()
+
+        return result
     }
 
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         return .portrait
     }
-    
-    func application(_ application: UIApplication,
-                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+
+    func application(
+        _ application: UIApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
         festabookAppDelegate.application(application: application, deviceToken: deviceToken)
     }
 
-    func application(_ application: UIApplication,
-                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
-                     fetchCompletionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+        fetchCompletionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    ) {
         festabookAppDelegate.application(application: application, userInfo: userInfo) { result in
             fetchCompletionHandler(UIBackgroundFetchResult(rawValue: UInt(result.value.uint64Value)) ?? .noData)
         }
