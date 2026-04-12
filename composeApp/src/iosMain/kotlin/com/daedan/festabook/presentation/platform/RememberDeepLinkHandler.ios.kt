@@ -28,14 +28,14 @@ actual fun RememberDeepLinkHandler(onDeepLink: (Intent) -> Unit) {
     DisposableEffect(Unit) {
         val observer =
             NSNotificationCenter.defaultCenter.addObserverForName(
-                name = "fcmNewsNotification", // 커스텀 알림 이름 (AppDelegate에서 쏴줘야 함)
+                name = DeepLinkKeys.KEY_FCM_NOTIFICATION, // 커스텀 알림 이름 (AppDelegate에서 쏴줘야 함)
                 `object` = null,
                 queue = NSOperationQueue.mainQueue,
             ) { notification ->
                 val notificationToExpand =
                     notification
                         ?.userInfo
-                        ?.get("announcementId")
+                        ?.get(DeepLinkKeys.KEY_ANNOUNCEMENT_ID)
                         ?.toString()
                         ?.toLongOrNull() ?: return@addObserverForName
                 currentOnDeepLink(

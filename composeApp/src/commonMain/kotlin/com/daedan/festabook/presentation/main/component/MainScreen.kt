@@ -51,7 +51,6 @@ import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-@Suppress("ktlint:compose:vm-forwarding-check")
 fun MainScreen(
     appGraph: FestabookAppGraph,
     locationSource: LocationSource,
