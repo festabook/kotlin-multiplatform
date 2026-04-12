@@ -25,6 +25,7 @@ fun ExploreSearchResultList(
     onUniversityDelete: (SearchResultUiModel) -> Unit,
     onClearRecentSearches: () -> Unit,
     modifier: Modifier = Modifier,
+    isLanding: Boolean = false,
 ) {
     LazyColumn(
         modifier =
@@ -59,13 +60,16 @@ fun ExploreSearchResultList(
             is SearchUiState.Error -> {}
 
             is SearchUiState.Idle -> {
-                item {
-                    RecentSearchMessageView(
-                        onClearAllClick = onClearRecentSearches,
-                        modifier = Modifier.padding(bottom = 10.dp),
-                        isExist = exploreUiState.recentSearches.isNotEmpty(),
-                    )
+                if (!isLanding) {
+                    item {
+                        RecentSearchMessageView(
+                            onClearAllClick = onClearRecentSearches,
+                            modifier = Modifier.padding(bottom = 10.dp),
+                            isExist = exploreUiState.recentSearches.isNotEmpty(),
+                        )
+                    }
                 }
+
                 items(
                     items = exploreUiState.recentSearches,
                     key = { it.festivalId },

@@ -51,6 +51,7 @@ fun ExploreLandingContent(
                     onUniversitySelect = onUniversitySelect,
                     onClearRecentSearches = onClearRecentSearches,
                     onUniversityDelete = onUniversityDelete,
+                    isLanding = true,
                 )
             }
         }
