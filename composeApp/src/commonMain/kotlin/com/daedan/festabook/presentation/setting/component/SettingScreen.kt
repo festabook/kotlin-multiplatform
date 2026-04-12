@@ -23,7 +23,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -353,7 +352,7 @@ private fun AppInfoButton(
         Icon(
             painter = painterResource(Res.drawable.ic_arrow_forward_right),
             contentDescription = stringResource(Res.string.move),
-            tint = Color.Unspecified,
+            tint = FestabookColor.gray300,
         )
     }
 }
