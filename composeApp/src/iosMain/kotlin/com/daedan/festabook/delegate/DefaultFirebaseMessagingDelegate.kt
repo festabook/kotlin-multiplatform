@@ -24,11 +24,9 @@ class DefaultFirebaseMessagingDelegate(
 
     init {
         scope.launch {
-            val savedToken = deviceRepository.getFcmToken()
             currentToken
                 .debounce(3000L)
                 .collectLatest { token ->
-                    if (savedToken == token) return@collectLatest
                     deviceRepository.registerDevice(token)
                 }
         }

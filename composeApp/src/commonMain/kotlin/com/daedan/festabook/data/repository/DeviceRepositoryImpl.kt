@@ -41,6 +41,7 @@ class DeviceRepositoryImpl(
         )
 
     override suspend fun registerDevice(fcmToken: String): Result<Unit> {
+        if (cachedFcmToken.value == fcmToken) return Result.success(Unit)
         val deviceIdentifier =
             deviceLocalDataSource
                 .getUuid()
