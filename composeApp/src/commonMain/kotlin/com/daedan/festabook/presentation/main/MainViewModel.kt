@@ -7,6 +7,7 @@ import com.daedan.festabook.domain.repository.FestivalRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
 
@@ -24,17 +26,11 @@ class MainViewModel(
     festivalRepository: FestivalRepository,
 ) : ViewModel() {
     private val _backPressEvent: MutableSharedFlow<Boolean> =
-        MutableSharedFlow(
-            extraBufferCapacity = 1,
-        )
+        MutableSharedFlow(extraBufferCapacity = 1)
     val backPressEvent: SharedFlow<Boolean> = _backPressEvent.asSharedFlow()
 
-    private val _navigateNewsEvent: MutableSharedFlow<Unit> =
-        MutableSharedFlow(
-            replay = 1,
-            extraBufferCapacity = 1,
-        )
-    val navigateNewsEvent = _navigateNewsEvent.asSharedFlow()
+    private val _navigateNewsEvent: Channel<Unit> = Channel(capacity = 1)
+    val navigateNewsEvent = _navigateNewsEvent.receiveAsFlow()
 
     private val _isFirstVisit = MutableStateFlow(false)
     val isFirstVisit: StateFlow<Boolean> = _isFirstVisit.asStateFlow()
@@ -53,7 +49,7 @@ class MainViewModel(
     }
 
     fun navigateToNews() {
-        _navigateNewsEvent.tryEmit(Unit)
+        _navigateNewsEvent.trySend(Unit)
     }
 
     fun declineAlert() {

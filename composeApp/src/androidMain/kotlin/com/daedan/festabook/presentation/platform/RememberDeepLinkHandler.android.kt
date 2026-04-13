@@ -20,12 +20,16 @@ actual fun RememberDeepLinkHandler(onDeepLink: (Intent) -> Unit) {
 
     LaunchedEffect(Unit) {
         currentOnDeepLink(activity.intent)
+        activity.intent.removeExtra(DeepLinkKeys.KEY_CAN_NAVIGATE_TO_NEWS)
+        activity.intent.removeExtra(DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND)
     }
 
     DisposableEffect(activity) {
         val listener =
             Consumer<Intent> { intent ->
                 currentOnDeepLink(intent)
+                intent.removeExtra(DeepLinkKeys.KEY_CAN_NAVIGATE_TO_NEWS)
+                intent.removeExtra(DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND)
             }
         activity.addOnNewIntentListener(listener)
         onDispose { activity.removeOnNewIntentListener(listener) }
