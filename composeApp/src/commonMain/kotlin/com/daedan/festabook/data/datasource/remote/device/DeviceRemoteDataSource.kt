@@ -8,4 +8,14 @@ interface DeviceRemoteDataSource {
         deviceIdentifier: String,
         fcmToken: String,
     ): ApiResult<DeviceRegisterResponse>
+
+    suspend fun registerPhone(
+        deviceId: Long,
+        phoneNumber: String,
+    ): ApiResult<Unit>
+
+    suspend fun updatePhone(
+        deviceId: Long,
+        phoneNumber: String,
+    ): ApiResult<Unit>
 }

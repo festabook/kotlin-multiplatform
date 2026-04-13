@@ -34,6 +34,8 @@ data class PlaceDetailResponse(
     val title: String?,
     @SerialName("timeTags")
     val timeTags: List<TimeTagResponse>,
+    @SerialName("waitingActivateStatus")
+    val isWaitingActive: Boolean,
 ) {
     @Serializable
     data class PlaceAnnouncement(
@@ -67,6 +69,7 @@ fun PlaceDetailResponse.toDomain() =
         startTime = startTime.toLocalTime(),
         endTime = endTime.toLocalTime(),
         images = toPlaceDetailImages(),
+        isWaitingActive = isWaitingActive,
     )
 
 private fun PlaceDetailResponse.toPlace() =
