@@ -185,6 +185,11 @@ buildkonfig {
             buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
             buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
         }
+        create("Staging") {
+            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
+            buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
+            buildConfigField(STRING, "APP_BUNDLE_ID", appBundleIdDev)
+        }
     }
 
 }
@@ -240,6 +245,7 @@ android {
             resValue("string", "app_name", "Festabook")
             signingConfig = signingConfigs["release"]
         }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -278,10 +284,24 @@ ktorfit {
 val updateIosVersion by tasks.registering {
 
     val plistFile = rootProject.layout.projectDirectory.file("iosApp/iosApp/Info.plist")
+    val xcconfigFile = rootProject.layout.projectDirectory.file("iosApp/Configuration/Config.xcconfig")
     val versionName = providers.gradleProperty("APP_VERSION_NAME")
     val versionCode = providers.gradleProperty("APP_VERSION_CODE")
 
     doLast {
+        // Config.xcconfig의 MARKETING_VERSION, CURRENT_PROJECT_VERSION 업데이트
+        val xcconfig = xcconfigFile.asFile
+        var xcconfigText = xcconfig.readText()
+        xcconfigText = xcconfigText.replace(
+            Regex("MARKETING_VERSION=.*"),
+            "MARKETING_VERSION=${versionName.get()}"
+        )
+        xcconfigText = xcconfigText.replace(
+            Regex("CURRENT_PROJECT_VERSION=.*"),
+            "CURRENT_PROJECT_VERSION=${versionCode.get()}"
+        )
+        xcconfig.writeText(xcconfigText)
+
         val file = plistFile.asFile
         var text = file.readText()
 
