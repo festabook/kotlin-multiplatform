@@ -10,7 +10,8 @@ import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.ImageUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiState
-import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingUiState
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingStatusUiState
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingTeamUiState
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.toUiModel
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -85,32 +86,43 @@ class PlaceDetailViewModel(
         }
     }
 
-    suspend fun loadWaitingStatus() {
+    suspend fun refreshWaitingStatus() {
         _placeDetail.update { current ->
-            if (current is PlaceDetailUiState.Success) current.copy(waiting = WaitingUiState.Loading) else current
+            if (current is PlaceDetailUiState.Success) {
+                current.copy(waitingTeam = WaitingTeamUiState.Loading)
+            } else {
+                current
+            }
         }
         val placeDetailState = _placeDetail.value
         if (placeDetailState !is PlaceDetailUiState.Success) return
         val placeId = placeDetailState.placeDetail.place.id
         val waitingResult = waitingRegisterInfoRepository.getPlaceWaiting(placeId)
-        val isWaitingActive = placeDetailState.placeDetail.isWaitingActive
 
         waitingResult
             .onSuccess { placeWaiting ->
-                val waitingUiState =
-                    if (isWaitingActive) {
-                        WaitingUiState.Active(
-                            totalTeams = placeWaiting.totalWaitingTeams,
-                            estimatedMinutes = placeWaiting.estimatedWaitTime,
+                val waitingTeamUiState =
+                    WaitingTeamUiState.Success(totalTeams = placeWaiting.totalWaitingTeams)
+
+                _placeDetail.update { current ->
+                    if (current is PlaceDetailUiState.Success) {
+                        current.copy(
+                            waitingTeam = waitingTeamUiState,
                         )
                     } else {
-                        WaitingUiState.Closed(totalTeams = placeWaiting.totalWaitingTeams)
+                        current
                     }
-                _placeDetail.update { current ->
-                    if (current is PlaceDetailUiState.Success) current.copy(waiting = waitingUiState) else current
                 }
             }.onFailure { throwable ->
-                _placeDetail.value = PlaceDetailUiState.Error(throwable)
+                _placeDetail.update { current ->
+                    if (current is PlaceDetailUiState.Success) {
+                        current.copy(
+                            waitingTeam = WaitingTeamUiState.Error(throwable),
+                        )
+                    } else {
+                        current
+                    }
+                }
             }
     }
 
@@ -127,6 +139,41 @@ class PlaceDetailViewModel(
                     ),
             )
         }
+    }
+
+    private suspend fun loadWaitingStatus() {
+        val placeDetailState = _placeDetail.value
+        if (placeDetailState !is PlaceDetailUiState.Success) return
+        val placeId = placeDetailState.placeDetail.place.id
+        val waitingResult = waitingRegisterInfoRepository.getPlaceWaiting(placeId)
+        val isWaitingActive = placeDetailState.placeDetail.isWaitingActive
+
+        waitingResult
+            .onSuccess { placeWaiting ->
+                val waitingTeamUiState =
+                    WaitingTeamUiState.Success(totalTeams = placeWaiting.totalWaitingTeams)
+
+                val waitingStatusUiState =
+                    if (isWaitingActive) {
+                        WaitingStatusUiState.Active(
+                            estimatedMinutes = placeWaiting.estimatedWaitTime,
+                        )
+                    } else {
+                        WaitingStatusUiState.Closed
+                    }
+                _placeDetail.update { current ->
+                    if (current is PlaceDetailUiState.Success) {
+                        current.copy(
+                            waitingTeam = waitingTeamUiState,
+                            waitingStatus = waitingStatusUiState,
+                        )
+                    } else {
+                        current
+                    }
+                }
+            }.onFailure { throwable ->
+                _placeDetail.value = PlaceDetailUiState.Error(throwable)
+            }
     }
 
     object PlaceKey : CreationExtras.Key<PlaceUiModel?>

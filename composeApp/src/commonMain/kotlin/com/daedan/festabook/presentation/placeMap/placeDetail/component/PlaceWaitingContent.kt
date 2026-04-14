@@ -20,7 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingUiState
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingTeamUiState
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import com.daedan.festabook.presentation.theme.festabookShapes
@@ -33,7 +33,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PlaceWaitingContent(
-    waiting: WaitingUiState,
+    waiting: WaitingTeamUiState,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -71,7 +71,7 @@ fun PlaceWaitingContent(
 
 @Composable
 private fun CurrentWaitingTeams(
-    waiting: WaitingUiState,
+    waiting: WaitingTeamUiState,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -95,7 +95,7 @@ private fun CurrentWaitingTeams(
         Spacer(modifier = Modifier.weight(1f))
 
         when (waiting) {
-            is WaitingUiState.Active -> {
+            is WaitingTeamUiState.Success -> {
                 Text(
                     text =
                         stringResource(
@@ -107,19 +107,7 @@ private fun CurrentWaitingTeams(
                 )
             }
 
-            is WaitingUiState.Closed -> {
-                Text(
-                    text =
-                        stringResource(
-                            Res.string.place_detail_waiting_teams_count,
-                            waiting.totalTeams,
-                        ),
-                    style = FestabookTypography.displayMedium,
-                    color = FestabookColor.white,
-                )
-            }
-
-            is WaitingUiState.Loading -> {
+            is WaitingTeamUiState.Loading -> {
                 Box(
                     modifier =
                         Modifier
@@ -128,6 +116,14 @@ private fun CurrentWaitingTeams(
                                 color = FestabookColor.gray600,
                                 shape = festabookShapes.radius1,
                             ),
+                )
+            }
+
+            else -> {
+                Text(
+                    text = "-",
+                    style = FestabookTypography.displayMedium,
+                    color = FestabookColor.white,
                 )
             }
         }

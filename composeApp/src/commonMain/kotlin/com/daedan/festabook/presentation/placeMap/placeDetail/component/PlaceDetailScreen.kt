@@ -61,7 +61,6 @@ import com.daedan.festabook.presentation.placeMap.placeDetail.PlaceDetailViewMod
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.ImageUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiState
-import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingUiState
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTheme
 import com.daedan.festabook.presentation.theme.FestabookTypography
@@ -101,7 +100,7 @@ fun PlaceDetailRoute(
         onBackToPreviousClick = onBackToPreviousClick,
         onShowErrorSnackbar = onShowErrorSnackbar,
         onWaitingRefresh = {
-            scope.launch { viewModel.loadWaitingStatus() }
+            scope.launch { viewModel.refreshWaitingStatus() }
         },
     )
 }
@@ -173,20 +172,21 @@ fun PlaceDetailScreen(
                     PlaceDetailContent(placeDetail = uiState.placeDetail)
 
                     PlaceWaitingContent(
-                        waiting = uiState.waiting,
+                        waiting = uiState.waitingTeam,
                         onRefresh = onWaitingRefresh,
                     )
 
                     PlaceDetailDescription(placeDetail = uiState.placeDetail)
 
-                    if (uiState.waiting is WaitingUiState.Active || uiState.waiting is WaitingUiState.Closed) {
-                        Spacer(modifier = Modifier.height(80.dp))
-                    }
+                    Spacer(modifier = Modifier.height(80.dp))
                 }
 
                 PlaceDetailBottomBar(
-                    waiting = uiState.waiting,
+                    waiting = uiState.waitingStatus,
                     modifier = Modifier.align(Alignment.BottomCenter),
+                    onRegisterWaitingClick = {
+                        // TODO 웨이팅 등록 화면으로 연결
+                    },
                 )
             }
         }
@@ -506,7 +506,6 @@ private fun PlaceDetailScreenActivePreview() {
                             endTime = "18:00",
                             images = listOf(ImageUiModel(id = 1, url = "")),
                         ),
-                    waiting = WaitingUiState.Active(totalTeams = 13, estimatedMinutes = 130),
                 ),
         )
     }
@@ -541,7 +540,6 @@ private fun PlaceDetailScreenClosedPreview() {
                             endTime = "18:00",
                             images = listOf(ImageUiModel(id = 1, url = "")),
                         ),
-                    waiting = WaitingUiState.Closed(totalTeams = 13),
                 ),
         )
     }
@@ -576,7 +574,6 @@ private fun PlaceDetailScreenInactivePreview() {
                             endTime = "18:00",
                             images = listOf(ImageUiModel(id = 1, url = "")),
                         ),
-                    waiting = WaitingUiState.Closed(totalTeams = 13),
                 ),
         )
     }

@@ -5,7 +5,8 @@ sealed interface PlaceDetailUiState {
 
     data class Success(
         val placeDetail: PlaceDetailUiModel,
-        val waiting: WaitingUiState = WaitingUiState.Loading,
+        val waitingTeam: WaitingTeamUiState = WaitingTeamUiState.Loading,
+        val waitingStatus: WaitingStatusUiState = WaitingStatusUiState.Loading,
     ) : PlaceDetailUiState
 
     data class Error(

@@ -1,6 +1,7 @@
 package com.daedan.festabook.presentation.placeMap.placeDetail.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
-import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingUiState
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingStatusUiState
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import com.daedan.festabook.presentation.theme.festabookShapes
@@ -29,7 +30,8 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PlaceDetailBottomBar(
-    waiting: WaitingUiState,
+    waiting: WaitingStatusUiState,
+    onRegisterWaitingClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -52,18 +54,22 @@ fun PlaceDetailBottomBar(
                     ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            PlaceDetailBottomBarContent(waiting)
+            PlaceDetailBottomBarContent(
+                waiting = waiting,
+                onRegisterWaitingClick = onRegisterWaitingClick,
+            )
         }
     }
 }
 
 @Composable
 private fun RowScope.PlaceDetailBottomBarContent(
-    waiting: WaitingUiState,
+    waiting: WaitingStatusUiState,
+    onRegisterWaitingClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (waiting) {
-        is WaitingUiState.Active -> {
+        is WaitingStatusUiState.Active -> {
             EstimatedTime(waiting)
             Spacer(modifier = Modifier.width(festabookSpacing.paddingBody3))
 
@@ -74,7 +80,8 @@ private fun RowScope.PlaceDetailBottomBarContent(
                         .background(
                             color = FestabookColor.accentBlue,
                             shape = festabookShapes.radius3,
-                        ).padding(vertical = festabookSpacing.paddingBody4),
+                        ).padding(vertical = festabookSpacing.paddingBody4)
+                        .clickable(onClick = onRegisterWaitingClick),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
@@ -85,7 +92,7 @@ private fun RowScope.PlaceDetailBottomBarContent(
             }
         }
 
-        is WaitingUiState.Closed -> {
+        is WaitingStatusUiState.Closed -> {
             Box(
                 modifier =
                     Modifier
@@ -112,7 +119,7 @@ private fun RowScope.PlaceDetailBottomBarContent(
 
 @Composable
 private fun EstimatedTime(
-    waiting: WaitingUiState.Active,
+    waiting: WaitingStatusUiState.Active,
     modifier: Modifier = Modifier,
 ) {
     Column(
