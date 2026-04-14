@@ -1,11 +1,12 @@
 package com.daedan.festabook.data.datasource.remote.festival
 
+import com.daedan.festabook.Platform
 import com.daedan.festabook.data.datasource.remote.ApiResult
 import com.daedan.festabook.data.datasource.remote.schedule.FAKE_HTTP_RESPONSE
 import com.daedan.festabook.data.model.request.FestivalNotificationRequest
 import com.daedan.festabook.data.model.response.festival.FestivalNotificationResponse
 import com.daedan.festabook.data.service.FestivalNotificationService
-import com.daedan.festabook.data.service.platform.festivalNotificationPlatform
+import com.daedan.festabook.getPlatform
 import de.jensklingenberg.ktorfit.Response
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
@@ -35,6 +36,12 @@ private val FAKE_DELETE_FESTIVAL_NOTIFICATION_HTTP_RESPONSE: Response<Unit> =
         body = Unit,
     ) as Response<Unit>
 
+private val ENDPOINT =
+    when (getPlatform()) {
+        Platform.ANDROID -> "android"
+        Platform.IOS -> "ios"
+    }
+
 class FestivalNotificationRemoteDataSourceTest {
     private lateinit var festivalNotificationService: FestivalNotificationService
     private lateinit var dataSource: FestivalNotificationRemoteDataSource
@@ -54,10 +61,16 @@ class FestivalNotificationRemoteDataSourceTest {
 
             val request = FestivalNotificationRequest(deviceId = deviceId)
 
+            val endPoint =
+                when (getPlatform()) {
+                    Platform.ANDROID -> "android"
+                    Platform.IOS -> "ios"
+                }
+
             everySuspend {
                 festivalNotificationService.saveFestivalNotification(
                     festivalId,
-                    festivalNotificationPlatform(),
+                    ENDPOINT,
                     request,
                 )
             } returns FAKE_SAVE_FESTIVAL_NOTIFICATION_HTTP_RESPONSE
@@ -70,7 +83,7 @@ class FestivalNotificationRemoteDataSourceTest {
             verifySuspend {
                 festivalNotificationService.saveFestivalNotification(
                     festivalId,
-                    festivalNotificationPlatform(),
+                    ENDPOINT,
                     request,
                 )
             }
