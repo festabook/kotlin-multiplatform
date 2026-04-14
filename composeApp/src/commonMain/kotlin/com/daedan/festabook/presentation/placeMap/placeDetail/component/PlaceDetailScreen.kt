@@ -6,7 +6,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,7 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -432,36 +432,34 @@ private fun WaitingTeamsRow(
         modifier =
             modifier
                 .fillMaxWidth()
-                .border(1.dp, FestabookColor.gray200, RoundedCornerShape(8.dp))
+                .background(FestabookColor.black, RoundedCornerShape(50.dp))
                 .padding(
                     horizontal = festabookSpacing.paddingScreenGutter,
-                    vertical = festabookSpacing.paddingBody3,
+                    vertical = 18.dp,
                 ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            modifier =
-                Modifier
-                    .background(FestabookColor.accentGreen, RoundedCornerShape(4.dp))
-                    .padding(horizontal = festabookSpacing.paddingBody2, vertical = 2.dp),
             text = stringResource(Res.string.place_detail_waiting_current_teams),
-            style = FestabookTypography.labelSmall,
-            color = FestabookColor.white,
-        )
-
-        Text(
-            modifier = Modifier.padding(start = festabookSpacing.paddingBody2),
-            text = stringResource(Res.string.place_detail_waiting_teams_count, totalTeams),
             style = FestabookTypography.bodyMedium,
-            color = FestabookColor.black,
+            color = FestabookColor.white,
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
+        Text(
+            text = stringResource(Res.string.place_detail_waiting_teams_count, totalTeams),
+            style = FestabookTypography.displaySmall,
+            color = FestabookColor.white,
+        )
+
+        Spacer(modifier = Modifier.width(festabookSpacing.paddingBody2))
+
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            imageVector = Icons.Default.Refresh,
             contentDescription = null,
-            tint = FestabookColor.gray400,
+            tint = FestabookColor.white,
+            modifier = Modifier.size(20.dp),
         )
     }
 }
