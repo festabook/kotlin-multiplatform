@@ -1,5 +1,6 @@
 package com.daedan.festabook.presentation.home.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +33,7 @@ import com.daedan.festabook.presentation.home.LineupItemUiModel
 import com.daedan.festabook.presentation.home.LineupUiState
 import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.theme.FestabookColor
+import com.daedan.festabook.presentation.theme.festabookSpacing
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.error_fail_to_load_info
 import festabookkmp.composeapp.generated.resources.setting_notice_enabled
@@ -46,7 +48,7 @@ import kotlin.time.Clock
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel,
+    homeViewModel: HomeViewModel,
     settingViewModel: SettingViewModel,
     notificationPermissionManager: NotificationPermissionManager,
     onNavigateToExplore: () -> Unit,
@@ -54,8 +56,8 @@ fun HomeScreen(
     onShowErrorSnackbar: (Throwable) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val festivalUiState by viewModel.festivalUiState.collectAsStateWithLifecycle()
-    val lineupUiState by viewModel.lineupUiState.collectAsStateWithLifecycle()
+    val festivalUiState by homeViewModel.festivalUiState.collectAsStateWithLifecycle()
+    val lineupUiState by homeViewModel.lineupUiState.collectAsStateWithLifecycle()
     val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
     val settingEnabledText = stringResource(Res.string.setting_notice_enabled)
 
@@ -77,9 +79,7 @@ fun HomeScreen(
                 currentOnShowErrorSnackbar(state.throwable)
             }
 
-            else -> {
-                Unit
-            }
+            else -> {}
         }
     }
 
@@ -98,11 +98,12 @@ fun HomeScreen(
         }
 
         is FestivalUiState.Success -> {
-            FestivalOverview(
+            HomeContent(
                 festivalUiState = state,
                 lineupUiState = lineupUiState,
                 onNavigateToExplore = onNavigateToExplore,
-                onNavigateToSchedule = viewModel::navigateToScheduleClick,
+                onNavigateToSchedule = homeViewModel::navigateToScheduleClick,
+                onFestatingClick = {},
                 modifier = modifier,
             )
         }
@@ -110,11 +111,12 @@ fun HomeScreen(
 }
 
 @Composable
-private fun FestivalOverview(
+private fun HomeContent(
     festivalUiState: FestivalUiState.Success,
     lineupUiState: LineupUiState,
     onNavigateToExplore: () -> Unit,
     onNavigateToSchedule: () -> Unit,
+    onFestatingClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val universityName = festivalUiState.organization.organizationName
@@ -122,18 +124,24 @@ private fun FestivalOverview(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = FestabookColor.white,
+        topBar = {
+            HomeHeader(
+                universityName = universityName,
+                onExpandClick = onNavigateToExplore,
+                modifier =
+                    Modifier.padding(
+                        top = festabookSpacing.paddingTitleHorizontal,
+                        bottom = festabookSpacing.paddingBody3,
+                    ),
+            )
+        },
     ) { innerPadding ->
         Column(
             modifier =
                 Modifier
+                    .padding(innerPadding)
                     .fillMaxSize(),
         ) {
-            HomeHeader(
-                universityName = universityName,
-                onExpandClick = onNavigateToExplore,
-                modifier = Modifier.padding(top = 40.dp, bottom = 12.dp),
-            )
-
             LazyColumn(
                 modifier =
                     Modifier
@@ -148,7 +156,7 @@ private fun FestivalOverview(
 
                     HomePosterList(
                         posterUrls = posterUrls,
-                        modifier = Modifier.padding(vertical = 12.dp),
+                        modifier = Modifier.padding(vertical = festabookSpacing.paddingBody3),
                     )
                 }
 
@@ -162,7 +170,7 @@ private fun FestivalOverview(
                                 festival.startDate,
                                 festival.endDate,
                             ),
-                        modifier = Modifier.padding(top = 16.dp),
+                        modifier = Modifier.padding(top = festabookSpacing.paddingBody4),
                     )
                 }
 
@@ -173,7 +181,29 @@ private fun FestivalOverview(
                         color = FestabookColor.gray200,
                         modifier =
                             Modifier
-                                .padding(top = 16.dp),
+                                .padding(top = festabookSpacing.paddingBody4),
+                    )
+                }
+                // 페스타팅 포스터
+                item {
+                    FestatingPoster(
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(
+                                    vertical = festabookSpacing.paddingBody4,
+                                    horizontal = festabookSpacing.paddingBody5,
+                                ).clickable {
+                                    onFestatingClick()
+                                },
+                    )
+                }
+
+                // 구분선
+                item {
+                    HorizontalDivider(
+                        thickness = 4.dp,
+                        color = FestabookColor.gray200,
                     )
                 }
 
@@ -275,10 +305,11 @@ private fun FestivalOverviewPreview() {
                 ),
         )
 
-    FestivalOverview(
+    HomeContent(
         festivalUiState = FestivalUiState.Success(sampleFestival),
         lineupUiState = LineupUiState.Success(sampleLineups.getLineupItems()),
         onNavigateToExplore = {},
         onNavigateToSchedule = {},
+        onFestatingClick = {},
     )
 }

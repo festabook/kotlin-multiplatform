@@ -31,7 +31,7 @@ fun NavGraphBuilder.homeNavGraph(
             )
         }
         HomeScreen(
-            viewModel = viewModel,
+            homeViewModel = viewModel,
             onShowErrorSnackbar = onShowErrorSnackbar,
             onNavigateToExplore = onNavigateToExplore,
             settingViewModel = settingViewModel,
