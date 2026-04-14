@@ -75,7 +75,7 @@ class PlaceDetailViewModel(
                         }
                     _placeDetail.value =
                         PlaceDetailUiState.Success(placeDetailUiModel)
-                    loadWaitingStatus(placeId, placeDetail.isWaitingActive)
+                    loadWaitingStatus(placeId, placeDetailUiModel.isWaitingActive)
                 }.onFailure { throwable ->
                     _placeDetail.value = PlaceDetailUiState.Error(throwable)
                 }

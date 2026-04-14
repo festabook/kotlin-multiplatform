@@ -17,6 +17,7 @@ data class PlaceDetailUiModel(
     val startTime: String?,
     val endTime: String?,
     val images: List<ImageUiModel>,
+    val isWaitingActive: Boolean = false,
 ) {
     val featuredImage: String?
         get() = images.firstOrNull()?.url
@@ -33,6 +34,7 @@ fun PlaceDetail.toUiModel() =
         startTime = startTime.toFormattedString(),
         endTime = endTime.toFormattedString(),
         images = sortedImages.map { it.toUiModel() },
+        isWaitingActive = isWaitingActive,
     )
 
 private fun LocalTime?.toFormattedString(): String? = this?.let { timeFormat.format(it) }
