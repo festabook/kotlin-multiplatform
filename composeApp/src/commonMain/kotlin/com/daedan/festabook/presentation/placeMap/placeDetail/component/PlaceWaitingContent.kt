@@ -30,10 +30,6 @@ import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import com.daedan.festabook.presentation.theme.festabookShapes
 import com.daedan.festabook.presentation.theme.festabookSpacing
-import com.skydoves.landscapist.coil3.CoilImage
-import com.skydoves.landscapist.components.rememberImageComponent
-import com.skydoves.landscapist.placeholder.shimmer.Shimmer
-import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.place_detail_real_time_waiting
 import festabookkmp.composeapp.generated.resources.place_detail_waiting_current_teams

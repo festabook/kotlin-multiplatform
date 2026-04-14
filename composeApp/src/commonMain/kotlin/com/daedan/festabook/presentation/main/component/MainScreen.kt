@@ -159,7 +159,7 @@ fun MainScreen(
             onStartPlaceDetail = {
                 mainNavigator.navigate(
                     FestabookRoute.PlaceDetail(
-                        placeDetailUiModel = it.placeDetail.value,
+                        placeId = it.placeDetail.value.place.id,
                     ),
                 )
             },

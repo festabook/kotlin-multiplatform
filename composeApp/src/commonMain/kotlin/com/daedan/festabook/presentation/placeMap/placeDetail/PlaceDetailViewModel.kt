@@ -7,9 +7,7 @@ import com.daedan.festabook.domain.model.PlaceWaiting
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
 import com.daedan.festabook.domain.repository.WaitingRegisterInfoRepository
 import com.daedan.festabook.presentation.news.notice.model.NoticeUiModel
-import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.ImageUiModel
-import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiState
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingStatusUiState
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingTeamUiState
@@ -30,8 +28,7 @@ import kotlinx.coroutines.launch
 class PlaceDetailViewModel(
     private val placeDetailRepository: PlaceDetailRepository,
     private val waitingRegisterInfoRepository: WaitingRegisterInfoRepository,
-    @Assisted private val place: PlaceUiModel?,
-    @Assisted private val receivedPlaceDetail: PlaceDetailUiModel?,
+    @Assisted private val placeId: Long,
 ) : ViewModel() {
     @AssistedFactory
     @ViewModelAssistedFactoryKey(PlaceDetailViewModel::class)
@@ -39,14 +36,10 @@ class PlaceDetailViewModel(
     interface Factory : ViewModelAssistedFactory {
         override fun create(extras: CreationExtras): PlaceDetailViewModel =
             create(
-                place = extras[PlaceKey],
-                receivedPlaceDetail = extras[PlaceDetailKey],
+                placeId = extras[PlaceIdKey] ?: error("placeId must be required"),
             )
 
-        fun create(
-            place: PlaceUiModel?,
-            receivedPlaceDetail: PlaceDetailUiModel?,
-        ): PlaceDetailViewModel
+        fun create(placeId: Long): PlaceDetailViewModel
     }
 
     private val _placeDetail =
@@ -56,15 +49,7 @@ class PlaceDetailViewModel(
     val placeDetail: StateFlow<PlaceDetailUiState> = _placeDetail
 
     init {
-        receivedPlaceDetail?.let {
-            val placeDetailUiModel =
-                if (it.images.isEmpty()) it.copy(images = listOf(ImageUiModel())) else it
-            _placeDetail.value = PlaceDetailUiState.Success(placeDetailUiModel)
-            viewModelScope.launch {
-                loadWaitingStatus()
-            }
-        }
-        place?.let { loadPlaceDetail(it.id) }
+        loadPlaceDetail(placeId)
     }
 
     fun loadPlaceDetail(placeId: Long) {
@@ -182,7 +167,5 @@ class PlaceDetailViewModel(
         }
     }
 
-    object PlaceKey : CreationExtras.Key<PlaceUiModel?>
-
-    object PlaceDetailKey : CreationExtras.Key<PlaceDetailUiModel?>
+    object PlaceIdKey : CreationExtras.Key<Long>
 }
