@@ -18,6 +18,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -39,10 +41,11 @@ fun PlaceWaitingContent(
     onShowErrorSnackbar: (Throwable) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
     LaunchedEffect(waiting) {
         when (waiting) {
             is WaitingTeamUiState.Error -> {
-                onShowErrorSnackbar(waiting.throwable)
+                currentOnShowErrorSnackbar(waiting.throwable)
             }
 
             else -> {

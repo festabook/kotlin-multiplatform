@@ -8,7 +8,8 @@ import com.daedan.festabook.presentation.news.notice.model.toUiModel
 import com.daedan.festabook.presentation.placeMap.model.toUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.PlaceDetailViewModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiState
-import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingUiState
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingStatusUiState
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingTeamUiState
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.toUiModel
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
@@ -78,11 +79,8 @@ class PlaceDetailViewModelTest {
             val expected =
                 PlaceDetailUiState.Success(
                     placeDetail = FAKE_PLACE_DETAIL.toUiModel(),
-                    waiting =
-                        WaitingUiState.Active(
-                            totalTeams = FAKE_PLACE_WAITING.totalWaitingTeams,
-                            estimatedMinutes = FAKE_PLACE_WAITING.estimatedWaitTime,
-                        ),
+                    waitingTeam = WaitingTeamUiState.Success(totalTeams = FAKE_PLACE_WAITING.totalWaitingTeams),
+                    waitingStatus = WaitingStatusUiState.Active(estimatedMinutes = FAKE_PLACE_WAITING.estimatedWaitTime),
                 )
             val actual = placeDetailViewModel.placeDetail.value
             verifySuspend { placeDetailRepository.getPlaceDetail(FAKE_PLACES.first().id) }
@@ -130,10 +128,8 @@ class PlaceDetailViewModelTest {
             assertEquals(
                 PlaceDetailUiState.Success(
                     placeDetail = expected,
-                    waiting = WaitingUiState.Active(
-                        totalTeams = FAKE_PLACE_WAITING.totalWaitingTeams,
-                        estimatedMinutes = FAKE_PLACE_WAITING.estimatedWaitTime,
-                    ),
+                    waitingTeam = WaitingTeamUiState.Success(totalTeams = FAKE_PLACE_WAITING.totalWaitingTeams),
+                    waitingStatus = WaitingStatusUiState.Active(estimatedMinutes = FAKE_PLACE_WAITING.estimatedWaitTime),
                 ),
                 actual,
             )
