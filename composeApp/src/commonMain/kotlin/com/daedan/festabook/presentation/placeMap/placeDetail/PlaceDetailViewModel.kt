@@ -58,6 +58,9 @@ class PlaceDetailViewModel(
             val placeDetailUiModel =
                 if (it.images.isEmpty()) it.copy(images = listOf(ImageUiModel())) else it
             _placeDetail.value = PlaceDetailUiState.Success(placeDetailUiModel)
+            viewModelScope.launch {
+                loadWaitingStatus(it.place.id, it.isWaitingActive)
+            }
         }
         place?.let { loadPlaceDetail(it.id) }
     }

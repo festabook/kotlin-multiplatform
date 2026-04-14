@@ -122,12 +122,19 @@ class PlaceDetailViewModelTest {
             // when
             placeDetailViewModel =
                 PlaceDetailViewModel(placeDetailRepository, waitingRegisterInfoRepository, null, expected)
+            advanceUntilIdle()
 
             // then
             verifySuspend(VerifyMode.exactly(0)) { placeDetailRepository.getPlaceDetail(any()) }
             val actual = placeDetailViewModel.placeDetail.value
             assertEquals(
-                PlaceDetailUiState.Success(expected),
+                PlaceDetailUiState.Success(
+                    placeDetail = expected,
+                    waiting = WaitingUiState.Active(
+                        totalTeams = FAKE_PLACE_WAITING.totalWaitingTeams,
+                        estimatedMinutes = FAKE_PLACE_WAITING.estimatedWaitTime,
+                    ),
+                ),
                 actual,
             )
         }
