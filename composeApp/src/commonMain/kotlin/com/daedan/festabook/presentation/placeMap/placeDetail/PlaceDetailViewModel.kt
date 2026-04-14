@@ -3,6 +3,7 @@ package com.daedan.festabook.presentation.placeMap.placeDetail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.daedan.festabook.domain.model.PlaceWaiting
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
 import com.daedan.festabook.domain.repository.WaitingRegisterInfoRepository
 import com.daedan.festabook.presentation.news.notice.model.NoticeUiModel
@@ -87,12 +88,8 @@ class PlaceDetailViewModel(
     }
 
     suspend fun refreshWaitingStatus() {
-        _placeDetail.update { current ->
-            if (current is PlaceDetailUiState.Success) {
-                current.copy(waitingTeam = WaitingTeamUiState.Loading)
-            } else {
-                current
-            }
+        updateInnerState { current ->
+            current.copy(waitingTeam = WaitingTeamUiState.Refresh)
         }
         val placeDetailState = _placeDetail.value
         if (placeDetailState !is PlaceDetailUiState.Success) return
@@ -104,24 +101,16 @@ class PlaceDetailViewModel(
                 val waitingTeamUiState =
                     WaitingTeamUiState.Success(totalTeams = placeWaiting.totalWaitingTeams)
 
-                _placeDetail.update { current ->
-                    if (current is PlaceDetailUiState.Success) {
-                        current.copy(
-                            waitingTeam = waitingTeamUiState,
-                        )
-                    } else {
-                        current
-                    }
+                updateInnerState { current ->
+                    current.copy(
+                        waitingTeam = waitingTeamUiState,
+                    )
                 }
             }.onFailure { throwable ->
-                _placeDetail.update { current ->
-                    if (current is PlaceDetailUiState.Success) {
-                        current.copy(
-                            waitingTeam = WaitingTeamUiState.Error(throwable),
-                        )
-                    } else {
-                        current
-                    }
+                updateInnerState { current ->
+                    current.copy(
+                        waitingTeam = WaitingTeamUiState.Error(throwable),
+                    )
                 }
             }
     }
@@ -141,6 +130,14 @@ class PlaceDetailViewModel(
         }
     }
 
+    // TODO UseCase 혹은 Domain Layer로 이동, 하지만 PlaceUiModel -> Place로 변환 불가, 아키텍쳐 변화 필요
+    private fun PlaceDetailUiState.isWaitingNotSupported(placeWaiting: PlaceWaiting): Boolean =
+        if (this is PlaceDetailUiState.Success) {
+            !placeDetail.isWaitingActive && placeWaiting.totalWaitingTeams == 0
+        } else {
+            true
+        }
+
     private suspend fun loadWaitingStatus() {
         val placeDetailState = _placeDetail.value
         if (placeDetailState !is PlaceDetailUiState.Success) return
@@ -150,6 +147,7 @@ class PlaceDetailViewModel(
 
         waitingResult
             .onSuccess { placeWaiting ->
+                val isWaitingNotSupported = placeDetailState.isWaitingNotSupported(placeWaiting)
                 val waitingTeamUiState =
                     WaitingTeamUiState.Success(totalTeams = placeWaiting.totalWaitingTeams)
 
@@ -163,19 +161,25 @@ class PlaceDetailViewModel(
                             estimatedMinutes = placeWaiting.estimatedWaitTime,
                         )
                     }
-                _placeDetail.update { current ->
-                    if (current is PlaceDetailUiState.Success) {
-                        current.copy(
-                            waitingTeam = waitingTeamUiState,
-                            waitingStatus = waitingStatusUiState,
-                        )
-                    } else {
-                        current
-                    }
+                updateInnerState { current ->
+                    current.copy(
+                        waitingTeam = if (isWaitingNotSupported) WaitingTeamUiState.InActive else waitingTeamUiState,
+                        waitingStatus = if (isWaitingNotSupported) WaitingStatusUiState.InActive else waitingStatusUiState,
+                    )
                 }
             }.onFailure { throwable ->
                 _placeDetail.value = PlaceDetailUiState.Error(throwable)
             }
+    }
+
+    private fun updateInnerState(onUpdate: (PlaceDetailUiState.Success) -> PlaceDetailUiState.Success) {
+        _placeDetail.update { current ->
+            if (current is PlaceDetailUiState.Success) {
+                onUpdate(current)
+            } else {
+                current
+            }
+        }
     }
 
     object PlaceKey : CreationExtras.Key<PlaceUiModel?>

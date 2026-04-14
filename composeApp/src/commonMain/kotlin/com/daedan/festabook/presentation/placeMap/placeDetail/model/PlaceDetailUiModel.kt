@@ -18,13 +18,7 @@ data class PlaceDetailUiModel(
     val endTime: String?,
     val images: List<ImageUiModel>,
     val isWaitingActive: Boolean = false,
-) {
-    val featuredImage: String?
-        get() = images.firstOrNull()?.url
-
-    val operatingHours: String
-        get() = "$startTime ~ $endTime"
-}
+)
 
 fun PlaceDetail.toUiModel() =
     PlaceDetailUiModel(
