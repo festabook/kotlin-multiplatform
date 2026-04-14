@@ -1,12 +1,14 @@
 package com.daedan.festabook.placeMap.placeDetail
 
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
+import com.daedan.festabook.domain.repository.WaitingRegisterInfoRepository
 import com.daedan.festabook.news.FAKE_NOTICES
 import com.daedan.festabook.placeMap.FAKE_PLACES
 import com.daedan.festabook.presentation.news.notice.model.toUiModel
 import com.daedan.festabook.presentation.placeMap.model.toUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.PlaceDetailViewModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiState
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingUiState
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.toUiModel
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
@@ -31,18 +33,27 @@ import kotlin.test.fail
 class PlaceDetailViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var placeDetailRepository: PlaceDetailRepository
+    private lateinit var waitingRegisterInfoRepository: WaitingRegisterInfoRepository
     private lateinit var placeDetailViewModel: PlaceDetailViewModel
 
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         placeDetailRepository = mock()
+        waitingRegisterInfoRepository = mock()
         everySuspend { placeDetailRepository.getPlaceDetail(any()) } returns
             Result.success(
                 FAKE_PLACE_DETAIL,
             )
+        everySuspend { waitingRegisterInfoRepository.getPlaceWaiting(any()) } returns
+            Result.success(FAKE_PLACE_WAITING)
         placeDetailViewModel =
-            PlaceDetailViewModel(placeDetailRepository, FAKE_PLACES.first().toUiModel(), null)
+            PlaceDetailViewModel(
+                placeDetailRepository,
+                waitingRegisterInfoRepository,
+                FAKE_PLACES.first().toUiModel(),
+                null,
+            )
     }
 
     @AfterTest
@@ -64,10 +75,18 @@ class PlaceDetailViewModelTest {
             advanceUntilIdle()
 
             // then
-            val expected = FAKE_PLACE_DETAIL.toUiModel()
+            val expected =
+                PlaceDetailUiState.Success(
+                    placeDetail = FAKE_PLACE_DETAIL.toUiModel(),
+                    waiting =
+                        WaitingUiState.Active(
+                            totalTeams = FAKE_PLACE_WAITING.totalWaitingTeams,
+                            estimatedMinutes = FAKE_PLACE_WAITING.estimatedWaitTime,
+                        ),
+                )
             val actual = placeDetailViewModel.placeDetail.value
             verifySuspend { placeDetailRepository.getPlaceDetail(FAKE_PLACES.first().id) }
-            assertEquals(PlaceDetailUiState.Success(expected), actual)
+            assertEquals(expected, actual)
         }
 
     @Test
@@ -102,7 +121,7 @@ class PlaceDetailViewModelTest {
 
             // when
             placeDetailViewModel =
-                PlaceDetailViewModel(placeDetailRepository, null, expected)
+                PlaceDetailViewModel(placeDetailRepository, waitingRegisterInfoRepository, null, expected)
 
             // then
             verifySuspend(VerifyMode.exactly(0)) { placeDetailRepository.getPlaceDetail(any()) }
