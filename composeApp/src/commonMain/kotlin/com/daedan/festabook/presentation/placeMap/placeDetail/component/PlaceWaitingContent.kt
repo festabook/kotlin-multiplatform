@@ -35,6 +35,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun PlaceWaitingContent(
     waiting: WaitingUiState,
+    onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -64,6 +65,7 @@ fun PlaceWaitingContent(
                     CurrentWaitingTeams(
                         totalTeams = waiting.totalTeams,
                         modifier = Modifier.padding(top = festabookSpacing.paddingBody2),
+                        onRefresh = onRefresh,
                     )
                 }
 
@@ -71,11 +73,16 @@ fun PlaceWaitingContent(
                     CurrentWaitingTeams(
                         totalTeams = waiting.totalTeams,
                         modifier = Modifier.padding(top = festabookSpacing.paddingBody2),
+                        onRefresh = onRefresh,
                     )
                 }
 
                 is WaitingUiState.Loading -> {
-                    Unit
+                    CurrentWaitingTeams(
+                        totalTeams = waiting.totalTeams,
+                        modifier = Modifier.padding(top = festabookSpacing.paddingBody2),
+                        onRefresh = onRefresh,
+                    )
                 }
             }
         }
@@ -85,7 +92,8 @@ fun PlaceWaitingContent(
 
 @Composable
 private fun CurrentWaitingTeams(
-    totalTeams: Int,
+    waiting: WaitingUiState,
+    onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -107,16 +115,44 @@ private fun CurrentWaitingTeams(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Text(
-            text = stringResource(Res.string.place_detail_waiting_teams_count, totalTeams),
-            style = FestabookTypography.displayMedium,
-            color = FestabookColor.white,
-        )
+        when (waiting) {
+            is WaitingUiState.Active -> {
+                Text(
+                    text = stringResource(Res.string.place_detail_waiting_teams_count, waiting.totalTeams),
+                    style = FestabookTypography.displayMedium,
+                    color = FestabookColor.white,
+                )
+            }
+
+            is WaitingUiState.Closed -> {
+                Text(
+                    text =
+                        stringResource(
+                            Res.string.place_detail_waiting_teams_count,
+                            waiting.totalTeams,
+                        ),
+                    style = FestabookTypography.displayMedium,
+                    color = FestabookColor.white,
+                )
+            }
+
+            is WaitingUiState.Loading -> {
+                Box(
+                    modifier =
+                        Modifier
+                            .size(width = 52.dp, height = 28.dp)
+                            .background(
+                                color = FestabookColor.gray600,
+                                shape = RoundedCornerShape(6.dp),
+                            ),
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.width(festabookSpacing.paddingBody4))
 
         RefreshButton(
-            onClick = {},
+            onClick = onRefresh,
         )
     }
 }
