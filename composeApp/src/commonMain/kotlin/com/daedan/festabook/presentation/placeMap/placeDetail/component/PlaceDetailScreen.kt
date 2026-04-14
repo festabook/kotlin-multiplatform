@@ -6,24 +6,30 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -59,6 +65,7 @@ import com.daedan.festabook.presentation.placeMap.placeDetail.PlaceDetailViewMod
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.ImageUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiState
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingUiState
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTheme
 import com.daedan.festabook.presentation.theme.FestabookTypography
@@ -75,6 +82,13 @@ import festabookkmp.composeapp.generated.resources.ic_place_detail_clock
 import festabookkmp.composeapp.generated.resources.ic_place_detail_host
 import festabookkmp.composeapp.generated.resources.place_detail_default_host
 import festabookkmp.composeapp.generated.resources.place_detail_default_time
+import festabookkmp.composeapp.generated.resources.place_detail_real_time_waiting
+import festabookkmp.composeapp.generated.resources.place_detail_waiting_closed_btn
+import festabookkmp.composeapp.generated.resources.place_detail_waiting_current_teams
+import festabookkmp.composeapp.generated.resources.place_detail_waiting_estimated_time
+import festabookkmp.composeapp.generated.resources.place_detail_waiting_inactive
+import festabookkmp.composeapp.generated.resources.place_detail_waiting_register
+import festabookkmp.composeapp.generated.resources.place_detail_waiting_teams_count
 import festabookkmp.composeapp.generated.resources.place_list_default_description
 import festabookkmp.composeapp.generated.resources.place_list_default_location
 import festabookkmp.composeapp.generated.resources.place_list_default_title
@@ -143,24 +157,37 @@ fun PlaceDetailScreen(
                 images = uiState.placeDetail.images,
             )
 
-            Column(
-                modifier =
-                    modifier
-                        .fillMaxSize()
-                        .background(color = FestabookColor.white)
-                        .verticalScroll(scrollState),
-            ) {
-                PlaceDetailImageContent(
-                    images = uiState.placeDetail.images,
-                    onBackToPreviousClick = onBackToPreviousClick,
-                    onPageUpdate = { pagerState.scrollToPage(it) },
+            Box(modifier = modifier.fillMaxSize()) {
+                Column(
                     modifier =
                         Modifier
-                            .clickable { isDialogOpen = true }
-                            .fillMaxWidth(),
-                )
+                            .fillMaxSize()
+                            .background(color = FestabookColor.white)
+                            .verticalScroll(scrollState),
+                ) {
+                    PlaceDetailImageContent(
+                        images = uiState.placeDetail.images,
+                        onBackToPreviousClick = onBackToPreviousClick,
+                        onPageUpdate = { pagerState.scrollToPage(it) },
+                        modifier =
+                            Modifier
+                                .clickable { isDialogOpen = true }
+                                .fillMaxWidth(),
+                    )
 
-                PlaceDetailContent(placeDetail = uiState.placeDetail)
+                    PlaceDetailContent(placeDetail = uiState.placeDetail)
+
+                    PlaceWaitingSection(waiting = uiState.waiting)
+
+                    if (uiState.waiting is WaitingUiState.Active || uiState.waiting is WaitingUiState.Closed) {
+                        Spacer(modifier = Modifier.height(80.dp))
+                    }
+                }
+
+                PlaceDetailBottomBar(
+                    waiting = uiState.waiting,
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                )
             }
         }
 
@@ -332,6 +359,190 @@ private fun PlaceDetailContent(
 }
 
 @Composable
+private fun PlaceWaitingSection(
+    waiting: WaitingUiState,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = festabookSpacing.paddingScreenGutter,
+                    vertical = festabookSpacing.paddingBody4,
+                ),
+    ) {
+        HorizontalDivider(color = FestabookColor.gray200)
+
+        Text(
+            modifier = Modifier.padding(top = festabookSpacing.paddingBody4),
+            text = stringResource(Res.string.place_detail_real_time_waiting),
+            style = FestabookTypography.titleMedium,
+        )
+
+        when (waiting) {
+            is WaitingUiState.Active ->
+                WaitingTeamsRow(
+                    totalTeams = waiting.totalTeams,
+                    modifier = Modifier.padding(top = festabookSpacing.paddingBody3),
+                )
+
+            is WaitingUiState.Closed ->
+                WaitingTeamsRow(
+                    totalTeams = waiting.totalTeams,
+                    modifier = Modifier.padding(top = festabookSpacing.paddingBody3),
+                )
+
+            is WaitingUiState.Inactive ->
+                Text(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = festabookSpacing.paddingBody3)
+                            .background(FestabookColor.gray100, RoundedCornerShape(8.dp))
+                            .padding(
+                                horizontal = festabookSpacing.paddingScreenGutter,
+                                vertical = festabookSpacing.paddingBody4,
+                            ),
+                    text = stringResource(Res.string.place_detail_waiting_inactive),
+                    style = FestabookTypography.bodyMedium,
+                    color = FestabookColor.gray500,
+                )
+
+            is WaitingUiState.Loading -> Unit
+        }
+    }
+}
+
+@Composable
+private fun WaitingTeamsRow(
+    totalTeams: Int,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .border(1.dp, FestabookColor.gray200, RoundedCornerShape(8.dp))
+                .padding(
+                    horizontal = festabookSpacing.paddingScreenGutter,
+                    vertical = festabookSpacing.paddingBody3,
+                ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            modifier =
+                Modifier
+                    .background(FestabookColor.accentGreen, RoundedCornerShape(4.dp))
+                    .padding(horizontal = festabookSpacing.paddingBody2, vertical = 2.dp),
+            text = stringResource(Res.string.place_detail_waiting_current_teams),
+            style = FestabookTypography.labelSmall,
+            color = FestabookColor.white,
+        )
+
+        Text(
+            modifier = Modifier.padding(start = festabookSpacing.paddingBody2),
+            text = stringResource(Res.string.place_detail_waiting_teams_count, totalTeams),
+            style = FestabookTypography.bodyMedium,
+            color = FestabookColor.black,
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = FestabookColor.gray400,
+        )
+    }
+}
+
+@Composable
+private fun PlaceDetailBottomBar(
+    waiting: WaitingUiState,
+    modifier: Modifier = Modifier,
+) {
+    when (waiting) {
+        is WaitingUiState.Active -> {
+            Column(modifier = modifier.fillMaxWidth()) {
+                HorizontalDivider(color = FestabookColor.gray200)
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .background(FestabookColor.white)
+                            .padding(
+                                horizontal = festabookSpacing.paddingScreenGutter,
+                                vertical = festabookSpacing.paddingBody3,
+                            ),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text =
+                            stringResource(
+                                Res.string.place_detail_waiting_estimated_time,
+                                waiting.estimatedMinutes,
+                            ),
+                        style = FestabookTypography.bodySmall,
+                        color = FestabookColor.gray500,
+                    )
+
+                    Spacer(modifier = Modifier.width(festabookSpacing.paddingBody3))
+
+                    Box(
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .background(FestabookColor.accentBlue, RoundedCornerShape(8.dp))
+                                .padding(vertical = 14.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.place_detail_waiting_register),
+                            style = FestabookTypography.titleSmall,
+                            color = FestabookColor.white,
+                        )
+                    }
+                }
+            }
+        }
+
+        is WaitingUiState.Closed -> {
+            Column(modifier = modifier.fillMaxWidth()) {
+                HorizontalDivider(color = FestabookColor.gray200)
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .background(FestabookColor.white)
+                            .padding(
+                                horizontal = festabookSpacing.paddingScreenGutter,
+                                vertical = festabookSpacing.paddingBody3,
+                            ),
+                ) {
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .background(FestabookColor.gray200, RoundedCornerShape(8.dp))
+                                .padding(vertical = 14.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.place_detail_waiting_closed_btn),
+                            style = FestabookTypography.titleSmall,
+                            color = FestabookColor.gray500,
+                        )
+                    }
+                }
+            }
+        }
+
+        else -> Unit
+    }
+}
+
+@Composable
 private fun PlaceDetailInfo(
     placeDetail: PlaceDetailUiModel,
     modifier: Modifier = Modifier,
@@ -443,7 +654,7 @@ private fun formattedDate(
 
 @Preview(showBackground = true)
 @Composable
-private fun PlaceDetailScreenPreview() {
+private fun PlaceDetailScreenActivePreview() {
     FestabookTheme {
         PlaceDetailScreen(
             onBackToPreviousClick = {},
@@ -456,33 +667,88 @@ private fun PlaceDetailScreenPreview() {
                                 PlaceUiModel(
                                     id = 1,
                                     imageUrl = null,
-                                    title = "테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트",
-                                    description =
-                                        "테스트테스트테스트테스트테스트테스.트테스트.테스트테스트테스트테스트//테스트테스트테스트테스트테스" +
-                                            "트테스트테스트테스트http://i1.sndcdn.com/art 트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테" +
-                                            "스트테스트테스트테스트https://i.ytimg.com/vi/Wr8egRRLU28/maxresdefault.com테스트테스트테스트테스트" +
-                                            "테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트",
-                                    location = "테스트테스트테스트테스트테스트테스트테스트테스트테스트",
+                                    title = "컹과 주점 '코딩하며 한잔'",
+                                    description = "테스트 설명입니다.",
+                                    location = "테스트 위치",
                                     category = PlaceCategoryUiModel.FOOD_TRUCK,
                                     isBookmarked = true,
                                     timeTagId = listOf(1),
                                 ),
                             notices = emptyList(),
-                            host = "테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트",
+                            host = "테스트",
                             startTime = "09:00",
                             endTime = "18:00",
-                            images =
-                                listOf(
-                                    ImageUiModel(
-                                        id = 1,
-                                        url = "https://i1.sndcdn.com/artworks-AIxlEDn4gNDBnNJj-qHUnyA-t500x500.jpg",
-                                    ),
-                                    ImageUiModel(
-                                        id = 2,
-                                        url = "https://i.ytimg.com/vi/Wr8egRRLU28/maxresdefault.jpg",
-                                    ),
-                                ),
+                            images = listOf(ImageUiModel(id = 1, url = "")),
                         ),
+                    waiting = WaitingUiState.Active(totalTeams = 13, estimatedMinutes = 130),
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PlaceDetailScreenClosedPreview() {
+    FestabookTheme {
+        PlaceDetailScreen(
+            onBackToPreviousClick = {},
+            onShowErrorSnackbar = {},
+            uiState =
+                PlaceDetailUiState.Success(
+                    placeDetail =
+                        PlaceDetailUiModel(
+                            place =
+                                PlaceUiModel(
+                                    id = 1,
+                                    imageUrl = null,
+                                    title = "컹과 주점 '코딩하며 한잔'",
+                                    description = "테스트 설명입니다.",
+                                    location = "테스트 위치",
+                                    category = PlaceCategoryUiModel.FOOD_TRUCK,
+                                    isBookmarked = true,
+                                    timeTagId = listOf(1),
+                                ),
+                            notices = emptyList(),
+                            host = "테스트",
+                            startTime = "09:00",
+                            endTime = "18:00",
+                            images = listOf(ImageUiModel(id = 1, url = "")),
+                        ),
+                    waiting = WaitingUiState.Closed(totalTeams = 13),
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PlaceDetailScreenInactivePreview() {
+    FestabookTheme {
+        PlaceDetailScreen(
+            onBackToPreviousClick = {},
+            onShowErrorSnackbar = {},
+            uiState =
+                PlaceDetailUiState.Success(
+                    placeDetail =
+                        PlaceDetailUiModel(
+                            place =
+                                PlaceUiModel(
+                                    id = 1,
+                                    imageUrl = null,
+                                    title = "컹과 주점 '코딩하며 한잔'",
+                                    description = "테스트 설명입니다.",
+                                    location = "테스트 위치",
+                                    category = PlaceCategoryUiModel.FOOD_TRUCK,
+                                    isBookmarked = true,
+                                    timeTagId = listOf(1),
+                                ),
+                            notices = emptyList(),
+                            host = "테스트",
+                            startTime = "09:00",
+                            endTime = "18:00",
+                            images = listOf(ImageUiModel(id = 1, url = "")),
+                        ),
+                    waiting = WaitingUiState.Inactive,
                 ),
         )
     }

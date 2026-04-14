@@ -42,6 +42,13 @@
     <string name="place_detail_notice_title">공지사항</string>
     <string name="place_detail_default_time">미지정</string>
     <string name="place_detail_default_host">미지정</string>
+    <string name="place_detail_real_time_waiting">실시간 웨이팅</string>
+    <string name="place_detail_waiting_current_teams">현재 대기</string>
+    <string name="place_detail_waiting_teams_count">%d팀</string>
+    <string name="place_detail_waiting_estimated_time">약 %d분</string>
+    <string name="place_detail_waiting_inactive">웨이팅을 지원하지 않는 부스입니다.</string>
+    <string name="place_detail_waiting_register">+ 웨이팅 등록하기</string>
+    <string name="place_detail_waiting_closed_btn">웨이팅 마감</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
