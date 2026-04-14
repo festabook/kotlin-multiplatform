@@ -179,6 +179,8 @@ fun PlaceDetailScreen(
 
                     PlaceWaitingSection(waiting = uiState.waiting)
 
+                    PlaceDetailDescription(placeDetail = uiState.placeDetail)
+
                     if (uiState.waiting is WaitingUiState.Active || uiState.waiting is WaitingUiState.Closed) {
                         Spacer(modifier = Modifier.height(80.dp))
                     }
@@ -310,8 +312,6 @@ private fun PlaceDetailContent(
     placeDetail: PlaceDetailUiModel,
     modifier: Modifier = Modifier,
 ) {
-    var isDescriptionExpand by remember { mutableStateOf(true) }
-
     Column(
         modifier = modifier.padding(horizontal = festabookSpacing.paddingScreenGutter),
     ) {
@@ -327,35 +327,44 @@ private fun PlaceDetailContent(
         )
 
         PlaceDetailInfo(placeDetail = placeDetail)
-
-        URLText(
-            modifier =
-                Modifier
-                    .animateContentSize(
-                        animationSpec =
-                            spring(
-                                dampingRatio = Spring.DampingRatioLowBouncy,
-                                stiffness = Spring.StiffnessMedium,
-                            ),
-                    ).padding(
-                        top = festabookSpacing.paddingBody3,
-                    ),
-            onClick = {
-                isDescriptionExpand = !isDescriptionExpand
-            },
-            text =
-                placeDetail.place.description
-                    ?: stringResource(Res.string.place_list_default_description),
-            style = FestabookTypography.bodySmall,
-            maxLines =
-                if (isDescriptionExpand) {
-                    Int.MAX_VALUE
-                } else {
-                    1
-                },
-            overflow = TextOverflow.Ellipsis,
-        )
     }
+}
+
+@Composable
+private fun PlaceDetailDescription(
+    placeDetail: PlaceDetailUiModel,
+    modifier: Modifier = Modifier,
+) {
+    var isDescriptionExpand by remember { mutableStateOf(true) }
+
+    URLText(
+        modifier =
+            modifier
+                .animateContentSize(
+                    animationSpec =
+                        spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessMedium,
+                        ),
+                ).padding(
+                    horizontal = festabookSpacing.paddingScreenGutter,
+                    vertical = festabookSpacing.paddingBody3,
+                ),
+        onClick = {
+            isDescriptionExpand = !isDescriptionExpand
+        },
+        text =
+            placeDetail.place.description
+                ?: stringResource(Res.string.place_list_default_description),
+        style = FestabookTypography.bodySmall,
+        maxLines =
+            if (isDescriptionExpand) {
+                Int.MAX_VALUE
+            } else {
+                1
+            },
+        overflow = TextOverflow.Ellipsis,
+    )
 }
 
 @Composable
