@@ -159,7 +159,9 @@ class PlaceDetailViewModel(
                             estimatedMinutes = placeWaiting.estimatedWaitTime,
                         )
                     } else {
-                        WaitingStatusUiState.Closed
+                        WaitingStatusUiState.Closed(
+                            estimatedMinutes = placeWaiting.estimatedWaitTime,
+                        )
                     }
                 _placeDetail.update { current ->
                     if (current is PlaceDetailUiState.Success) {

@@ -70,7 +70,7 @@ private fun RowScope.PlaceDetailBottomBarContent(
 ) {
     when (waiting) {
         is WaitingStatusUiState.Active -> {
-            EstimatedTime(waiting)
+            EstimatedTime(waiting.estimatedMinutes)
             Spacer(modifier = Modifier.width(festabookSpacing.paddingBody3))
 
             Box(
@@ -80,8 +80,8 @@ private fun RowScope.PlaceDetailBottomBarContent(
                         .background(
                             color = FestabookColor.accentBlue,
                             shape = festabookShapes.radius3,
-                        ).padding(vertical = festabookSpacing.paddingBody4)
-                        .clickable(onClick = onRegisterWaitingClick),
+                        ).clickable(onClick = onRegisterWaitingClick)
+                        .padding(vertical = festabookSpacing.paddingBody4),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
@@ -93,6 +93,8 @@ private fun RowScope.PlaceDetailBottomBarContent(
         }
 
         is WaitingStatusUiState.Closed -> {
+            EstimatedTime(waiting.estimatedMinutes)
+            Spacer(modifier = Modifier.width(festabookSpacing.paddingBody3))
             Box(
                 modifier =
                     Modifier
@@ -119,7 +121,7 @@ private fun RowScope.PlaceDetailBottomBarContent(
 
 @Composable
 private fun EstimatedTime(
-    waiting: WaitingStatusUiState.Active,
+    estimatedMinutes: Int,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -127,10 +129,7 @@ private fun EstimatedTime(
     ) {
         Text(
             text =
-                stringResource(
-                    Res.string.place_detail_waiting_estimated_time_title,
-                    waiting.estimatedMinutes,
-                ),
+                stringResource(Res.string.place_detail_waiting_estimated_time_title),
             style = FestabookTypography.bodySmall,
             color = FestabookColor.gray500,
         )
@@ -138,7 +137,7 @@ private fun EstimatedTime(
             text =
                 stringResource(
                     Res.string.place_detail_waiting_estimated_time,
-                    waiting.estimatedMinutes,
+                    estimatedMinutes,
                 ),
             style = FestabookTypography.titleLarge,
             color = FestabookColor.black,

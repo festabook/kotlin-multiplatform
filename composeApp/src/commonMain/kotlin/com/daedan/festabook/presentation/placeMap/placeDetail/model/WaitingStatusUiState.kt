@@ -7,5 +7,7 @@ sealed interface WaitingStatusUiState {
         val estimatedMinutes: Int,
     ) : WaitingStatusUiState
 
-    data object Closed : WaitingStatusUiState
+    data class Closed(
+        val estimatedMinutes: Int,
+    ) : WaitingStatusUiState
 }
