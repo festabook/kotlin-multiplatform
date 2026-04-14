@@ -1,12 +1,12 @@
 package com.daedan.festabook.presentation.home
 
-import com.daedan.festabook.domain.model.Organization
+import com.daedan.festabook.presentation.home.model.OrganizationUiModel
 
 sealed interface FestivalUiState {
     data object Loading : FestivalUiState
 
     data class Success(
-        val organization: Organization,
+        val organization: OrganizationUiModel,
     ) : FestivalUiState
 
     data class Error(

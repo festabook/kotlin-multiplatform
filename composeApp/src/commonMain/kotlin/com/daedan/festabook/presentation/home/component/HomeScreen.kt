@@ -19,9 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.daedan.festabook.domain.model.Festival
-import com.daedan.festabook.domain.model.Organization
-import com.daedan.festabook.domain.model.Poster
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
@@ -29,8 +26,11 @@ import com.daedan.festabook.presentation.common.formatFestivalPeriod
 import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.LineupUiState
+import com.daedan.festabook.presentation.home.model.FestivalPosterUiModel
+import com.daedan.festabook.presentation.home.model.FestivalUiModel
 import com.daedan.festabook.presentation.home.model.LineUpItemGroupUiModel
 import com.daedan.festabook.presentation.home.model.LineupItemUiModel
+import com.daedan.festabook.presentation.home.model.OrganizationUiModel
 import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.festabookSpacing
@@ -247,11 +247,11 @@ private fun HomeContent(
 @Composable
 private fun FestivalOverviewPreview() {
     val sampleFestival =
-        Organization(
+        OrganizationUiModel(
             id = 1,
             organizationName = "가천대학교",
             festival =
-                Festival(
+                FestivalUiModel(
                     festivalName = "2025 가천 Water Festival\n: AQUA WAVE",
                     startDate = Clock.System.todayIn(TimeZone.currentSystemDefault()),
                     endDate =
@@ -260,8 +260,8 @@ private fun FestivalOverviewPreview() {
                             .plus(DatePeriod(days = 1)),
                     festivalImages =
                         listOf(
-                            Poster(1, "sample", 1),
-                            Poster(2, "sample", 2),
+                            FestivalPosterUiModel(1, "sample", 1),
+                            FestivalPosterUiModel(2, "sample", 2),
                         ),
                 ),
         )
