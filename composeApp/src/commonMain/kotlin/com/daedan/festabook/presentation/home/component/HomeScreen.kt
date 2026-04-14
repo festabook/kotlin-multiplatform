@@ -22,7 +22,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
-import com.daedan.festabook.presentation.common.formatFestivalPeriod
 import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.LineupUiState
@@ -36,9 +35,13 @@ import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.festabookSpacing
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.error_fail_to_load_info
+import festabookkmp.composeapp.generated.resources.format_festival_period_date
+import festabookkmp.composeapp.generated.resources.format_festival_period_year
 import festabookkmp.composeapp.generated.resources.setting_notice_enabled
 import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayIn
@@ -241,6 +244,28 @@ private fun HomeContent(
             }
         }
     }
+}
+
+@Composable
+private fun formatFestivalPeriod(
+    start: LocalDate,
+    end: LocalDate,
+): String {
+    val startYear = stringResource(Res.string.format_festival_period_year, start.year)
+    val endYear =
+        if (start.year == end.year) {
+            ""
+        } else {
+            stringResource(
+                Res.string.format_festival_period_year,
+                end.year,
+            )
+        }
+
+    val startDate =
+        stringResource(Res.string.format_festival_period_date, start.month.number, start.day)
+    val endDate = stringResource(Res.string.format_festival_period_date, end.month.number, end.day)
+    return "$startYear$startDate ~ $endYear$endDate"
 }
 
 @Preview(showBackground = true)
