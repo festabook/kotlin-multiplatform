@@ -43,6 +43,7 @@
     <string name="place_detail_default_time">미지정</string>
     <string name="place_detail_default_host">미지정</string>
     <string name="place_detail_real_time_waiting">실시간 웨이팅</string>
+    <string name="place_detail_waiting_estimated_time_title">예상 대기시간</string>
     <string name="place_detail_waiting_current_teams">현재 대기</string>
     <string name="place_detail_waiting_teams_count">%1$d팀</string>
     <string name="place_detail_waiting_estimated_time">약 %1$d분</string>

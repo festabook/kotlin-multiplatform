@@ -56,7 +56,7 @@ fun PlaceWaitingContent(
         ) {
             Text(
                 text = stringResource(Res.string.place_detail_real_time_waiting),
-                style = FestabookTypography.titleMedium,
+                style = FestabookTypography.titleSmall,
             )
 
             when (waiting) {
@@ -109,7 +109,7 @@ private fun CurrentWaitingTeams(
 
         Text(
             text = stringResource(Res.string.place_detail_waiting_teams_count, totalTeams),
-            style = FestabookTypography.displaySmall,
+            style = FestabookTypography.displayMedium,
             color = FestabookColor.white,
         )
 
