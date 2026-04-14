@@ -17,6 +17,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -35,8 +36,20 @@ import org.jetbrains.compose.resources.stringResource
 fun PlaceWaitingContent(
     waiting: WaitingTeamUiState,
     onRefresh: () -> Unit,
+    onShowErrorSnackbar: (Throwable) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    LaunchedEffect(waiting) {
+        when (waiting) {
+            is WaitingTeamUiState.Error -> {
+                onShowErrorSnackbar(waiting.throwable)
+            }
+
+            else -> {
+                Unit
+            }
+        }
+    }
     Column(
         modifier =
             modifier

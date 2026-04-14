@@ -174,6 +174,7 @@ fun PlaceDetailScreen(
                     PlaceWaitingContent(
                         waiting = uiState.waitingTeam,
                         onRefresh = onWaitingRefresh,
+                        onShowErrorSnackbar = currentOnShowErrorSnackbar,
                     )
 
                     PlaceDetailDescription(placeDetail = uiState.placeDetail)
