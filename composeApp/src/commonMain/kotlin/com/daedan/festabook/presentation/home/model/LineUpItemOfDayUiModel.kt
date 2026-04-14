@@ -1,4 +1,4 @@
-package com.daedan.festabook.presentation.home
+package com.daedan.festabook.presentation.home.model
 
 import com.daedan.festabook.domain.model.LineupItem
 import kotlinx.datetime.LocalDate

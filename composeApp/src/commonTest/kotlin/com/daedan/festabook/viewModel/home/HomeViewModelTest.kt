@@ -3,9 +3,9 @@ package com.daedan.festabook.home
 import com.daedan.festabook.domain.repository.FestivalRepository
 import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
-import com.daedan.festabook.presentation.home.LineUpItemOfDayUiModel
 import com.daedan.festabook.presentation.home.LineupUiState
-import com.daedan.festabook.presentation.home.toUiModel
+import com.daedan.festabook.presentation.home.model.LineUpItemOfDayUiModel
+import com.daedan.festabook.presentation.home.model.toUiModel
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
 import dev.mokkery.mock
