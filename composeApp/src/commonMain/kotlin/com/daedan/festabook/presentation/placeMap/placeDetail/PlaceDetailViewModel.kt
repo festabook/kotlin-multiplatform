@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 @AssistedInject
 class PlaceDetailViewModel(
@@ -105,10 +106,7 @@ class PlaceDetailViewModel(
                     if (current is PlaceDetailUiState.Success) current.copy(waiting = waitingUiState) else current
                 }
             }.onFailure { throwable ->
-                if (throwable is kotlinx.coroutines.CancellationException) throw throwable
-                _placeDetail.update { current ->
-                    if (current is PlaceDetailUiState.Success) current.copy(waiting = WaitingUiState.Inactive) else current
-                }
+                _placeDetail.value = PlaceDetailUiState.Error(throwable)
             }
     }
 

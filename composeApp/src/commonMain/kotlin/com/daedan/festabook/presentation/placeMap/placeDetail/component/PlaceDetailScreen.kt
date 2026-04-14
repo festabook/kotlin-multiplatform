@@ -6,7 +6,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,18 +17,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -82,13 +77,6 @@ import festabookkmp.composeapp.generated.resources.ic_place_detail_clock
 import festabookkmp.composeapp.generated.resources.ic_place_detail_host
 import festabookkmp.composeapp.generated.resources.place_detail_default_host
 import festabookkmp.composeapp.generated.resources.place_detail_default_time
-import festabookkmp.composeapp.generated.resources.place_detail_real_time_waiting
-import festabookkmp.composeapp.generated.resources.place_detail_waiting_closed_btn
-import festabookkmp.composeapp.generated.resources.place_detail_waiting_current_teams
-import festabookkmp.composeapp.generated.resources.place_detail_waiting_estimated_time
-import festabookkmp.composeapp.generated.resources.place_detail_waiting_inactive
-import festabookkmp.composeapp.generated.resources.place_detail_waiting_register
-import festabookkmp.composeapp.generated.resources.place_detail_waiting_teams_count
 import festabookkmp.composeapp.generated.resources.place_list_default_description
 import festabookkmp.composeapp.generated.resources.place_list_default_location
 import festabookkmp.composeapp.generated.resources.place_list_default_title
@@ -177,7 +165,7 @@ fun PlaceDetailScreen(
 
                     PlaceDetailContent(placeDetail = uiState.placeDetail)
 
-                    PlaceWaitingSection(waiting = uiState.waiting)
+                    PlaceWaitingContent(waiting = uiState.waiting)
 
                     PlaceDetailDescription(placeDetail = uiState.placeDetail)
 
@@ -348,7 +336,8 @@ private fun PlaceDetailDescription(
                         ),
                 ).padding(
                     horizontal = festabookSpacing.paddingScreenGutter,
-                    vertical = festabookSpacing.paddingBody3,
+                ).padding(
+                    bottom = festabookSpacing.paddingBody3,
                 ),
         onClick = {
             isDescriptionExpand = !isDescriptionExpand
@@ -356,7 +345,7 @@ private fun PlaceDetailDescription(
         text =
             placeDetail.place.description
                 ?: stringResource(Res.string.place_list_default_description),
-        style = FestabookTypography.bodySmall,
+        style = FestabookTypography.bodyMedium,
         maxLines =
             if (isDescriptionExpand) {
                 Int.MAX_VALUE
@@ -364,192 +353,8 @@ private fun PlaceDetailDescription(
                 1
             },
         overflow = TextOverflow.Ellipsis,
+        color = FestabookColor.gray500,
     )
-}
-
-@Composable
-private fun PlaceWaitingSection(
-    waiting: WaitingUiState,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        HorizontalDivider(color = FestabookColor.gray200)
-
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = festabookSpacing.paddingScreenGutter,
-                        vertical = festabookSpacing.paddingBody4,
-                    ),
-        ) {
-            Text(
-                text = stringResource(Res.string.place_detail_real_time_waiting),
-                style = FestabookTypography.titleMedium,
-            )
-
-            when (waiting) {
-                is WaitingUiState.Active ->
-                    WaitingTeamsRow(
-                        totalTeams = waiting.totalTeams,
-                        modifier = Modifier.padding(top = festabookSpacing.paddingBody3),
-                    )
-
-                is WaitingUiState.Closed ->
-                    WaitingTeamsRow(
-                        totalTeams = waiting.totalTeams,
-                        modifier = Modifier.padding(top = festabookSpacing.paddingBody3),
-                    )
-
-                is WaitingUiState.Inactive ->
-                    Text(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(top = festabookSpacing.paddingBody3)
-                                .background(FestabookColor.gray100, RoundedCornerShape(8.dp))
-                                .padding(
-                                    horizontal = festabookSpacing.paddingScreenGutter,
-                                    vertical = festabookSpacing.paddingBody4,
-                                ),
-                        text = stringResource(Res.string.place_detail_waiting_inactive),
-                        style = FestabookTypography.bodyMedium,
-                        color = FestabookColor.gray500,
-                    )
-
-                is WaitingUiState.Loading -> Unit
-            }
-        }
-
-        HorizontalDivider(thickness = 4.dp, color = FestabookColor.gray100)
-    }
-}
-
-@Composable
-private fun WaitingTeamsRow(
-    totalTeams: Int,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .background(FestabookColor.black, RoundedCornerShape(50.dp))
-                .padding(
-                    horizontal = festabookSpacing.paddingScreenGutter,
-                    vertical = 18.dp,
-                ),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = stringResource(Res.string.place_detail_waiting_current_teams),
-            style = FestabookTypography.bodyMedium,
-            color = FestabookColor.white,
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Text(
-            text = stringResource(Res.string.place_detail_waiting_teams_count, totalTeams),
-            style = FestabookTypography.displaySmall,
-            color = FestabookColor.white,
-        )
-
-        Spacer(modifier = Modifier.width(festabookSpacing.paddingBody2))
-
-        Icon(
-            imageVector = Icons.Default.Refresh,
-            contentDescription = null,
-            tint = FestabookColor.white,
-            modifier = Modifier.size(20.dp),
-        )
-    }
-}
-
-@Composable
-private fun PlaceDetailBottomBar(
-    waiting: WaitingUiState,
-    modifier: Modifier = Modifier,
-) {
-    when (waiting) {
-        is WaitingUiState.Active -> {
-            Column(modifier = modifier.fillMaxWidth()) {
-                HorizontalDivider(color = FestabookColor.gray200)
-                Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .background(FestabookColor.white)
-                            .padding(
-                                horizontal = festabookSpacing.paddingScreenGutter,
-                                vertical = festabookSpacing.paddingBody3,
-                            ),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text =
-                            stringResource(
-                                Res.string.place_detail_waiting_estimated_time,
-                                waiting.estimatedMinutes,
-                            ),
-                        style = FestabookTypography.bodySmall,
-                        color = FestabookColor.gray500,
-                    )
-
-                    Spacer(modifier = Modifier.width(festabookSpacing.paddingBody3))
-
-                    Box(
-                        modifier =
-                            Modifier
-                                .weight(1f)
-                                .background(FestabookColor.accentBlue, RoundedCornerShape(8.dp))
-                                .padding(vertical = 14.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.place_detail_waiting_register),
-                            style = FestabookTypography.titleSmall,
-                            color = FestabookColor.white,
-                        )
-                    }
-                }
-            }
-        }
-
-        is WaitingUiState.Closed -> {
-            Column(modifier = modifier.fillMaxWidth()) {
-                HorizontalDivider(color = FestabookColor.gray200)
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .background(FestabookColor.white)
-                            .padding(
-                                horizontal = festabookSpacing.paddingScreenGutter,
-                                vertical = festabookSpacing.paddingBody3,
-                            ),
-                ) {
-                    Box(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .background(FestabookColor.gray200, RoundedCornerShape(8.dp))
-                                .padding(vertical = 14.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.place_detail_waiting_closed_btn),
-                            style = FestabookTypography.titleSmall,
-                            color = FestabookColor.gray500,
-                        )
-                    }
-                }
-            }
-        }
-
-        else -> Unit
-    }
 }
 
 @Composable
@@ -603,7 +408,7 @@ private fun PlaceDetailInfoItem(
         Text(
             modifier = Modifier.padding(start = festabookSpacing.paddingBody1),
             text = text,
-            style = FestabookTypography.bodySmall,
+            style = FestabookTypography.bodyMedium,
             color = FestabookColor.gray500,
         )
     }
@@ -758,7 +563,7 @@ private fun PlaceDetailScreenInactivePreview() {
                             endTime = "18:00",
                             images = listOf(ImageUiModel(id = 1, url = "")),
                         ),
-                    waiting = WaitingUiState.Inactive,
+                    waiting = WaitingUiState.Closed(totalTeams = 13),
                 ),
         )
     }

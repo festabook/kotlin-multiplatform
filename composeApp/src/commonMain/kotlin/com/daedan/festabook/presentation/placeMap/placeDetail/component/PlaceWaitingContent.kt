@@ -1,0 +1,146 @@
+package com.daedan.festabook.presentation.placeMap.placeDetail.component
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingUiState
+import com.daedan.festabook.presentation.theme.FestabookColor
+import com.daedan.festabook.presentation.theme.FestabookTypography
+import com.daedan.festabook.presentation.theme.festabookShapes
+import com.daedan.festabook.presentation.theme.festabookSpacing
+import festabookkmp.composeapp.generated.resources.Res
+import festabookkmp.composeapp.generated.resources.place_detail_real_time_waiting
+import festabookkmp.composeapp.generated.resources.place_detail_waiting_current_teams
+import festabookkmp.composeapp.generated.resources.place_detail_waiting_inactive
+import festabookkmp.composeapp.generated.resources.place_detail_waiting_teams_count
+import org.jetbrains.compose.resources.stringResource
+
+@Composable
+fun PlaceWaitingContent(
+    waiting: WaitingUiState,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(vertical = festabookSpacing.paddingBody5),
+    ) {
+        HorizontalDivider(thickness = 4.dp, color = FestabookColor.gray200)
+
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = festabookSpacing.paddingScreenGutter,
+                        vertical = festabookSpacing.paddingBody5,
+                    ),
+        ) {
+            Text(
+                text = stringResource(Res.string.place_detail_real_time_waiting),
+                style = FestabookTypography.titleMedium,
+            )
+
+            when (waiting) {
+                is WaitingUiState.Active -> {
+                    CurrentWaitingTeams(
+                        totalTeams = waiting.totalTeams,
+                        modifier = Modifier.padding(top = festabookSpacing.paddingBody2),
+                    )
+                }
+
+                is WaitingUiState.Closed -> {
+                    CurrentWaitingTeams(
+                        totalTeams = waiting.totalTeams,
+                        modifier = Modifier.padding(top = festabookSpacing.paddingBody2),
+                    )
+                }
+
+                is WaitingUiState.Loading -> {
+                    Unit
+                }
+            }
+        }
+        HorizontalDivider(thickness = 4.dp, color = FestabookColor.gray200)
+    }
+}
+
+@Composable
+private fun CurrentWaitingTeams(
+    totalTeams: Int,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(FestabookColor.black, RoundedCornerShape(50.dp))
+                .padding(
+                    horizontal = 24.dp,
+                    vertical = festabookSpacing.paddingBody4,
+                ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = stringResource(Res.string.place_detail_waiting_current_teams),
+            style = FestabookTypography.bodyLarge,
+            color = FestabookColor.white,
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Text(
+            text = stringResource(Res.string.place_detail_waiting_teams_count, totalTeams),
+            style = FestabookTypography.displaySmall,
+            color = FestabookColor.white,
+        )
+
+        Spacer(modifier = Modifier.width(festabookSpacing.paddingBody4))
+
+        RefreshButton(
+            onClick = {},
+        )
+    }
+}
+
+@Composable
+private fun RefreshButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier =
+            modifier
+                .background(
+                    color = FestabookColor.white,
+                    shape = festabookShapes.radiusFull,
+                ).clickable(
+                    onClick = onClick,
+                ).padding(festabookSpacing.paddingBody1),
+    ) {
+        Icon(
+            imageVector = Icons.Default.Refresh,
+            contentDescription = null,
+            tint = FestabookColor.black,
+            modifier = Modifier.size(20.dp),
+        )
+    }
+}

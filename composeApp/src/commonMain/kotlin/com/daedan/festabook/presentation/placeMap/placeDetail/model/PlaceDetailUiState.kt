@@ -12,18 +12,3 @@ sealed interface PlaceDetailUiState {
         val throwable: Throwable,
     ) : PlaceDetailUiState
 }
-
-sealed interface WaitingUiState {
-    data object Loading : WaitingUiState
-
-    data class Active(
-        val totalTeams: Int,
-        val estimatedMinutes: Int,
-    ) : WaitingUiState
-
-    data class Closed(
-        val totalTeams: Int,
-    ) : WaitingUiState
-
-    data object Inactive : WaitingUiState
-}
