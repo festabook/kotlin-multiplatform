@@ -33,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -80,6 +81,7 @@ import festabookkmp.composeapp.generated.resources.place_detail_default_time
 import festabookkmp.composeapp.generated.resources.place_list_default_description
 import festabookkmp.composeapp.generated.resources.place_list_default_location
 import festabookkmp.composeapp.generated.resources.place_list_default_title
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -92,11 +94,15 @@ fun PlaceDetailRoute(
     modifier: Modifier = Modifier,
 ) {
     val placeDetailUiState by viewModel.placeDetail.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
     PlaceDetailScreen(
         modifier = modifier,
         uiState = placeDetailUiState,
         onBackToPreviousClick = onBackToPreviousClick,
         onShowErrorSnackbar = onShowErrorSnackbar,
+        onWaitingRefresh = {
+            scope.launch { viewModel.loadWaitingStatus() }
+        },
     )
 }
 
@@ -104,6 +110,7 @@ fun PlaceDetailRoute(
 fun PlaceDetailScreen(
     uiState: PlaceDetailUiState,
     onBackToPreviousClick: () -> Unit,
+    onWaitingRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     onShowErrorSnackbar: (Throwable) -> Unit = {}, // TODO Fragment 제거 시 필수 파라미터로 변경
 ) {
@@ -165,7 +172,10 @@ fun PlaceDetailScreen(
 
                     PlaceDetailContent(placeDetail = uiState.placeDetail)
 
-                    PlaceWaitingContent(waiting = uiState.waiting)
+                    PlaceWaitingContent(
+                        waiting = uiState.waiting,
+                        onRefresh = onWaitingRefresh,
+                    )
 
                     PlaceDetailDescription(placeDetail = uiState.placeDetail)
 
@@ -474,6 +484,7 @@ private fun PlaceDetailScreenActivePreview() {
         PlaceDetailScreen(
             onBackToPreviousClick = {},
             onShowErrorSnackbar = {},
+            onWaitingRefresh = {},
             uiState =
                 PlaceDetailUiState.Success(
                     placeDetail =
@@ -508,6 +519,7 @@ private fun PlaceDetailScreenClosedPreview() {
         PlaceDetailScreen(
             onBackToPreviousClick = {},
             onShowErrorSnackbar = {},
+            onWaitingRefresh = {},
             uiState =
                 PlaceDetailUiState.Success(
                     placeDetail =
@@ -542,6 +554,7 @@ private fun PlaceDetailScreenInactivePreview() {
         PlaceDetailScreen(
             onBackToPreviousClick = {},
             onShowErrorSnackbar = {},
+            onWaitingRefresh = {},
             uiState =
                 PlaceDetailUiState.Success(
                     placeDetail =

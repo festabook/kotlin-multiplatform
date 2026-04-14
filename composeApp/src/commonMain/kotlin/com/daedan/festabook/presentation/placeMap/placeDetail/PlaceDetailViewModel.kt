@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.coroutines.cancellation.CancellationException
 
 @AssistedInject
 class PlaceDetailViewModel(
@@ -60,7 +59,7 @@ class PlaceDetailViewModel(
                 if (it.images.isEmpty()) it.copy(images = listOf(ImageUiModel())) else it
             _placeDetail.value = PlaceDetailUiState.Success(placeDetailUiModel)
             viewModelScope.launch {
-                loadWaitingStatus(it.place.id, it.isWaitingActive)
+                loadWaitingStatus()
             }
         }
         place?.let { loadPlaceDetail(it.id) }
@@ -79,18 +78,23 @@ class PlaceDetailViewModel(
                         }
                     _placeDetail.value =
                         PlaceDetailUiState.Success(placeDetailUiModel)
-                    loadWaitingStatus(placeId, placeDetailUiModel.isWaitingActive)
+                    loadWaitingStatus()
                 }.onFailure { throwable ->
                     _placeDetail.value = PlaceDetailUiState.Error(throwable)
                 }
         }
     }
 
-    private suspend fun loadWaitingStatus(
-        placeId: Long,
-        isWaitingActive: Boolean,
-    ) {
+    suspend fun loadWaitingStatus() {
+        _placeDetail.update { current ->
+            if (current is PlaceDetailUiState.Success) current.copy(waiting = WaitingUiState.Loading) else current
+        }
+        val placeDetailState = _placeDetail.value
+        if (placeDetailState !is PlaceDetailUiState.Success) return
+        val placeId = placeDetailState.placeDetail.place.id
         val waitingResult = waitingRegisterInfoRepository.getPlaceWaiting(placeId)
+        val isWaitingActive = placeDetailState.placeDetail.isWaitingActive
+
         waitingResult
             .onSuccess { placeWaiting ->
                 val waitingUiState =

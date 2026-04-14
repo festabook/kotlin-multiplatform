@@ -28,7 +28,6 @@ import com.daedan.festabook.presentation.theme.festabookSpacing
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.place_detail_real_time_waiting
 import festabookkmp.composeapp.generated.resources.place_detail_waiting_current_teams
-import festabookkmp.composeapp.generated.resources.place_detail_waiting_inactive
 import festabookkmp.composeapp.generated.resources.place_detail_waiting_teams_count
 import org.jetbrains.compose.resources.stringResource
 
@@ -60,31 +59,11 @@ fun PlaceWaitingContent(
                 style = FestabookTypography.titleSmall,
             )
 
-            when (waiting) {
-                is WaitingUiState.Active -> {
-                    CurrentWaitingTeams(
-                        totalTeams = waiting.totalTeams,
-                        modifier = Modifier.padding(top = festabookSpacing.paddingBody2),
-                        onRefresh = onRefresh,
-                    )
-                }
-
-                is WaitingUiState.Closed -> {
-                    CurrentWaitingTeams(
-                        totalTeams = waiting.totalTeams,
-                        modifier = Modifier.padding(top = festabookSpacing.paddingBody2),
-                        onRefresh = onRefresh,
-                    )
-                }
-
-                is WaitingUiState.Loading -> {
-                    CurrentWaitingTeams(
-                        totalTeams = waiting.totalTeams,
-                        modifier = Modifier.padding(top = festabookSpacing.paddingBody2),
-                        onRefresh = onRefresh,
-                    )
-                }
-            }
+            CurrentWaitingTeams(
+                waiting = waiting,
+                modifier = Modifier.padding(top = festabookSpacing.paddingBody2),
+                onRefresh = onRefresh,
+            )
         }
         HorizontalDivider(thickness = 4.dp, color = FestabookColor.gray200)
     }
@@ -118,7 +97,11 @@ private fun CurrentWaitingTeams(
         when (waiting) {
             is WaitingUiState.Active -> {
                 Text(
-                    text = stringResource(Res.string.place_detail_waiting_teams_count, waiting.totalTeams),
+                    text =
+                        stringResource(
+                            Res.string.place_detail_waiting_teams_count,
+                            waiting.totalTeams,
+                        ),
                     style = FestabookTypography.displayMedium,
                     color = FestabookColor.white,
                 )
@@ -143,7 +126,7 @@ private fun CurrentWaitingTeams(
                             .size(width = 52.dp, height = 28.dp)
                             .background(
                                 color = FestabookColor.gray600,
-                                shape = RoundedCornerShape(6.dp),
+                                shape = festabookShapes.radius1,
                             ),
                 )
             }
