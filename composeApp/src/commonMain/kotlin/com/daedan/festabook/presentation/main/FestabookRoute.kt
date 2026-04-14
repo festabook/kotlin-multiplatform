@@ -20,6 +20,9 @@ sealed interface FestabookRoute {
 
     @Serializable
     data object Main : FestabookRoute
+
+    @Serializable
+    data object AddWaitingInfo : FestabookRoute
 }
 
 @Serializable

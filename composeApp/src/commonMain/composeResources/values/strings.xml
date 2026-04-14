@@ -101,6 +101,15 @@
     <string name="setting_contact_us_email_subject">개발자 문의하기</string>
     <string name="setting_contact_us_email">festabook2025@gmail.com</string>
     <string name="setting_notice_enabled">알림이 설정되었습니다</string>
+    <string name="setting_waiting_info_section_title">등록 정보</string>
+    <string name="setting_waiting_info_phone_number">전화번호</string>
+    <string name="setting_waiting_info_not_registered">미등록</string>
+    <string name="setting_waiting_info_title">전화번호</string>
+    <string name="setting_waiting_info_back">뒤로가기</string>
+    <string name="setting_waiting_info_add_title">전화번호 추가</string>
+    <string name="setting_waiting_info_add_label">전화번호</string>
+    <string name="setting_waiting_info_add_hint">전화번호를 입력해주세요</string>
+    <string name="setting_waiting_info_add_button">저장하기</string>
 
     <!-- icon description -->
     <string name="iv_speaker">공지 아이콘</string>

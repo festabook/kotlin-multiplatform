@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daedan.festabook.BuildKonfig
@@ -40,6 +41,8 @@ import com.daedan.festabook.presentation.common.component.FestabookTopAppBar
 import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.setting.SettingViewModel
+import com.daedan.festabook.presentation.setting.waitinginfo.WaitingInfoUiState
+import com.daedan.festabook.presentation.setting.waitinginfo.WaitingInfoViewModel
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTheme
 import com.daedan.festabook.presentation.theme.FestabookTypography
@@ -55,6 +58,9 @@ import festabookkmp.composeapp.generated.resources.setting_notice_enabled
 import festabookkmp.composeapp.generated.resources.setting_notice_title
 import festabookkmp.composeapp.generated.resources.setting_service_policy
 import festabookkmp.composeapp.generated.resources.setting_title
+import festabookkmp.composeapp.generated.resources.setting_waiting_info_not_registered
+import festabookkmp.composeapp.generated.resources.setting_waiting_info_phone_number
+import festabookkmp.composeapp.generated.resources.setting_waiting_info_section_title
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -73,11 +79,14 @@ fun SettingRoute(
     onShowErrorSnackBar: (Throwable) -> Unit,
     settingViewModel: SettingViewModel,
     homeViewModel: HomeViewModel,
+    waitingInfoViewModel: WaitingInfoViewModel,
+    onPhoneNumberClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val festival by homeViewModel.festivalUiState.collectAsStateWithLifecycle()
     val isUniversitySubscribed by settingViewModel.isAllowed.collectAsStateWithLifecycle()
     val isSubscribedLoading by settingViewModel.isLoading.collectAsStateWithLifecycle()
+    val waitingInfoUiState by waitingInfoViewModel.waitingInfoUiState.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
 
     val enableMessage = stringResource(Res.string.setting_notice_enabled)
@@ -114,21 +123,22 @@ fun SettingRoute(
             },
         )
     }
+
+    val phoneNumber = (waitingInfoUiState as? WaitingInfoUiState.Registered)?.phoneNumber
+
     SettingScreen(
         modifier = modifier,
         festivalUiState = festival,
         isUniversitySubscribed = isUniversitySubscribed,
         appVersion = "v ${BuildKonfig.APP_VERSION_NAME}",
         isSubscribeEnabled = !isSubscribedLoading,
+        phoneNumber = phoneNumber,
         onSubscribeClick = { settingViewModel.notificationAllowClick() },
         onPolicyClick = { uriHandler.openUri(POLICY_URL) },
         onContactUsClick = { uriHandler.openUri(CONTACT_US_URL) },
+        onPhoneNumberClick = onPhoneNumberClick,
         onError = {
             onShowErrorSnackBar(it.throwable)
-//            Timber.w(
-//                it.throwable,
-//                "${"SettingRoute"}: ${it.throwable.message}",
-//            )
         },
     )
 }
@@ -139,10 +149,12 @@ fun SettingScreen(
     isUniversitySubscribed: Boolean,
     appVersion: String,
     isSubscribeEnabled: Boolean,
+    phoneNumber: String?,
     modifier: Modifier = Modifier,
     onSubscribeClick: (Boolean) -> Unit = {},
     onPolicyClick: () -> Unit = {},
     onContactUsClick: () -> Unit = {},
+    onPhoneNumberClick: () -> Unit = {},
     onError: (FestivalUiState.Error) -> Unit = {},
 ) {
     val windowInfo = LocalWindowInfo.current
@@ -201,11 +213,79 @@ fun SettingScreen(
                 thickness = festabookSpacing.paddingBody2,
             )
 
+            RegistrationInfoContent(
+                phoneNumber = phoneNumber,
+                onPhoneNumberClick = onPhoneNumberClick,
+                screenWidthDp = screenWidthDp,
+            )
+
+            HorizontalDivider(
+                modifier =
+                    Modifier
+                        .requiredWidth(screenWidthDp)
+                        .padding(vertical = 20.dp),
+                color = FestabookColor.gray100,
+                thickness = festabookSpacing.paddingBody2,
+            )
+
             AppInfoContent(
                 appVersion = appVersion,
                 onPolicyClick = onPolicyClick,
                 onContactUsClick = onContactUsClick,
             )
+        }
+    }
+}
+
+@Composable
+private fun RegistrationInfoContent(
+    phoneNumber: String?,
+    onPhoneNumberClick: () -> Unit,
+    screenWidthDp: Dp,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = stringResource(Res.string.setting_waiting_info_section_title),
+            style = FestabookTypography.bodyMedium,
+            modifier = Modifier.padding(bottom = festabookSpacing.paddingBody3),
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier =
+                Modifier
+                    .requiredWidth(screenWidthDp)
+                    .clickable { onPhoneNumberClick() }
+                    .padding(
+                        horizontal = festabookSpacing.paddingScreenGutter,
+                        vertical = festabookSpacing.paddingBody3,
+                    ),
+        ) {
+            Text(
+                text = stringResource(Res.string.setting_waiting_info_phone_number),
+                style = FestabookTypography.titleMedium,
+            )
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(festabookSpacing.paddingBody2),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = phoneNumber ?: stringResource(Res.string.setting_waiting_info_not_registered),
+                    style = FestabookTypography.bodyMedium,
+                    color = if (phoneNumber != null) FestabookColor.gray700 else FestabookColor.gray400,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+
+                Icon(
+                    painter = painterResource(Res.drawable.ic_arrow_forward_right),
+                    contentDescription = stringResource(Res.string.move),
+                    tint = FestabookColor.gray300,
+                )
+            }
         }
     }
 }
@@ -381,6 +461,7 @@ private fun SettingScreenPreview() {
             onSubscribeClick = { isSubscribed = !isSubscribed },
             appVersion = "v1.0.0",
             isSubscribeEnabled = true,
+            phoneNumber = null,
         )
     }
 }

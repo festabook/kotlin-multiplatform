@@ -45,6 +45,7 @@ import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.setting.component.platform.rememberNotificationPermissionManager
 import com.daedan.festabook.presentation.setting.component.platform.rememberOpenAppSettings
 import com.daedan.festabook.presentation.setting.navigation.settingNavGraph
+import com.daedan.festabook.presentation.setting.waitinginfo.WaitingInfoViewModel
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.back_press_exit_message
 import org.jetbrains.compose.resources.stringResource
@@ -63,6 +64,7 @@ fun MainScreen(
     placeMapViewModel: PlaceMapViewModel,
     newsViewModel: NewsViewModel,
     settingViewModel: SettingViewModel,
+    waitingInfoViewModel: WaitingInfoViewModel,
     modifier: Modifier = Modifier,
 ) {
     val mainNavigator = rememberFestabookNavigator(MainTabRoute.Home)
@@ -172,6 +174,7 @@ fun MainScreen(
             homeViewModel = homeViewModel,
             scheduleViewModel = scheduleViewModel,
             settingViewModel = settingViewModel,
+            waitingInfoViewModel = waitingInfoViewModel,
             newsViewModel = newsViewModel,
             notificationPermissionManager = notificationPermissionManager,
             snackbarManager = snackbarManager,
@@ -188,6 +191,7 @@ private fun FestabookNavHost(
     scheduleViewModel: ScheduleViewModel,
     newsViewModel: NewsViewModel,
     settingViewModel: SettingViewModel,
+    waitingInfoViewModel: WaitingInfoViewModel,
     notificationPermissionManager: NotificationPermissionManager,
     snackbarManager: SnackbarManager,
     modifier: Modifier = Modifier,
@@ -225,9 +229,12 @@ private fun FestabookNavHost(
         settingNavGraph(
             homeViewModel = homeViewModel,
             settingViewModel = settingViewModel,
+            waitingInfoViewModel = waitingInfoViewModel,
             notificationPermissionManager = notificationPermissionManager,
             onShowSnackBar = snackbarManager::show,
             onShowErrorSnackBar = snackbarManager::showError,
+            onNavigateToAddWaitingInfo = { navigator.navigate(FestabookRoute.AddWaitingInfo) },
+            onBackClick = { navigator.popBackStack() },
         )
     }
 }
