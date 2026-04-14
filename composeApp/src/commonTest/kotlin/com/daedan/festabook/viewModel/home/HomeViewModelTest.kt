@@ -1,6 +1,8 @@
-package com.daedan.festabook.home
+package com.daedan.festabook.viewModel.home
 
 import com.daedan.festabook.domain.repository.FestivalRepository
+import com.daedan.festabook.home.FAKE_LINEUP
+import com.daedan.festabook.home.FAKE_ORGANIZATION
 import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.LineupUiState
@@ -58,7 +60,7 @@ class HomeViewModelTest {
     fun `축제 정보를 불러올 수 있다`() =
         runTest {
             // given
-            val expect = FestivalUiState.Success(FAKE_ORGANIZATION)
+            val expect = FestivalUiState.Success(FAKE_ORGANIZATION.toUiModel())
 
             // when
             homeViewModel.loadFestival()
