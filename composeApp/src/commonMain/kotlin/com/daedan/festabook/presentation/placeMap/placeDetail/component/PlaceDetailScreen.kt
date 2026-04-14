@@ -372,54 +372,57 @@ private fun PlaceWaitingSection(
     waiting: WaitingUiState,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = festabookSpacing.paddingScreenGutter,
-                    vertical = festabookSpacing.paddingBody4,
-                ),
-    ) {
+    Column(modifier = modifier.fillMaxWidth()) {
         HorizontalDivider(color = FestabookColor.gray200)
 
-        Text(
-            modifier = Modifier.padding(top = festabookSpacing.paddingBody4),
-            text = stringResource(Res.string.place_detail_real_time_waiting),
-            style = FestabookTypography.titleMedium,
-        )
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = festabookSpacing.paddingScreenGutter,
+                        vertical = festabookSpacing.paddingBody4,
+                    ),
+        ) {
+            Text(
+                text = stringResource(Res.string.place_detail_real_time_waiting),
+                style = FestabookTypography.titleMedium,
+            )
 
-        when (waiting) {
-            is WaitingUiState.Active ->
-                WaitingTeamsRow(
-                    totalTeams = waiting.totalTeams,
-                    modifier = Modifier.padding(top = festabookSpacing.paddingBody3),
-                )
+            when (waiting) {
+                is WaitingUiState.Active ->
+                    WaitingTeamsRow(
+                        totalTeams = waiting.totalTeams,
+                        modifier = Modifier.padding(top = festabookSpacing.paddingBody3),
+                    )
 
-            is WaitingUiState.Closed ->
-                WaitingTeamsRow(
-                    totalTeams = waiting.totalTeams,
-                    modifier = Modifier.padding(top = festabookSpacing.paddingBody3),
-                )
+                is WaitingUiState.Closed ->
+                    WaitingTeamsRow(
+                        totalTeams = waiting.totalTeams,
+                        modifier = Modifier.padding(top = festabookSpacing.paddingBody3),
+                    )
 
-            is WaitingUiState.Inactive ->
-                Text(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = festabookSpacing.paddingBody3)
-                            .background(FestabookColor.gray100, RoundedCornerShape(8.dp))
-                            .padding(
-                                horizontal = festabookSpacing.paddingScreenGutter,
-                                vertical = festabookSpacing.paddingBody4,
-                            ),
-                    text = stringResource(Res.string.place_detail_waiting_inactive),
-                    style = FestabookTypography.bodyMedium,
-                    color = FestabookColor.gray500,
-                )
+                is WaitingUiState.Inactive ->
+                    Text(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = festabookSpacing.paddingBody3)
+                                .background(FestabookColor.gray100, RoundedCornerShape(8.dp))
+                                .padding(
+                                    horizontal = festabookSpacing.paddingScreenGutter,
+                                    vertical = festabookSpacing.paddingBody4,
+                                ),
+                        text = stringResource(Res.string.place_detail_waiting_inactive),
+                        style = FestabookTypography.bodyMedium,
+                        color = FestabookColor.gray500,
+                    )
 
-            is WaitingUiState.Loading -> Unit
+                is WaitingUiState.Loading -> Unit
+            }
         }
+
+        HorizontalDivider(thickness = 4.dp, color = FestabookColor.gray100)
     }
 }
 
