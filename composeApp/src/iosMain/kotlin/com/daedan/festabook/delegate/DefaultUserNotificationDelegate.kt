@@ -6,7 +6,7 @@ import com.daedan.festabook.presentation.platform.PendingFcmNotification
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import platform.UserNotifications.UNNotification
@@ -40,7 +40,7 @@ class DefaultUserNotificationDelegate(
     ) {
         val userInfo = didReceiveNotificationResponse.notification.request.content.userInfo
 
-        val festivalId =
+        val newFestivalId =
             (userInfo[DeepLinkKeys.KEY_FESTIVAL_ID] as? String)?.toLongOrNull()
                 ?: DeepLinkKeys.INITIALIZED_ID
 
@@ -51,12 +51,12 @@ class DefaultUserNotificationDelegate(
             }
 
         ioCoroutineScope.launch {
-            val currentFestivalId = festivalLocalDataSource.getFestivalId().first()
+            val currentFestivalId = festivalLocalDataSource.getFestivalId().firstOrNull()
             val festivalIdChanged =
-                festivalId != DeepLinkKeys.INITIALIZED_ID && festivalId != currentFestivalId
+                newFestivalId != DeepLinkKeys.INITIALIZED_ID && newFestivalId != currentFestivalId
 
-            if (festivalId != DeepLinkKeys.INITIALIZED_ID) {
-                festivalLocalDataSource.saveFestivalId(festivalId)
+            if (festivalIdChanged) {
+                festivalLocalDataSource.saveFestivalId(newFestivalId)
             }
 
             PendingFcmNotification.store(
