@@ -51,14 +51,15 @@ class WaitingInfoViewModel(
             initialValue = false,
         )
 
-    private val _saveSuccessEvent = MutableSharedFlow<Unit>(replay = 0, extraBufferCapacity = 1)
+    private val _saveSuccessEvent = MutableSharedFlow<Unit>()
     val saveSuccessEvent: SharedFlow<Unit> = _saveSuccessEvent.asSharedFlow()
 
-    private val _errorEvent = MutableSharedFlow<Throwable>(replay = 0, extraBufferCapacity = 1)
+    private val _errorEvent = MutableSharedFlow<Throwable>()
     val errorEvent: SharedFlow<Throwable> = _errorEvent.asSharedFlow()
 
     fun updatePhoneNumber(input: String) {
-        _phoneNumber.value = input.filter { it.isDigit() }.take(11)
+        if (input.count() > 11) return
+        _phoneNumber.value = input.filter { it.isDigit() }
     }
 
     fun setTermsAgreed(agreed: Boolean) {
