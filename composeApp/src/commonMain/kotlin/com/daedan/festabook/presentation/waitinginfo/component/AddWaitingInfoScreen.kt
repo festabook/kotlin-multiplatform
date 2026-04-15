@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -285,31 +284,34 @@ private fun AddPhoneNumberContent(
 private fun WaitingInfoAddTerms(
     isTermsAgreed: Boolean,
     onTermsAgreedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Text(
-        text = stringResource(Res.string.setting_waiting_info_add_terms_title),
-        style = FestabookTypography.displayMedium,
-        color = FestabookColor.black,
-    )
-    Spacer(modifier = Modifier.height(festabookSpacing.paddingBody1))
-
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Checkbox(
-            modifier = Modifier.clip(festabookShapes.radius1),
-            checked = isTermsAgreed,
-            onCheckedChange = onTermsAgreedChange,
-            colors =
-                CheckboxDefaults.colors(
-                    checkedColor = FestabookColor.black,
-                    uncheckedColor = FestabookColor.gray400,
-                    checkmarkColor = FestabookColor.white,
-                ),
-        )
+    Column(modifier = modifier) {
         Text(
-            text = stringResource(Res.string.setting_waiting_info_add_terms_item),
-            style = FestabookTypography.bodyMedium,
-            color = FestabookColor.gray600,
+            text = stringResource(Res.string.setting_waiting_info_add_terms_title),
+            style = FestabookTypography.displayMedium,
+            color = FestabookColor.black,
         )
+        Spacer(modifier = Modifier.height(festabookSpacing.paddingBody1))
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(
+                modifier = Modifier.clip(festabookShapes.radius1),
+                checked = isTermsAgreed,
+                onCheckedChange = onTermsAgreedChange,
+                colors =
+                    CheckboxDefaults.colors(
+                        checkedColor = FestabookColor.black,
+                        uncheckedColor = FestabookColor.gray400,
+                        checkmarkColor = FestabookColor.white,
+                    ),
+            )
+            Text(
+                text = stringResource(Res.string.setting_waiting_info_add_terms_item),
+                style = FestabookTypography.bodyMedium,
+                color = FestabookColor.gray600,
+            )
+        }
     }
 }
 
