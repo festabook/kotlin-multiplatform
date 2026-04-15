@@ -208,9 +208,9 @@ fun SettingScreen(
                 modifier =
                     Modifier
                         .requiredWidth(screenWidthDp)
-                        .padding(vertical = 20.dp),
-                color = FestabookColor.gray100,
-                thickness = festabookSpacing.paddingBody2,
+                        .padding(vertical = 28.dp),
+                color = FestabookColor.gray200,
+                thickness = festabookSpacing.paddingBody1,
             )
 
             RegistrationInfoContent(
@@ -223,9 +223,12 @@ fun SettingScreen(
                 modifier =
                     Modifier
                         .requiredWidth(screenWidthDp)
-                        .padding(vertical = 20.dp),
-                color = FestabookColor.gray100,
-                thickness = festabookSpacing.paddingBody2,
+                        .padding(
+                            top = 16.dp,
+                            bottom = 28.dp,
+                        ),
+                color = FestabookColor.gray200,
+                thickness = festabookSpacing.paddingBody1,
             )
 
             AppInfoContent(
@@ -247,8 +250,8 @@ private fun RegistrationInfoContent(
     Column(modifier = modifier) {
         Text(
             text = stringResource(Res.string.setting_waiting_info_section_title),
-            style = FestabookTypography.bodyMedium,
-            modifier = Modifier.padding(bottom = festabookSpacing.paddingBody3),
+            style = FestabookTypography.bodyLarge,
+            color = FestabookColor.gray500,
         )
 
         Row(
@@ -258,9 +261,9 @@ private fun RegistrationInfoContent(
                 Modifier
                     .requiredWidth(screenWidthDp)
                     .clickable { onPhoneNumberClick() }
+                    .padding(horizontal = festabookSpacing.paddingScreenGutter)
                     .padding(
-                        horizontal = festabookSpacing.paddingScreenGutter,
-                        vertical = festabookSpacing.paddingBody3,
+                        vertical = 14.dp,
                     ),
         ) {
             Text(
@@ -268,24 +271,15 @@ private fun RegistrationInfoContent(
                 style = FestabookTypography.titleMedium,
             )
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(festabookSpacing.paddingBody2),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = phoneNumber ?: stringResource(Res.string.setting_waiting_info_not_registered),
-                    style = FestabookTypography.bodyMedium,
-                    color = if (phoneNumber != null) FestabookColor.gray700 else FestabookColor.gray400,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-
-                Icon(
-                    painter = painterResource(Res.drawable.ic_arrow_forward_right),
-                    contentDescription = stringResource(Res.string.move),
-                    tint = FestabookColor.gray300,
-                )
-            }
+            Text(
+                text =
+                    phoneNumber
+                        ?: stringResource(Res.string.setting_waiting_info_not_registered),
+                style = FestabookTypography.bodyLarge,
+                color = FestabookColor.gray500,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
         }
     }
 }
@@ -301,7 +295,8 @@ private fun SubscriptionContent(
     Column(modifier = modifier) {
         Text(
             text = stringResource(Res.string.setting_notice_title),
-            style = FestabookTypography.bodyMedium,
+            style = FestabookTypography.bodyLarge,
+            color = FestabookColor.gray500,
             modifier = Modifier.padding(top = 20.dp),
         )
 
@@ -326,7 +321,7 @@ private fun SubscriptionContent(
                 Text(
                     text = universityName,
                     style = FestabookTypography.bodyMedium,
-                    modifier = Modifier.padding(vertical = festabookSpacing.paddingBody1),
+                    modifier = Modifier.padding(top = festabookSpacing.paddingBody1),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     color = FestabookColor.gray500,
@@ -352,8 +347,8 @@ private fun AppInfoContent(
     Column(modifier = modifier) {
         Text(
             text = stringResource(Res.string.setting_app_info_title),
-            modifier = Modifier.padding(vertical = festabookSpacing.paddingBody3),
-            style = FestabookTypography.bodyMedium,
+            style = FestabookTypography.bodyLarge,
+            color = FestabookColor.gray500,
         )
 
         AppVersionInfo(
@@ -382,7 +377,7 @@ private fun AppVersionInfo(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(vertical = festabookSpacing.paddingBody3),
+                .padding(vertical = 14.dp),
     ) {
         Text(
             text = stringResource(Res.string.setting_app_version),
@@ -391,7 +386,8 @@ private fun AppVersionInfo(
 
         Text(
             text = appVersion,
-            style = FestabookTypography.bodyMedium,
+            style = FestabookTypography.bodyLarge,
+            color = FestabookColor.gray500,
         )
     }
 }
