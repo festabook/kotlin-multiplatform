@@ -115,6 +115,11 @@ fun SettingRoute(
     ObserveAsEvents(flow = settingViewModel.error) {
         onShowErrorSnackBar(it)
     }
+
+    LaunchedEffect(Unit) {
+        waitingInfoViewModel.loadWaitingInfo()
+    }
+
     if (showPermissionDialog) {
         NotificationPermissionDialog(
             onConfirm = {

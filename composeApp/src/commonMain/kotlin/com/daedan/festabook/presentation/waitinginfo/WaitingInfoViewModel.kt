@@ -57,10 +57,6 @@ class WaitingInfoViewModel(
     private val _errorEvent = MutableSharedFlow<Throwable>(replay = 0, extraBufferCapacity = 1)
     val errorEvent: SharedFlow<Throwable> = _errorEvent.asSharedFlow()
 
-    init {
-        loadWaitingInfo()
-    }
-
     fun updatePhoneNumber(input: String) {
         _phoneNumber.value = input.filter { it.isDigit() }.take(11)
     }
@@ -95,7 +91,7 @@ class WaitingInfoViewModel(
         }
     }
 
-    private fun loadWaitingInfo() {
+    fun loadWaitingInfo() {
         viewModelScope.launch {
             _waitingInfoUiState.value = WaitingInfoUiState.Loading
             waitingInfoRepository
