@@ -41,6 +41,7 @@ fun NavGraphBuilder.settingNavGraph(
         AddWaitingInfoRoute(
             viewModel = waitingInfoViewModel,
             onBackClick = onBackClick,
+            onShowSnackBar = onShowSnackBar,
             onShowErrorSnackBar = onShowErrorSnackBar,
         )
     }

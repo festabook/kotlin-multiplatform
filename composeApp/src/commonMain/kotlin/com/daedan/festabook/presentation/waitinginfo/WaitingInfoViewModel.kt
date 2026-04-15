@@ -103,6 +103,7 @@ class WaitingInfoViewModel(
                 .onSuccess { waitingInfo ->
                     if (waitingInfo != null) {
                         _phoneNumber.value = waitingInfo.phoneNumber
+                        _isTermsAgreed.value = true
                         _waitingInfoUiState.value =
                             WaitingInfoUiState.Registered(waitingInfo.phoneNumber)
                     } else {

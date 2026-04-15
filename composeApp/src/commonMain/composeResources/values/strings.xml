@@ -115,6 +115,7 @@
     <string name="setting_waiting_info_add_terms_title">약관 동의</string>
     <string name="setting_waiting_info_add_terms_item">(필수) 개인 정보 수집 및 이용 동의</string>
     <string name="setting_waiting_info_add_button">전화번호 등록하기</string>
+    <string name="setting_waiting_info_save_success">전화번호가 등록되었습니다</string>
 
     <!-- icon description -->
     <string name="iv_speaker">공지 아이콘</string>
