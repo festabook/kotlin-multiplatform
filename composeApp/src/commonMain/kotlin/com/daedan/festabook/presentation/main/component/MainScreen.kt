@@ -5,6 +5,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -12,6 +13,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.navigation.compose.NavHost
+import androidx.navigation.navOptions
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
@@ -57,6 +59,7 @@ fun MainScreen(
     locationSource: LocationSource,
     onAppFinish: () -> Unit,
     festabookNavigator: FestabookNavigator,
+    pendingAnnouncementId: Long?,
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
     scheduleViewModel: ScheduleViewModel,
@@ -99,9 +102,26 @@ fun MainScreen(
         mainViewModel.onBackPressed()
     }
 
-    RememberDeepLinkHandler { intent ->
-        handleNavigation(intent, newsViewModel, mainViewModel)
+    LaunchedEffect(pendingAnnouncementId) {
+        pendingAnnouncementId?.let { id ->
+            newsViewModel.expandNotice(id)
+            mainViewModel.navigateToNews()
+        }
     }
+
+    RememberDeepLinkHandler(
+        onFestivalChanged = { announcementId ->
+            festabookNavigator.navigate(
+                FestabookRoute.Main(pendingAnnouncementId = announcementId),
+                navOptions {
+                    popUpTo<FestabookRoute.Main> { inclusive = true }
+                },
+            )
+        },
+        onDeepLink = { intent ->
+            handleNavigation(intent, newsViewModel, mainViewModel)
+        },
+    )
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState) { data ->
