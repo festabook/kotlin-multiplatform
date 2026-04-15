@@ -41,12 +41,12 @@ import com.daedan.festabook.presentation.common.component.FestabookTopAppBar
 import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.setting.SettingViewModel
-import com.daedan.festabook.presentation.setting.waitinginfo.WaitingInfoUiState
-import com.daedan.festabook.presentation.setting.waitinginfo.WaitingInfoViewModel
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTheme
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import com.daedan.festabook.presentation.theme.festabookSpacing
+import com.daedan.festabook.presentation.waitinginfo.WaitingInfoViewModel
+import com.daedan.festabook.presentation.waitinginfo.model.WaitingInfoUiState
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.ic_arrow_forward_right
 import festabookkmp.composeapp.generated.resources.move

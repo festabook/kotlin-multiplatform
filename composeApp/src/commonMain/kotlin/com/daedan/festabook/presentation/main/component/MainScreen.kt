@@ -45,7 +45,7 @@ import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.setting.component.platform.rememberNotificationPermissionManager
 import com.daedan.festabook.presentation.setting.component.platform.rememberOpenAppSettings
 import com.daedan.festabook.presentation.setting.navigation.settingNavGraph
-import com.daedan.festabook.presentation.setting.waitinginfo.WaitingInfoViewModel
+import com.daedan.festabook.presentation.waitinginfo.WaitingInfoViewModel
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.back_press_exit_message
 import org.jetbrains.compose.resources.stringResource

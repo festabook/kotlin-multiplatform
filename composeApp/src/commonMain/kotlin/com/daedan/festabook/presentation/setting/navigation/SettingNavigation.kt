@@ -7,9 +7,9 @@ import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.main.FestabookRoute
 import com.daedan.festabook.presentation.main.MainTabRoute
 import com.daedan.festabook.presentation.setting.SettingViewModel
-import com.daedan.festabook.presentation.setting.component.AddWaitingInfoRoute
 import com.daedan.festabook.presentation.setting.component.SettingRoute
-import com.daedan.festabook.presentation.setting.waitinginfo.WaitingInfoViewModel
+import com.daedan.festabook.presentation.waitinginfo.WaitingInfoViewModel
+import com.daedan.festabook.presentation.waitinginfo.component.AddWaitingInfoRoute
 
 fun NavGraphBuilder.settingNavGraph(
     homeViewModel: HomeViewModel,

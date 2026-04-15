@@ -1,27 +1,24 @@
-package com.daedan.festabook.presentation.setting.waitinginfo
+package com.daedan.festabook.presentation.waitinginfo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.daedan.festabook.di.viewmodel.ViewModelKey
 import com.daedan.festabook.domain.model.WaitingInfo
 import com.daedan.festabook.domain.repository.WaitingInfoRepository
+import com.daedan.festabook.presentation.waitinginfo.model.WaitingInfoUiState
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-
-sealed interface WaitingInfoUiState {
-    data object Loading : WaitingInfoUiState
-    data class Registered(val phoneNumber: String) : WaitingInfoUiState
-    data object NotRegistered : WaitingInfoUiState
-    data class Error(val throwable: Throwable) : WaitingInfoUiState
-}
 
 @ContributesIntoMap(AppScope::class)
 @ViewModelKey(WaitingInfoViewModel::class)
@@ -29,11 +26,30 @@ sealed interface WaitingInfoUiState {
 class WaitingInfoViewModel(
     private val waitingInfoRepository: WaitingInfoRepository,
 ) : ViewModel() {
-    private val _waitingInfoUiState = MutableStateFlow<WaitingInfoUiState>(WaitingInfoUiState.Loading)
+    private val _waitingInfoUiState =
+        MutableStateFlow<WaitingInfoUiState>(WaitingInfoUiState.Loading)
     val waitingInfoUiState: StateFlow<WaitingInfoUiState> = _waitingInfoUiState.asStateFlow()
 
-    private val _isSaving = MutableStateFlow(false)
-    val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
+    private val _phoneNumber = MutableStateFlow("")
+    val phoneNumber: StateFlow<String> = _phoneNumber.asStateFlow()
+
+    private val _isTermsAgreed = MutableStateFlow(false)
+    val isTermsAgreed: StateFlow<Boolean> = _isTermsAgreed.asStateFlow()
+
+    private val isSaving = MutableStateFlow(false)
+
+    val isSaveEnabled: StateFlow<Boolean> =
+        combine(
+            _phoneNumber,
+            _isTermsAgreed,
+            isSaving,
+        ) { phone, terms, saving ->
+            phone.count { it.isDigit() } >= 9 && terms && !saving
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = false,
+        )
 
     private val _saveSuccessEvent = MutableSharedFlow<Unit>(replay = 0, extraBufferCapacity = 1)
     val saveSuccessEvent: SharedFlow<Unit> = _saveSuccessEvent.asSharedFlow()
@@ -45,32 +61,21 @@ class WaitingInfoViewModel(
         loadWaitingInfo()
     }
 
-    fun loadWaitingInfo() {
-        viewModelScope.launch {
-            _waitingInfoUiState.value = WaitingInfoUiState.Loading
-            waitingInfoRepository
-                .getWaitingInfo()
-                .onSuccess { waitingInfo ->
-                    _waitingInfoUiState.value =
-                        if (waitingInfo != null) {
-                            WaitingInfoUiState.Registered(waitingInfo.phoneNumber)
-                        } else {
-                            WaitingInfoUiState.NotRegistered
-                        }
-                }.onFailure { throwable ->
-                    _waitingInfoUiState.value = WaitingInfoUiState.Error(throwable)
-                    _errorEvent.emit(throwable)
-                }
-        }
+    fun updatePhoneNumber(input: String) {
+        _phoneNumber.value = input.filter { it.isDigit() }.take(11)
+    }
+
+    fun setTermsAgreed(agreed: Boolean) {
+        _isTermsAgreed.value = agreed
     }
 
     fun saveWaitingInfo(phoneNumber: String) {
-        if (_isSaving.value) return
+        if (isSaving.value) return
         val currentState = _waitingInfoUiState.value
         if (currentState is WaitingInfoUiState.Loading) return
 
         viewModelScope.launch {
-            _isSaving.value = true
+            isSaving.value = true
             val result =
                 if (currentState is WaitingInfoUiState.Registered) {
                     waitingInfoRepository.updateWaitingInfo(WaitingInfo(phoneNumber))
@@ -85,7 +90,27 @@ class WaitingInfoViewModel(
                 }.onFailure { throwable ->
                     _errorEvent.emit(throwable)
                 }.also {
-                    _isSaving.value = false
+                    isSaving.value = false
+                }
+        }
+    }
+
+    private fun loadWaitingInfo() {
+        viewModelScope.launch {
+            _waitingInfoUiState.value = WaitingInfoUiState.Loading
+            waitingInfoRepository
+                .getWaitingInfo()
+                .onSuccess { waitingInfo ->
+                    if (waitingInfo != null) {
+                        _phoneNumber.value = waitingInfo.phoneNumber
+                        _waitingInfoUiState.value =
+                            WaitingInfoUiState.Registered(waitingInfo.phoneNumber)
+                    } else {
+                        _waitingInfoUiState.value = WaitingInfoUiState.NotRegistered
+                    }
+                }.onFailure { throwable ->
+                    _waitingInfoUiState.value = WaitingInfoUiState.Error(throwable)
+                    _errorEvent.emit(throwable)
                 }
         }
     }
