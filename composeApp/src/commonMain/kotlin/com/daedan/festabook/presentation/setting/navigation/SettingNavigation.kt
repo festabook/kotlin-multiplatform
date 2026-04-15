@@ -1,5 +1,8 @@
 package com.daedan.festabook.presentation.setting.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.daedan.festabook.presentation.NotificationPermissionManager
@@ -12,6 +15,7 @@ import com.daedan.festabook.presentation.waitinginfo.WaitingInfoViewModel
 import com.daedan.festabook.presentation.waitinginfo.component.AddWaitingInfoRoute
 
 fun NavGraphBuilder.settingNavGraph(
+    innerPadding: PaddingValues,
     homeViewModel: HomeViewModel,
     settingViewModel: SettingViewModel,
     waitingInfoViewModel: WaitingInfoViewModel,
@@ -23,6 +27,7 @@ fun NavGraphBuilder.settingNavGraph(
 ) {
     composable<MainTabRoute.Setting> {
         SettingRoute(
+            modifier = Modifier.padding(innerPadding),
             homeViewModel = homeViewModel,
             settingViewModel = settingViewModel,
             waitingInfoViewModel = waitingInfoViewModel,

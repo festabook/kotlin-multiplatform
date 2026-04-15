@@ -1,5 +1,6 @@
 package com.daedan.festabook.presentation.main.component
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -167,7 +168,7 @@ fun MainScreen(
             },
         )
         FestabookNavHost(
-            modifier = Modifier.padding(innerPadding),
+            innerPadding = innerPadding,
             festabookNavigator = festabookNavigator,
             navigator = mainNavigator,
             mainViewModel = mainViewModel,
@@ -184,6 +185,7 @@ fun MainScreen(
 
 @Composable
 private fun FestabookNavHost(
+    innerPadding: PaddingValues,
     navigator: FestabookNavigator,
     festabookNavigator: FestabookNavigator,
     mainViewModel: MainViewModel,
@@ -202,6 +204,7 @@ private fun FestabookNavHost(
         navController = navigator.navController,
     ) {
         homeNavGraph(
+            innerPadding = innerPadding,
             viewModel = homeViewModel,
             mainViewModel = mainViewModel,
             onNavigateToExplore = { festabookNavigator.navigate(FestabookRoute.Explore) },
@@ -215,18 +218,22 @@ private fun FestabookNavHost(
             notificationPermissionManager = notificationPermissionManager,
         )
         scheduleNavGraph(
+            innerPadding = innerPadding,
             viewModel = scheduleViewModel,
             onShowErrorSnackbar = snackbarManager::showError,
         )
         placeMapNavGraph(
+            innerPadding = innerPadding,
             onBackToPreviousClick = { navigator.popBackStack() },
             onShowErrorSnackbar = snackbarManager::showError,
         )
         newsNavGraph(
+            innerPadding = innerPadding,
             viewModel = newsViewModel,
             onShowErrorSnackbar = snackbarManager::showError,
         )
         settingNavGraph(
+            innerPadding = innerPadding,
             homeViewModel = homeViewModel,
             settingViewModel = settingViewModel,
             waitingInfoViewModel = waitingInfoViewModel,

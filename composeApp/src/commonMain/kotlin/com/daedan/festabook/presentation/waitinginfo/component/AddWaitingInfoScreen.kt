@@ -148,12 +148,10 @@ fun AddWaitingInfoScreen(
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = FestabookColor.white,
                     ),
-                windowInsets = WindowInsets(0),
             )
         },
         modifier = modifier,
         containerColor = FestabookColor.white,
-        contentWindowInsets = WindowInsets(0),
     ) { innerPadding ->
         Column(
             modifier =
