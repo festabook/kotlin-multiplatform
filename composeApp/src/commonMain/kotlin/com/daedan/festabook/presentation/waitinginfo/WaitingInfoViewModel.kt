@@ -51,10 +51,10 @@ class WaitingInfoViewModel(
             initialValue = false,
         )
 
-    private val _saveSuccessEvent = MutableSharedFlow<Unit>()
+    private val _saveSuccessEvent = MutableSharedFlow<Unit>(replay = 0, extraBufferCapacity = 1)
     val saveSuccessEvent: SharedFlow<Unit> = _saveSuccessEvent.asSharedFlow()
 
-    private val _errorEvent = MutableSharedFlow<Throwable>()
+    private val _errorEvent = MutableSharedFlow<Throwable>(replay = 0, extraBufferCapacity = 1)
     val errorEvent: SharedFlow<Throwable> = _errorEvent.asSharedFlow()
 
     fun updatePhoneNumber(input: String) {
