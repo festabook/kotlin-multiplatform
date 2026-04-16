@@ -4,6 +4,7 @@ import com.daedan.festabook.domain.model.Place
 import com.daedan.festabook.domain.model.PlaceCategory
 import com.daedan.festabook.domain.model.PlaceDetail
 import com.daedan.festabook.domain.model.PlaceDetailImage
+import com.daedan.festabook.domain.model.PlaceWaiting
 import com.daedan.festabook.domain.model.TimeTag
 import com.daedan.festabook.news.FAKE_NOTICES
 import com.daedan.festabook.placeMap.FAKE_PLACES
@@ -26,6 +27,12 @@ val FAKE_PLACE_DETAIL =
                 ),
             ),
         isWaitingActive = true,
+    )
+
+val FAKE_PLACE_WAITING =
+    PlaceWaiting(
+        totalWaitingTeams = 5,
+        estimatedWaitTime = 30,
     )
 
 val FAKE_ETC_PLACE_DETAIL =

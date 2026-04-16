@@ -2,9 +2,7 @@ package com.daedan.festabook.presentation.news.notice.model
 
 import com.daedan.festabook.domain.model.Notice
 import kotlinx.datetime.LocalDateTime
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class NoticeUiModel(
     val id: Long,
     val title: String,
