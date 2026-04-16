@@ -13,7 +13,7 @@ concurrency:
 # 최초 리뷰 요청 알림
 jobs:
   notify:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       # JSON 파싱 도구
       - name: Install jq
