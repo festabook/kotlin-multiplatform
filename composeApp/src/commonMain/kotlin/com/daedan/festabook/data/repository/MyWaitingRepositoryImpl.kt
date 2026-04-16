@@ -4,7 +4,7 @@ import com.daedan.festabook.data.datasource.local.WaitingLocalDataSource
 import com.daedan.festabook.data.datasource.remote.waiting.WaitingRemoteDataSource
 import com.daedan.festabook.data.model.response.waiting.toDomain
 import com.daedan.festabook.data.util.toResult
-import com.daedan.festabook.domain.model.MyWaitingWithPlace
+import com.daedan.festabook.domain.model.MyWaiting
 import com.daedan.festabook.domain.model.WaitingStatus
 import com.daedan.festabook.domain.repository.MyWaitingRepository
 import dev.zacsweers.metro.AppScope
@@ -18,7 +18,7 @@ class MyWaitingRepositoryImpl(
     private val waitingRemoteDataSource: WaitingRemoteDataSource,
     private val waitingLocalDataSource: WaitingLocalDataSource,
 ) : MyWaitingRepository {
-    override suspend fun getMyWaiting(): Result<MyWaitingWithPlace?> {
+    override suspend fun getMyWaiting(): Result<MyWaiting?> {
         val existResult = waitingRemoteDataSource.fetchMyWaitingExist().toResult().getOrElse { return Result.failure(it) }
 
         if (!existResult.exists) {
@@ -44,7 +44,7 @@ class MyWaitingRepositoryImpl(
                     return@mapCatching null
                 }
                 val placeId = waitingLocalDataSource.getPlaceId().first()
-                MyWaitingWithPlace(myWaiting, placeId)
+                myWaiting.copy(placeId = placeId)
             }
     }
 
