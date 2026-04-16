@@ -116,8 +116,7 @@ class WaitingRegisterViewModel(
                     state
                 }
             }
-            // NOTE: 이 메서드 호출 상태는 phoneNumber가 local, remote에 저장이 되어 있다고 가정
-            // TODO 만약 저장이 되어 있지 않다면 전화번호 등록 화면 표시
+
             runCatching {
                 waitingRegisterInfoRepository
                     .registerWaiting(
