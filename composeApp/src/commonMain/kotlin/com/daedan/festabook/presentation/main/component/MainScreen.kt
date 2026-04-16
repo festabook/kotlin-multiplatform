@@ -234,6 +234,10 @@ private fun FestabookNavHost(
             innerPadding = innerPadding,
             onBackToPreviousClick = { navigator.popBackStack() },
             onShowErrorSnackbar = snackbarManager::showError,
+            onNavigateToAddWaitingInfo = { placeId ->
+                navigator.navigate(FestabookRoute.AddWaitingInfo(placeId))
+            },
+            onShowSnackbar = snackbarManager::show,
         )
         newsNavGraph(
             innerPadding = innerPadding,

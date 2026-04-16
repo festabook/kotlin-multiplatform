@@ -25,6 +25,8 @@ import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.PlaceDetailViewModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.component.PlaceDetailRoute
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
+import com.daedan.festabook.presentation.placeMap.waitingRegister.WaitingRegisterViewModel
+import com.daedan.festabook.presentation.placeMap.waitingRegister.component.WaitingRegisterRoute
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.serialization.json.Json
 import kotlin.reflect.typeOf
@@ -33,6 +35,8 @@ fun NavGraphBuilder.placeMapNavGraph(
     innerPadding: PaddingValues,
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
+    onNavigateToAddWaitingInfo: (Long) -> Unit,
+    onShowSnackbar: (String) -> Unit,
 ) {
     composable<MainTabRoute.PlaceMap>(
         enterTransition = { EnterTransition.None },
@@ -73,6 +77,32 @@ fun NavGraphBuilder.placeMapNavGraph(
             viewModel = viewModel,
             onBackToPreviousClick = onBackToPreviousClick,
             onShowErrorSnackbar = onShowErrorSnackbar,
+            onNavigateToWaitingRegister = onNavigateToAddWaitingInfo,
+        )
+    }
+
+    composable<FestabookRoute.AddWaitingInfo>(
+        enterTransition = {
+            slideInVertically(initialOffsetY = { it / 10 }) + fadeIn()
+        },
+        exitTransition = {
+            slideOutVertically(targetOffsetY = { it / 10 }) + fadeOut()
+        },
+    ) { backStackEntry ->
+        val route = backStackEntry.toRoute<FestabookRoute.AddWaitingInfo>()
+        val viewModel =
+            assistedMetroViewModel<WaitingRegisterViewModel>(
+                extras =
+                    MutableCreationExtras().apply {
+                        set(WaitingRegisterViewModel.PlaceIdKey, route.placeId)
+                    },
+            )
+
+        WaitingRegisterRoute(
+            viewModel = viewModel,
+            onBackToPreviousClick = onBackToPreviousClick,
+            onShowErrorSnackbar = onShowErrorSnackbar,
+            onShowSnackbar = onShowSnackbar,
         )
     }
 }

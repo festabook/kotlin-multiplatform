@@ -90,6 +90,7 @@ fun PlaceDetailRoute(
     viewModel: PlaceDetailViewModel,
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
+    onNavigateToWaitingRegister: (placeId: Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val placeDetailUiState by viewModel.placeDetail.collectAsStateWithLifecycle()
@@ -99,6 +100,7 @@ fun PlaceDetailRoute(
         uiState = placeDetailUiState,
         onBackToPreviousClick = onBackToPreviousClick,
         onShowErrorSnackbar = onShowErrorSnackbar,
+        onNavigateToWaitingRegister = onNavigateToWaitingRegister,
         onWaitingRefresh = {
             scope.launch { viewModel.refreshWaitingStatus() }
         },
@@ -112,6 +114,7 @@ fun PlaceDetailScreen(
     onWaitingRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     onShowErrorSnackbar: (Throwable) -> Unit = {}, // TODO Fragment 제거 시 필수 파라미터로 변경
+    onNavigateToWaitingRegister: (placeId: Long) -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
     val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
@@ -186,7 +189,7 @@ fun PlaceDetailScreen(
                     waiting = uiState.waitingStatus,
                     modifier = Modifier.align(Alignment.BottomCenter),
                     onRegisterWaitingClick = {
-                        // TODO 웨이팅 등록 화면으로 연결
+                        onNavigateToWaitingRegister(uiState.placeDetail.place.id)
                     },
                 )
             }
