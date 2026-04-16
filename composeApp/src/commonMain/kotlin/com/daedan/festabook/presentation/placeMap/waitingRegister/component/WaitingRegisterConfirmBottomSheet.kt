@@ -34,8 +34,7 @@ import com.daedan.festabook.presentation.theme.FestabookTypography
 import com.daedan.festabook.presentation.theme.festabookShapes
 import com.daedan.festabook.presentation.theme.festabookSpacing
 import festabookkmp.composeapp.generated.resources.Res
-import festabookkmp.composeapp.generated.resources.ic_alarm
-import festabookkmp.composeapp.generated.resources.ic_clock
+import festabookkmp.composeapp.generated.resources.img_waiting_push_notification_alert
 import festabookkmp.composeapp.generated.resources.waiting_register_confirm_checkbox
 import festabookkmp.composeapp.generated.resources.waiting_register_confirm_description
 import festabookkmp.composeapp.generated.resources.waiting_register_confirm_later
@@ -59,6 +58,7 @@ fun WaitingRegisterConfirmBottomSheet(
         sheetState = sheetState,
         containerColor = FestabookColor.white,
         modifier = modifier,
+        dragHandle = {},
     ) {
         Column(
             modifier =
@@ -68,13 +68,20 @@ fun WaitingRegisterConfirmBottomSheet(
                     .padding(bottom = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            ConfirmBottomSheetIcon()
-
             Spacer(modifier = Modifier.height(24.dp))
+
+            Image(
+                painter = painterResource(Res.drawable.img_waiting_push_notification_alert),
+                contentDescription = null,
+                modifier =
+                    Modifier
+                        .padding(vertical = 40.dp)
+                        .size(100.dp),
+            )
 
             Text(
                 text = stringResource(Res.string.waiting_register_confirm_title),
-                style = FestabookTypography.titleMedium,
+                style = FestabookTypography.displaySmall,
                 color = FestabookColor.black,
                 textAlign = TextAlign.Center,
             )
@@ -83,7 +90,7 @@ fun WaitingRegisterConfirmBottomSheet(
 
             Text(
                 text = stringResource(Res.string.waiting_register_confirm_description),
-                style = FestabookTypography.bodyMedium,
+                style = FestabookTypography.bodyLarge,
                 color = FestabookColor.gray500,
                 textAlign = TextAlign.Center,
             )
@@ -108,7 +115,7 @@ fun WaitingRegisterConfirmBottomSheet(
                 Text(
                     text = stringResource(Res.string.waiting_register_confirm_checkbox),
                     style = FestabookTypography.bodyMedium,
-                    color = FestabookColor.gray600,
+                    color = FestabookColor.black,
                 )
             }
 
@@ -116,7 +123,7 @@ fun WaitingRegisterConfirmBottomSheet(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(festabookSpacing.paddingBody4),
             ) {
                 ConfirmBottomSheetButton(
                     text = stringResource(Res.string.waiting_register_confirm_later),
@@ -143,28 +150,6 @@ fun WaitingRegisterConfirmBottomSheet(
 }
 
 @Composable
-private fun ConfirmBottomSheetIcon(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.size(100.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Image(
-            painter = painterResource(Res.drawable.ic_alarm),
-            contentDescription = null,
-            modifier = Modifier.size(80.dp),
-        )
-        Image(
-            painter = painterResource(Res.drawable.ic_clock),
-            contentDescription = null,
-            modifier =
-                Modifier
-                    .size(36.dp)
-                    .align(Alignment.BottomEnd),
-        )
-    }
-}
-
-@Composable
 private fun ConfirmBottomSheetButton(
     text: String,
     isEnabled: Boolean,
@@ -175,7 +160,6 @@ private fun ConfirmBottomSheetButton(
     Box(
         modifier =
             modifier
-                .height(52.dp)
                 .clip(festabookShapes.radius2)
                 .then(
                     if (isOutlined) {
@@ -194,8 +178,9 @@ private fun ConfirmBottomSheetButton(
         contentAlignment = Alignment.Center,
     ) {
         Text(
+            modifier = Modifier.padding(vertical = festabookSpacing.paddingBody4),
             text = text,
-            style = FestabookTypography.displayMedium,
+            style = FestabookTypography.displaySmall,
             color =
                 when {
                     isOutlined -> FestabookColor.black

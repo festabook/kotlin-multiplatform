@@ -101,6 +101,7 @@ fun NavGraphBuilder.placeMapNavGraph(
 
         WaitingRegisterRoute(
             viewModel = viewModel,
+            modifier = Modifier.padding(innerPadding),
             onBackToPreviousClick = onBackToPreviousClick,
             onShowErrorSnackbar = onShowErrorSnackbar,
             onShowSnackbar = onShowSnackbar,
