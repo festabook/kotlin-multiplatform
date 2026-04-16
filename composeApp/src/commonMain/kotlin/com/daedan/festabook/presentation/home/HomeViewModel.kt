@@ -55,9 +55,6 @@ class HomeViewModel(
         _navigateToScheduleEvent.tryEmit(Unit)
     }
 
-    fun navigateToFestatingClick() {
-    }
-
     private fun loadLineup() {
         viewModelScope.launch {
             _lineupUiState.value = LineupUiState.Loading

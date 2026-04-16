@@ -1,6 +1,7 @@
-package com.daedan.festabook.presentation.home.component
+package com.daedan.festabook.presentation.festating.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -12,12 +13,15 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun FestatingPoster(modifier: Modifier = Modifier) {
+fun FestatingPoster(
+    onClick: () -> Unit = {},
+    modifier: Modifier = Modifier,
+) {
     Image(
         painter = painterResource(Res.drawable.festa_ting_poster),
         contentDescription = stringResource(Res.string.home_festating_poster_image),
         contentScale = ContentScale.Crop,
-        modifier = modifier,
+        modifier = modifier.clickable { onClick() },
     )
 }
 

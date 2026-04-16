@@ -198,9 +198,10 @@ private fun FestabookNavHost(
         navController = navigator.navController,
     ) {
         homeNavGraph(
-            viewModel = homeViewModel,
+            homeViewModel = homeViewModel,
             mainViewModel = mainViewModel,
             onNavigateToExplore = { festabookNavigator.navigate(FestabookRoute.Explore) },
+            onNavigateToFestating = { festabookNavigator.navigate(FestabookRoute.Festating) },
             onSubscriptionConfirm = {
                 settingViewModel.notificationAllowClick()
                 mainViewModel.declineAlert()

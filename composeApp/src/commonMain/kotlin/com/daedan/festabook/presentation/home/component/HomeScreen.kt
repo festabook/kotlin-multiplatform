@@ -1,6 +1,5 @@
 package com.daedan.festabook.presentation.home.component
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
+import com.daedan.festabook.presentation.festating.component.FestatingPoster
 import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.LineupUiState
@@ -54,6 +54,7 @@ fun HomeScreen(
     homeViewModel: HomeViewModel,
     settingViewModel: SettingViewModel,
     notificationPermissionManager: NotificationPermissionManager,
+    onNavigateToFestating: () -> Unit,
     onNavigateToExplore: () -> Unit,
     onShowSnackBar: (String) -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
@@ -106,7 +107,7 @@ fun HomeScreen(
                 lineupUiState = lineupUiState,
                 onNavigateToExplore = onNavigateToExplore,
                 onNavigateToSchedule = homeViewModel::navigateToScheduleClick,
-                onFestatingClick = {},
+                onFestatingClick = onNavigateToFestating,
                 modifier = modifier,
             )
         }
@@ -188,17 +189,17 @@ private fun HomeContent(
                     )
                 }
                 // 페스타팅 포스터
+                // TODO if문 묶기
                 item {
                     FestatingPoster(
+                        onClick = onFestatingClick,
                         modifier =
                             Modifier
                                 .fillMaxSize()
                                 .padding(
                                     vertical = festabookSpacing.paddingBody4,
                                     horizontal = festabookSpacing.paddingBody5,
-                                ).clickable {
-                                    onFestatingClick()
-                                },
+                                ),
                     )
                 }
 

@@ -13,7 +13,7 @@ import com.daedan.festabook.presentation.main.component.FirstVisitDialog
 import com.daedan.festabook.presentation.setting.SettingViewModel
 
 fun NavGraphBuilder.homeNavGraph(
-    viewModel: HomeViewModel,
+    homeViewModel: HomeViewModel,
     mainViewModel: MainViewModel,
     settingViewModel: SettingViewModel,
     notificationPermissionManager: NotificationPermissionManager,
@@ -21,6 +21,7 @@ fun NavGraphBuilder.homeNavGraph(
     onShowErrorSnackbar: (Throwable) -> Unit,
     onSubscriptionConfirm: () -> Unit,
     onNavigateToExplore: () -> Unit,
+    onNavigateToFestating: () -> Unit,
 ) {
     composable<MainTabRoute.Home> {
         val isFirstVisit by mainViewModel.isFirstVisit.collectAsStateWithLifecycle()
@@ -31,9 +32,10 @@ fun NavGraphBuilder.homeNavGraph(
             )
         }
         HomeScreen(
-            homeViewModel = viewModel,
+            homeViewModel = homeViewModel,
             onShowErrorSnackbar = onShowErrorSnackbar,
             onNavigateToExplore = onNavigateToExplore,
+            onNavigateToFestating = onNavigateToFestating,
             settingViewModel = settingViewModel,
             notificationPermissionManager = notificationPermissionManager,
             onShowSnackBar = onShowSnackbar,
