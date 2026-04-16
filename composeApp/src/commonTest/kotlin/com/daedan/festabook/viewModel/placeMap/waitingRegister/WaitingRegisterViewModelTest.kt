@@ -1,8 +1,10 @@
 package com.daedan.festabook.viewModel.placeMap.waitingRegister
 
 import com.daedan.festabook.domain.model.MyWaiting
+import com.daedan.festabook.domain.model.WaitingInfo
 import com.daedan.festabook.domain.model.WaitingStatus
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
+import com.daedan.festabook.domain.repository.WaitingInfoRepository
 import com.daedan.festabook.domain.repository.WaitingRegisterInfoRepository
 import com.daedan.festabook.observeEvent
 import com.daedan.festabook.placeMap.placeDetail.FAKE_PLACE_DETAIL
@@ -33,6 +35,7 @@ import kotlin.test.assertTrue
 class WaitingRegisterViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var placeDetailRepository: PlaceDetailRepository
+    private lateinit var waitingInfoRepository: WaitingInfoRepository
     private lateinit var waitingRegisterInfoRepository: WaitingRegisterInfoRepository
     private lateinit var viewModel: WaitingRegisterViewModel
 
@@ -51,11 +54,14 @@ class WaitingRegisterViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         placeDetailRepository = mock()
+        waitingInfoRepository = mock()
         waitingRegisterInfoRepository = mock()
         everySuspend { placeDetailRepository.getPlaceDetail(any()) } returns Result.success(FAKE_PLACE_DETAIL)
+        everySuspend { waitingInfoRepository.getWaitingInfo() } returns Result.success(WaitingInfo(phoneNumber = "010-1234-5678"))
         viewModel =
             WaitingRegisterViewModel(
                 placeDetailRepository = placeDetailRepository,
+                waitingInfoRepository = waitingInfoRepository,
                 waitingRegisterInfoRepository = waitingRegisterInfoRepository,
                 placeId = FAKE_PLACE_DETAIL.place.id,
             )

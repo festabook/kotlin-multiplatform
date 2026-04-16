@@ -13,7 +13,9 @@ sealed interface WaitingRegisterUiState {
         val canSubmit: Boolean = false,
     ) : WaitingRegisterUiState
 
-    data class Error(val throwable: Throwable) : WaitingRegisterUiState
+    data class Error(
+        val throwable: Throwable,
+    ) : WaitingRegisterUiState
 
     companion object {
         const val MIN_PARTY_SIZE = 1

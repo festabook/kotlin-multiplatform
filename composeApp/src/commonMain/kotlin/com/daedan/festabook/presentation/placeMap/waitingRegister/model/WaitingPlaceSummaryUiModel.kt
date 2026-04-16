@@ -1,9 +1,9 @@
 package com.daedan.festabook.presentation.placeMap.waitingRegister.model
 
 import com.daedan.festabook.domain.model.PlaceDetail
+import com.daedan.festabook.presentation.common.format.toFormattedString
 import com.daedan.festabook.presentation.placeMap.model.PlaceCategoryUiModel
 import com.daedan.festabook.presentation.placeMap.model.toUiModel
-import com.daedan.festabook.presentation.common.format.toFormattedString
 
 data class WaitingPlaceSummaryUiModel(
     val placeId: Long,

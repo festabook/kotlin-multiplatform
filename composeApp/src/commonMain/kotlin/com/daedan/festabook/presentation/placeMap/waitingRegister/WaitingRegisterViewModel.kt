@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
+import com.daedan.festabook.domain.repository.WaitingInfoRepository
 import com.daedan.festabook.domain.repository.WaitingRegisterInfoRepository
 import com.daedan.festabook.presentation.placeMap.waitingRegister.model.WaitingRegisterUiState
 import com.daedan.festabook.presentation.placeMap.waitingRegister.model.toWaitingPlaceSummaryUiModel
@@ -27,6 +28,7 @@ import kotlinx.coroutines.launch
 @AssistedInject
 class WaitingRegisterViewModel(
     private val placeDetailRepository: PlaceDetailRepository,
+    private val waitingInfoRepository: WaitingInfoRepository,
     private val waitingRegisterInfoRepository: WaitingRegisterInfoRepository,
     @Assisted private val placeId: Long,
 ) : ViewModel() {
@@ -56,6 +58,9 @@ class WaitingRegisterViewModel(
     fun loadPlaceSummary() {
         viewModelScope.launch {
             _uiState.value = WaitingRegisterUiState.Loading
+            // TODO(#120): 미등록 시 전화번호 등록 화면으로 이동하도록 네비게이션 이벤트로 교체
+            val waitingInfo = waitingInfoRepository.getWaitingInfo().getOrNull()
+            checkNotNull(waitingInfo) { "전화번호가 등록되지 않은 상태에서 WaitingRegisterViewModel이 생성되었습니다." }
             placeDetailRepository
                 .getPlaceDetail(placeId)
                 .onSuccess { placeDetail ->

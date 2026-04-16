@@ -21,7 +21,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -150,9 +149,10 @@ fun WaitingRegisterScreen(
             is WaitingRegisterUiState.Success -> {
                 Box(modifier = Modifier.weight(1f)) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState()),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
                     ) {
                         WaitingPlaceSummaryCard(
                             summary = uiState.placeSummary,
@@ -205,16 +205,18 @@ private fun WaitingRegisterTopBar(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(56.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(56.dp),
     ) {
         Image(
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(start = festabookSpacing.paddingScreenGutter)
-                .size(30.dp)
-                .clickable { onBackClick() },
+            modifier =
+                Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = festabookSpacing.paddingScreenGutter)
+                    .size(30.dp)
+                    .clickable { onBackClick() },
             painter = painterResource(Res.drawable.btn_back_to_previous),
             contentDescription = stringResource(Res.string.content_description_waiting_register_back),
         )
@@ -232,31 +234,34 @@ private fun WaitingPlaceSummaryCard(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .padding(horizontal = festabookSpacing.paddingScreenGutter)
-            .cardBackground(
-                backgroundColor = FestabookColor.white,
-                shape = festabookShapes.radius4,
-            ),
+        modifier =
+            modifier
+                .padding(horizontal = festabookSpacing.paddingScreenGutter)
+                .cardBackground(
+                    backgroundColor = FestabookColor.white,
+                    shape = festabookShapes.radius4,
+                ),
     ) {
         PlaceDetailPreviewContent(
-            placeDetail = PlaceDetailUiModel(
-                place = PlaceUiModel(
-                    id = summary.placeId,
-                    imageUrl = summary.imageUrl,
-                    category = summary.category,
-                    title = summary.title,
-                    description = summary.description,
-                    location = summary.location,
-                    isBookmarked = false,
-                    timeTagId = emptyList(),
+            placeDetail =
+                PlaceDetailUiModel(
+                    place =
+                        PlaceUiModel(
+                            id = summary.placeId,
+                            imageUrl = summary.imageUrl,
+                            category = summary.category,
+                            title = summary.title,
+                            description = summary.description,
+                            location = summary.location,
+                            isBookmarked = false,
+                            timeTagId = emptyList(),
+                        ),
+                    notices = emptyList(),
+                    host = summary.host,
+                    startTime = summary.startTime,
+                    endTime = summary.endTime,
+                    images = emptyList(),
                 ),
-                notices = emptyList(),
-                host = summary.host,
-                startTime = summary.startTime,
-                endTime = summary.endTime,
-                images = emptyList(),
-            ),
         )
     }
 }
@@ -271,8 +276,9 @@ private fun PartySizeSection(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier =
+            modifier
+                .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
@@ -324,15 +330,15 @@ private fun PartySizeButton(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .size(44.dp)
-            .border(
-                width = 1.dp,
-                color = if (enabled) FestabookColor.gray400 else FestabookColor.gray200,
-                shape = CircleShape,
-            )
-            .clip(CircleShape)
-            .clickable(enabled = enabled, onClickLabel = contentDescription) { onClick() },
+        modifier =
+            modifier
+                .size(44.dp)
+                .border(
+                    width = 1.dp,
+                    color = if (enabled) FestabookColor.gray400 else FestabookColor.gray200,
+                    shape = CircleShape,
+                ).clip(CircleShape)
+                .clickable(enabled = enabled, onClickLabel = contentDescription) { onClick() },
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -351,9 +357,10 @@ private fun AgreementSection(
 ) {
     val uriHandler = LocalUriHandler.current
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = festabookSpacing.paddingScreenGutter),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = festabookSpacing.paddingScreenGutter),
     ) {
         Text(
             text = stringResource(Res.string.waiting_register_agreement_title),
@@ -368,11 +375,12 @@ private fun AgreementSection(
                 modifier = Modifier.clip(festabookShapes.radius1),
                 checked = isAgreed,
                 onCheckedChange = { onToggle() },
-                colors = CheckboxDefaults.colors(
-                    checkedColor = FestabookColor.black,
-                    uncheckedColor = FestabookColor.gray400,
-                    checkmarkColor = FestabookColor.white,
-                ),
+                colors =
+                    CheckboxDefaults.colors(
+                        checkedColor = FestabookColor.black,
+                        uncheckedColor = FestabookColor.gray400,
+                        checkmarkColor = FestabookColor.white,
+                    ),
             )
             Text(
                 modifier = Modifier.clickable { uriHandler.openUri(PRIVACY_AGREEMENT_URL) },
@@ -392,16 +400,16 @@ private fun WaitingRegisterSubmitButton(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .padding(
-                horizontal = festabookSpacing.paddingScreenGutter,
-                vertical = festabookSpacing.paddingBody4,
-            )
-            .fillMaxWidth()
-            .height(52.dp)
-            .clip(festabookShapes.radius2)
-            .background(if (isEnabled) FestabookColor.black else FestabookColor.gray300)
-            .clickable(enabled = isEnabled) { onClick() },
+        modifier =
+            modifier
+                .padding(
+                    horizontal = festabookSpacing.paddingScreenGutter,
+                    vertical = festabookSpacing.paddingBody4,
+                ).fillMaxWidth()
+                .height(52.dp)
+                .clip(festabookShapes.radius2)
+                .background(if (isEnabled) FestabookColor.black else FestabookColor.gray300)
+                .clickable(enabled = isEnabled) { onClick() },
         contentAlignment = Alignment.Center,
     ) {
         if (isSubmitting) {
