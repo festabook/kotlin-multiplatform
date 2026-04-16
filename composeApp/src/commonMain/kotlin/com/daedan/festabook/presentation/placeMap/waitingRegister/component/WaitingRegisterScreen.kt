@@ -29,10 +29,8 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -40,11 +38,12 @@ import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.daedan.festabook.presentation.common.ObserveAsEvents
-import com.daedan.festabook.presentation.common.component.CoilImage
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
 import com.daedan.festabook.presentation.common.component.cardBackground
-import com.daedan.festabook.presentation.placeMap.component.PlaceCategoryLabel
+import com.daedan.festabook.presentation.placeMap.component.PlaceDetailPreviewContent
+import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.waitingRegister.WaitingRegisterViewModel
 import com.daedan.festabook.presentation.placeMap.waitingRegister.model.WaitingPlaceSummaryUiModel
 import com.daedan.festabook.presentation.placeMap.waitingRegister.model.WaitingRegisterUiState
@@ -54,17 +53,9 @@ import com.daedan.festabook.presentation.theme.festabookShapes
 import com.daedan.festabook.presentation.theme.festabookSpacing
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.btn_back_to_previous
-import festabookkmp.composeapp.generated.resources.content_description_booth_image
-import festabookkmp.composeapp.generated.resources.content_description_iv_clock
-import festabookkmp.composeapp.generated.resources.content_description_iv_host
-import festabookkmp.composeapp.generated.resources.content_description_iv_location
 import festabookkmp.composeapp.generated.resources.content_description_waiting_party_size_decrease
 import festabookkmp.composeapp.generated.resources.content_description_waiting_party_size_increase
 import festabookkmp.composeapp.generated.resources.content_description_waiting_register_back
-import festabookkmp.composeapp.generated.resources.ic_location
-import festabookkmp.composeapp.generated.resources.ic_place_detail_clock
-import festabookkmp.composeapp.generated.resources.ic_place_detail_host
-import festabookkmp.composeapp.generated.resources.place_list_default_title
 import festabookkmp.composeapp.generated.resources.waiting_register_agreement_marketing
 import festabookkmp.composeapp.generated.resources.waiting_register_agreement_service
 import festabookkmp.composeapp.generated.resources.waiting_register_agreement_title
@@ -221,7 +212,7 @@ private fun WaitingRegisterTopBar(
         Text(
             modifier = Modifier.align(Alignment.Center),
             text = stringResource(Res.string.waiting_register_title),
-            style = FestabookTypography.displayMedium,
+            style = FestabookTypography.titleMedium,
         )
     }
 }
@@ -231,107 +222,32 @@ private fun WaitingPlaceSummaryCard(
     summary: WaitingPlaceSummaryUiModel,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    Box(
         modifier = modifier
             .padding(horizontal = festabookSpacing.paddingScreenGutter)
             .cardBackground(
                 backgroundColor = FestabookColor.white,
                 shape = festabookShapes.radius4,
-            )
-            .padding(festabookSpacing.paddingBody4),
+            ),
     ) {
-        PlaceCategoryLabel(category = summary.category)
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = festabookSpacing.paddingBody2),
-            verticalAlignment = Alignment.Top,
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = summary.title ?: stringResource(Res.string.place_list_default_title),
-                    style = FestabookTypography.displaySmall,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
-
-                if (summary.startTime != null) {
-                    PlaceInfoItem(
-                        modifier = Modifier.padding(top = festabookSpacing.paddingBody2),
-                        painter = painterResource(Res.drawable.ic_place_detail_clock),
-                        contentDescription = stringResource(Res.string.content_description_iv_clock),
-                        text = buildString {
-                            append(summary.startTime)
-                            summary.endTime?.let { append(" ~ $it") }
-                        },
-                    )
-                }
-
-                if (summary.location != null) {
-                    PlaceInfoItem(
-                        modifier = Modifier.padding(top = festabookSpacing.paddingBody1),
-                        painter = painterResource(Res.drawable.ic_location),
-                        contentDescription = stringResource(Res.string.content_description_iv_location),
-                        text = summary.location,
-                    )
-                }
-
-                if (summary.host != null) {
-                    PlaceInfoItem(
-                        modifier = Modifier.padding(top = festabookSpacing.paddingBody1),
-                        painter = painterResource(Res.drawable.ic_place_detail_host),
-                        contentDescription = stringResource(Res.string.content_description_iv_host),
-                        text = summary.host,
-                    )
-                }
-            }
-
-            if (summary.imageUrl != null) {
-                CoilImage(
-                    url = summary.imageUrl,
-                    contentDescription = stringResource(Res.string.content_description_booth_image),
-                    modifier = Modifier
-                        .padding(start = festabookSpacing.paddingBody4)
-                        .size(88.dp)
-                        .clip(festabookShapes.radius2),
-                )
-            }
-        }
-
-        if (summary.description != null) {
-            Text(
-                modifier = Modifier.padding(top = festabookSpacing.paddingBody2),
-                text = summary.description,
-                style = FestabookTypography.bodySmall,
-                color = FestabookColor.gray500,
-            )
-        }
-    }
-}
-
-@Composable
-private fun PlaceInfoItem(
-    painter: Painter,
-    contentDescription: String,
-    text: String,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(
-            painter = painter,
-            contentDescription = contentDescription,
-            modifier = Modifier.size(16.dp),
-            tint = FestabookColor.gray500,
-        )
-        Text(
-            modifier = Modifier.padding(start = festabookSpacing.paddingBody1),
-            text = text,
-            style = FestabookTypography.bodySmall,
-            color = FestabookColor.gray500,
+        PlaceDetailPreviewContent(
+            placeDetail = PlaceDetailUiModel(
+                place = PlaceUiModel(
+                    id = summary.placeId,
+                    imageUrl = summary.imageUrl,
+                    category = summary.category,
+                    title = summary.title,
+                    description = summary.description,
+                    location = summary.location,
+                    isBookmarked = false,
+                    timeTagId = emptyList(),
+                ),
+                notices = emptyList(),
+                host = summary.host,
+                startTime = summary.startTime,
+                endTime = summary.endTime,
+                images = emptyList(),
+            ),
         )
     }
 }

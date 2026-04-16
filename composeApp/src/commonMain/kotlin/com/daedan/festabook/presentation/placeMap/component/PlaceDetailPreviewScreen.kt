@@ -72,7 +72,7 @@ fun PlaceDetailPreviewScreen(
 }
 
 @Composable
-private fun PlaceDetailPreviewContent(
+internal fun PlaceDetailPreviewContent(
     placeDetail: PlaceDetailUiModel,
     modifier: Modifier = Modifier,
 ) {
