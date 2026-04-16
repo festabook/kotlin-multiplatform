@@ -1,4 +1,4 @@
-package com.daedan.festabook.presentation.waitinginfo.component
+package com.daedan.festabook.presentation.setting.waitinginfo.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,12 +45,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
+import com.daedan.festabook.presentation.setting.waitinginfo.WaitingInfoViewModel
+import com.daedan.festabook.presentation.setting.waitinginfo.model.WaitingInfoUiState
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import com.daedan.festabook.presentation.theme.festabookShapes
 import com.daedan.festabook.presentation.theme.festabookSpacing
-import com.daedan.festabook.presentation.waitinginfo.WaitingInfoViewModel
-import com.daedan.festabook.presentation.waitinginfo.model.WaitingInfoUiState
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.ic_arrow_back
 import festabookkmp.composeapp.generated.resources.setting_waiting_info_add_button

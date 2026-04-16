@@ -1,5 +1,7 @@
 package com.daedan.festabook.presentation.schedule.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
@@ -14,7 +16,10 @@ fun NavGraphBuilder.scheduleNavGraph(
     viewModel: ScheduleViewModel,
     onShowErrorSnackbar: (Throwable) -> Unit,
 ) {
-    composable<MainTabRoute.Schedule> {
+    composable<MainTabRoute.Schedule>(
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+    ) {
         ScheduleScreen(
             modifier = Modifier.padding(innerPadding),
             scheduleViewModel = viewModel,

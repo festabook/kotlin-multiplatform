@@ -1,5 +1,7 @@
 package com.daedan.festabook.presentation.news.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
@@ -14,7 +16,10 @@ fun NavGraphBuilder.newsNavGraph(
     viewModel: NewsViewModel,
     onShowErrorSnackbar: (Throwable) -> Unit,
 ) {
-    composable<MainTabRoute.News> {
+    composable<MainTabRoute.News>(
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+    ) {
         NewsScreen(
             modifier = Modifier.padding(innerPadding),
             newsViewModel = viewModel,

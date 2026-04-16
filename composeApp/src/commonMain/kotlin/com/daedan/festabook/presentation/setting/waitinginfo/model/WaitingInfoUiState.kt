@@ -1,4 +1,4 @@
-package com.daedan.festabook.presentation.waitinginfo.model
+package com.daedan.festabook.presentation.setting.waitinginfo.model
 
 sealed interface WaitingInfoUiState {
     data object Loading : WaitingInfoUiState

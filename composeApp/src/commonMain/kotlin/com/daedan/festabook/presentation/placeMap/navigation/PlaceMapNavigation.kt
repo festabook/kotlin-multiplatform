@@ -1,5 +1,7 @@
 package com.daedan.festabook.presentation.placeMap.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -32,7 +34,10 @@ fun NavGraphBuilder.placeMapNavGraph(
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
 ) {
-    composable<MainTabRoute.PlaceMap> {
+    composable<MainTabRoute.PlaceMap>(
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+    ) {
     }
 
     composable<FestabookRoute.PlaceDetail>(

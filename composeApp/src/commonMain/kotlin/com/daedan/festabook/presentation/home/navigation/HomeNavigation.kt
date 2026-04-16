@@ -1,5 +1,7 @@
 package com.daedan.festabook.presentation.home.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.getValue
@@ -26,7 +28,10 @@ fun NavGraphBuilder.homeNavGraph(
     onSubscriptionConfirm: () -> Unit,
     onNavigateToExplore: () -> Unit,
 ) {
-    composable<MainTabRoute.Home> {
+    composable<MainTabRoute.Home>(
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+    ) {
         val isFirstVisit by mainViewModel.isFirstVisit.collectAsStateWithLifecycle()
         if (isFirstVisit) {
             FirstVisitDialog(

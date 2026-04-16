@@ -1,7 +1,5 @@
 package com.daedan.festabook.presentation.main.component
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -51,7 +49,7 @@ import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.setting.component.platform.rememberNotificationPermissionManager
 import com.daedan.festabook.presentation.setting.component.platform.rememberOpenAppSettings
 import com.daedan.festabook.presentation.setting.navigation.settingNavGraph
-import com.daedan.festabook.presentation.waitinginfo.WaitingInfoViewModel
+import com.daedan.festabook.presentation.setting.waitinginfo.WaitingInfoViewModel
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.back_press_exit_message
 import org.jetbrains.compose.resources.stringResource
@@ -212,8 +210,6 @@ private fun FestabookNavHost(
         modifier = modifier,
         startDestination = navigator.startRoute,
         navController = navigator.navController,
-        enterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None },
     ) {
         homeNavGraph(
             innerPadding = innerPadding,

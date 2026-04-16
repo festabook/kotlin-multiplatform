@@ -1,11 +1,11 @@
-package com.daedan.festabook.presentation.waitinginfo
+package com.daedan.festabook.presentation.setting.waitinginfo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.daedan.festabook.di.viewmodel.ViewModelKey
 import com.daedan.festabook.domain.model.WaitingInfo
 import com.daedan.festabook.domain.repository.WaitingInfoRepository
-import com.daedan.festabook.presentation.waitinginfo.model.WaitingInfoUiState
+import com.daedan.festabook.presentation.setting.waitinginfo.model.WaitingInfoUiState
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
