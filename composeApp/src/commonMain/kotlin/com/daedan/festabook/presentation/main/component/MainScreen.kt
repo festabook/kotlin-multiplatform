@@ -1,5 +1,7 @@
 package com.daedan.festabook.presentation.main.component
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -200,6 +202,8 @@ private fun FestabookNavHost(
         modifier = modifier,
         startDestination = navigator.startRoute,
         navController = navigator.navController,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
     ) {
         homeNavGraph(
             viewModel = homeViewModel,
