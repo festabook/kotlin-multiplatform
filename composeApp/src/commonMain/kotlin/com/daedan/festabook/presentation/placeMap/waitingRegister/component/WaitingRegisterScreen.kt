@@ -77,6 +77,7 @@ fun WaitingRegisterRoute(
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
     onShowSnackbar: (String) -> Unit,
+    onNavigateToPhoneRegistration: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -88,6 +89,9 @@ fun WaitingRegisterRoute(
     }
     ObserveAsEvents(viewModel.registerFailureEvent) { throwable ->
         onShowErrorSnackbar(throwable)
+    }
+    ObserveAsEvents(viewModel.navigateToPhoneRegistrationEvent) {
+        onNavigateToPhoneRegistration()
     }
 
     WaitingRegisterScreen(

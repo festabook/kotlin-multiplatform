@@ -51,6 +51,9 @@ class WaitingRegisterViewModel(
     private val _registerFailureEvent = MutableSharedFlow<Throwable>(replay = 0, extraBufferCapacity = 1)
     val registerFailureEvent: SharedFlow<Throwable> = _registerFailureEvent.asSharedFlow()
 
+    private val _navigateToPhoneRegistrationEvent = MutableSharedFlow<Unit>(replay = 0, extraBufferCapacity = 1)
+    val navigateToPhoneRegistrationEvent: SharedFlow<Unit> = _navigateToPhoneRegistrationEvent.asSharedFlow()
+
     init {
         loadPlaceSummary()
     }
@@ -58,9 +61,11 @@ class WaitingRegisterViewModel(
     fun loadPlaceSummary() {
         viewModelScope.launch {
             _uiState.value = WaitingRegisterUiState.Loading
-            // TODO(#120): 미등록 시 전화번호 등록 화면으로 이동하도록 네비게이션 이벤트로 교체
             val waitingInfo = waitingInfoRepository.getWaitingInfo().getOrNull()
-            checkNotNull(waitingInfo) { "전화번호가 등록되지 않은 상태에서 WaitingRegisterViewModel이 생성되었습니다." }
+            if (waitingInfo == null) {
+                _navigateToPhoneRegistrationEvent.tryEmit(Unit)
+                return@launch
+            }
             placeDetailRepository
                 .getPlaceDetail(placeId)
                 .onSuccess { placeDetail ->

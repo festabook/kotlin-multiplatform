@@ -13,7 +13,7 @@ sealed interface FestabookRoute {
     ) : FestabookRoute
 
     @Serializable
-    data class AddWaitingInfo(
+    data class WaitingRegister(
         val placeId: Long,
     ) : FestabookRoute
 

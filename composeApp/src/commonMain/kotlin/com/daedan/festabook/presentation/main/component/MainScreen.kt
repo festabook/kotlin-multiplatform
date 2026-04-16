@@ -235,8 +235,9 @@ private fun FestabookNavHost(
             onBackToPreviousClick = { navigator.popBackStack() },
             onShowErrorSnackbar = snackbarManager::showError,
             onNavigateToAddWaitingInfo = { placeId ->
-                navigator.navigate(FestabookRoute.AddWaitingInfo(placeId))
+                navigator.navigate(FestabookRoute.WaitingRegister(placeId))
             },
+            onNavigateToPhoneRegistration = { navigator.navigate(FestabookRoute.AddWaitingInfo) },
             onShowSnackbar = snackbarManager::show,
         )
         newsNavGraph(

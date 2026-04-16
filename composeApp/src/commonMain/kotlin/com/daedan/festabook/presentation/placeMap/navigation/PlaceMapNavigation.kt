@@ -36,6 +36,7 @@ fun NavGraphBuilder.placeMapNavGraph(
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
     onNavigateToAddWaitingInfo: (Long) -> Unit,
+    onNavigateToPhoneRegistration: () -> Unit,
     onShowSnackbar: (String) -> Unit,
 ) {
     composable<MainTabRoute.PlaceMap>(
@@ -81,7 +82,7 @@ fun NavGraphBuilder.placeMapNavGraph(
         )
     }
 
-    composable<FestabookRoute.AddWaitingInfo>(
+    composable<FestabookRoute.WaitingRegister>(
         enterTransition = {
             slideInVertically(initialOffsetY = { it / 10 }) + fadeIn()
         },
@@ -89,7 +90,7 @@ fun NavGraphBuilder.placeMapNavGraph(
             slideOutVertically(targetOffsetY = { it / 10 }) + fadeOut()
         },
     ) { backStackEntry ->
-        val route = backStackEntry.toRoute<FestabookRoute.AddWaitingInfo>()
+        val route = backStackEntry.toRoute<FestabookRoute.WaitingRegister>()
         val viewModel =
             assistedMetroViewModel<WaitingRegisterViewModel>(
                 extras =
@@ -103,6 +104,7 @@ fun NavGraphBuilder.placeMapNavGraph(
             onBackToPreviousClick = onBackToPreviousClick,
             onShowErrorSnackbar = onShowErrorSnackbar,
             onShowSnackbar = onShowSnackbar,
+            onNavigateToPhoneRegistration = onNavigateToPhoneRegistration,
         )
     }
 }

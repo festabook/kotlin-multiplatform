@@ -73,6 +73,27 @@ class WaitingRegisterViewModelTest {
     }
 
     @Test
+    fun `전화번호 미등록 상태에서 초기화 시 navigateToPhoneRegistrationEvent 를 발행한다`() =
+        runTest {
+            // given
+            everySuspend { waitingInfoRepository.getWaitingInfo() } returns Result.success(null)
+            viewModel =
+                WaitingRegisterViewModel(
+                    placeDetailRepository = placeDetailRepository,
+                    waitingInfoRepository = waitingInfoRepository,
+                    waitingRegisterInfoRepository = waitingRegisterInfoRepository,
+                    placeId = FAKE_PLACE_DETAIL.place.id,
+                )
+
+            // when
+            val event = observeEvent(viewModel.navigateToPhoneRegistrationEvent)
+            advanceUntilIdle()
+
+            // then
+            assertEquals(Unit, event.await())
+        }
+
+    @Test
     fun `초기화 시 PlaceDetail 로드에 성공하면 Success 상태가 된다`() =
         runTest {
             // when
