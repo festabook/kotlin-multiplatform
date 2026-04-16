@@ -53,8 +53,7 @@ fun NavGraphBuilder.placeMapNavGraph(
             assistedMetroViewModel<PlaceDetailViewModel>(
                 extras =
                     MutableCreationExtras().apply {
-                        set(PlaceDetailViewModel.PlaceKey, route.placeUiModel)
-                        set(PlaceDetailViewModel.PlaceDetailKey, route.placeDetailUiModel)
+                        set(PlaceDetailViewModel.PlaceIdKey, route.placeId)
                     },
             )
 

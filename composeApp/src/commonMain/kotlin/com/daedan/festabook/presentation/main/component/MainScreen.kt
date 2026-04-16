@@ -1,5 +1,7 @@
 package com.daedan.festabook.presentation.main.component
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -17,7 +19,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
+import com.daedan.festabook.Platform
 import com.daedan.festabook.di.FestabookAppGraph
+import com.daedan.festabook.getPlatform
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.FestabookSnackbar
@@ -100,7 +104,9 @@ fun MainScreen(
     NavigationBackHandler(
         state = state,
     ) {
-        mainViewModel.onBackPressed()
+        if (getPlatform() == Platform.ANDROID) {
+            mainViewModel.onBackPressed()
+        }
     }
 
     RememberDeepLinkHandler { intent ->
@@ -166,7 +172,7 @@ fun MainScreen(
             onStartPlaceDetail = {
                 mainNavigator.navigate(
                     FestabookRoute.PlaceDetail(
-                        placeDetailUiModel = it.placeDetail.value,
+                        placeId = it.placeDetail.value.place.id,
                     ),
                 )
             },
@@ -206,6 +212,8 @@ private fun FestabookNavHost(
         modifier = modifier,
         startDestination = navigator.startRoute,
         navController = navigator.navController,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
     ) {
         homeNavGraph(
             innerPadding = innerPadding,

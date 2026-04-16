@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   Upload-Release-Bundle:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       version_code: ${{ steps.get_version.outputs.version_code }}
 
@@ -79,7 +79,7 @@ jobs:
 
   #번들이 업로드가 완료된 후 버전 태그를 작성합니다
   Release-Drafter:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: Upload-Release-Bundle
 
     steps:
@@ -98,7 +98,7 @@ jobs:
   # hotfix 머지 시, main의 변경사항을 develop에 자동 반영합니다
   # 번들이 업로드가 완료된 후 실행됩니다
   Reflect-Changes-Into-Develop:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: Upload-Release-Bundle
 
     steps:

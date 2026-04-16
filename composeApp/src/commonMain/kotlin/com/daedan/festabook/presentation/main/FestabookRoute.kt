@@ -1,7 +1,5 @@
 package com.daedan.festabook.presentation.main
 
-import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
-import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -11,8 +9,7 @@ sealed interface FestabookRoute {
 
     @Serializable
     data class PlaceDetail(
-        val placeUiModel: PlaceUiModel? = null,
-        val placeDetailUiModel: PlaceDetailUiModel? = null,
+        val placeId: Long,
     ) : FestabookRoute
 
     @Serializable

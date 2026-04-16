@@ -89,7 +89,7 @@ class MapManager(
 
         private const val OVERLAY_COLOR_ID = 0x4D1B1B1B
 
-        private val INITIAL_PADDING = 254.dp
+        private val INITIAL_PADDING = 180.dp
 
         // 대한민국 전체를 덮는 오버레이 좌표입니다
         private val EDGE_COORS =
