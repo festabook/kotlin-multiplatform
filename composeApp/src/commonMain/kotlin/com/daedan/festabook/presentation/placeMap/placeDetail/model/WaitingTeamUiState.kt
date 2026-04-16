@@ -3,7 +3,9 @@ package com.daedan.festabook.presentation.placeMap.placeDetail.model
 sealed interface WaitingTeamUiState {
     data object Loading : WaitingTeamUiState
 
-    data object Refresh : WaitingTeamUiState
+    data class Refresh(
+        val totalTeams: Int,
+    ) : WaitingTeamUiState
 
     data object InActive : WaitingTeamUiState
 

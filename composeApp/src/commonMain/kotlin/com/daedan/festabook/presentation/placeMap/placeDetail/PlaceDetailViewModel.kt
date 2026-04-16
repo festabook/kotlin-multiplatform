@@ -74,7 +74,8 @@ class PlaceDetailViewModel(
 
     suspend fun refreshWaitingStatus() {
         updateInnerState { current ->
-            current.copy(waitingTeam = WaitingTeamUiState.Refresh)
+            val previousTeams = (current.waitingTeam as? WaitingTeamUiState.Success)?.totalTeams ?: 0
+            current.copy(waitingTeam = WaitingTeamUiState.Refresh(totalTeams = previousTeams))
         }
         val placeDetailState = _placeDetail.value
         if (placeDetailState !is PlaceDetailUiState.Success) return

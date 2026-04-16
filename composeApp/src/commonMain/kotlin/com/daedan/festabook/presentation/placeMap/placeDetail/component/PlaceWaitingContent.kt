@@ -1,5 +1,8 @@
 package com.daedan.festabook.presentation.placeMap.placeDetail.component
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,10 +22,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import com.daedan.festabook.presentation.common.component.SkeletonBox
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingTeamUiState
@@ -169,11 +174,14 @@ private fun CurrentWaitingTeams(
             }
 
             is WaitingTeamUiState.Refresh -> {
-                SkeletonBox(
-                    modifier =
-                        Modifier
-                            .size(width = 52.dp, height = 28.dp)
-                            .clip(festabookShapes.radius1),
+                Text(
+                    text =
+                        stringResource(
+                            Res.string.place_detail_waiting_teams_count,
+                            waiting.totalTeams,
+                        ),
+                    style = FestabookTypography.displayMedium,
+                    color = FestabookColor.white,
                 )
             }
 
@@ -190,6 +198,7 @@ private fun CurrentWaitingTeams(
 
         RefreshButton(
             onClick = onRefresh,
+            isRefreshing = waiting is WaitingTeamUiState.Refresh,
         )
     }
 }
@@ -198,7 +207,36 @@ private fun CurrentWaitingTeams(
 private fun RefreshButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isRefreshing: Boolean = false,
 ) {
+    val rotation = remember { Animatable(0f) }
+    val durationMillis = 500
+
+    LaunchedEffect(isRefreshing) {
+        if (isRefreshing) {
+            while (true) {
+                rotation.animateTo(
+                    targetValue = rotation.value + 360f,
+                    animationSpec = tween(durationMillis = durationMillis, easing = LinearEasing),
+                )
+            }
+        } else {
+            val remainder = rotation.value % 360f
+            if (remainder > 0f) {
+                val target = rotation.value + (360f - remainder)
+                val remainingFraction = (360f - remainder) / 360f
+                rotation.animateTo(
+                    targetValue = target,
+                    animationSpec =
+                        tween(
+                            durationMillis = (remainingFraction * durationMillis).toInt().coerceAtLeast(1),
+                            easing = LinearEasing,
+                        ),
+                )
+            }
+        }
+    }
+
     Box(
         modifier =
             modifier
@@ -213,7 +251,7 @@ private fun RefreshButton(
             imageVector = Icons.Default.Refresh,
             contentDescription = null,
             tint = FestabookColor.black,
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier.size(20.dp).rotate(rotation.value),
         )
     }
 }
