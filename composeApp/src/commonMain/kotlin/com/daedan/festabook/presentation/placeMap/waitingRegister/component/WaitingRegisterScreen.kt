@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,8 +30,10 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,7 +59,6 @@ import festabookkmp.composeapp.generated.resources.btn_back_to_previous
 import festabookkmp.composeapp.generated.resources.content_description_waiting_party_size_decrease
 import festabookkmp.composeapp.generated.resources.content_description_waiting_party_size_increase
 import festabookkmp.composeapp.generated.resources.content_description_waiting_register_back
-import festabookkmp.composeapp.generated.resources.waiting_register_agreement_marketing
 import festabookkmp.composeapp.generated.resources.waiting_register_agreement_service
 import festabookkmp.composeapp.generated.resources.waiting_register_agreement_title
 import festabookkmp.composeapp.generated.resources.waiting_register_party_size_limit_notice
@@ -66,6 +68,9 @@ import festabookkmp.composeapp.generated.resources.waiting_register_success
 import festabookkmp.composeapp.generated.resources.waiting_register_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+
+private const val PRIVACY_AGREEMENT_URL =
+    "https://www.notion.so/2026-04-01-335a540dc0b780fa9897e0a3bdf45bae"
 
 @Composable
 fun WaitingRegisterRoute(
@@ -92,7 +97,6 @@ fun WaitingRegisterRoute(
         onIncreasePartySize = viewModel::increasePartySize,
         onDecreasePartySize = viewModel::decreasePartySize,
         onToggleServiceAgreement = viewModel::toggleServiceAgreement,
-        onToggleMarketingAgreement = viewModel::toggleMarketingAgreement,
         onSubmit = viewModel::submitWaitingRegister,
         onShowErrorSnackbar = onShowErrorSnackbar,
         modifier = modifier,
@@ -106,7 +110,6 @@ fun WaitingRegisterScreen(
     onIncreasePartySize: () -> Unit,
     onDecreasePartySize: () -> Unit,
     onToggleServiceAgreement: () -> Unit,
-    onToggleMarketingAgreement: () -> Unit,
     onSubmit: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
     modifier: Modifier = Modifier,
@@ -153,10 +156,14 @@ fun WaitingRegisterScreen(
                     ) {
                         WaitingPlaceSummaryCard(
                             summary = uiState.placeSummary,
-                            modifier = Modifier.padding(top = festabookSpacing.paddingBody2),
+                            modifier = Modifier.padding(top = 40.dp),
                         )
 
-                        SectionDivider()
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 24.dp),
+                            thickness = 4.dp,
+                            color = FestabookColor.gray200,
+                        )
 
                         PartySizeSection(
                             partySize = uiState.partySize,
@@ -166,13 +173,15 @@ fun WaitingRegisterScreen(
                             onIncrease = onIncreasePartySize,
                         )
 
-                        SectionDivider()
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 24.dp),
+                            thickness = 4.dp,
+                            color = FestabookColor.gray200,
+                        )
 
                         AgreementSection(
-                            isServiceAgreed = uiState.isServiceAgreed,
-                            isMarketingAgreed = uiState.isMarketingAgreed,
-                            onToggleService = onToggleServiceAgreement,
-                            onToggleMarketing = onToggleMarketingAgreement,
+                            isAgreed = uiState.isServiceAgreed,
+                            onToggle = onToggleServiceAgreement,
                         )
 
                         Spacer(modifier = Modifier.height(80.dp))
@@ -253,16 +262,6 @@ private fun WaitingPlaceSummaryCard(
 }
 
 @Composable
-private fun SectionDivider(modifier: Modifier = Modifier) {
-    Spacer(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(8.dp)
-            .background(FestabookColor.white),
-    )
-}
-
-@Composable
 private fun PartySizeSection(
     partySize: Int,
     canDecrease: Boolean,
@@ -273,8 +272,7 @@ private fun PartySizeSection(
 ) {
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = festabookSpacing.paddingBody4),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
@@ -347,68 +345,42 @@ private fun PartySizeButton(
 
 @Composable
 private fun AgreementSection(
-    isServiceAgreed: Boolean,
-    isMarketingAgreed: Boolean,
-    onToggleService: () -> Unit,
-    onToggleMarketing: () -> Unit,
+    isAgreed: Boolean,
+    onToggle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val uriHandler = LocalUriHandler.current
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(
-                horizontal = festabookSpacing.paddingScreenGutter,
-                vertical = festabookSpacing.paddingBody4,
-            ),
+            .padding(horizontal = festabookSpacing.paddingScreenGutter),
     ) {
         Text(
             text = stringResource(Res.string.waiting_register_agreement_title),
             style = FestabookTypography.displayMedium,
+            color = FestabookColor.black,
         )
 
-        AgreementCheckboxRow(
-            modifier = Modifier.padding(top = festabookSpacing.paddingBody4),
-            label = stringResource(Res.string.waiting_register_agreement_service),
-            checked = isServiceAgreed,
-            onToggle = onToggleService,
-        )
+        Spacer(modifier = Modifier.height(festabookSpacing.paddingBody1))
 
-        AgreementCheckboxRow(
-            modifier = Modifier.padding(top = festabookSpacing.paddingBody2),
-            label = stringResource(Res.string.waiting_register_agreement_marketing),
-            checked = isMarketingAgreed,
-            onToggle = onToggleMarketing,
-        )
-    }
-}
-
-@Composable
-private fun AgreementCheckboxRow(
-    label: String,
-    checked: Boolean,
-    onToggle: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable { onToggle() },
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Checkbox(
-            checked = checked,
-            onCheckedChange = { onToggle() },
-            colors = CheckboxDefaults.colors(
-                checkedColor = FestabookColor.accentBlue,
-                uncheckedColor = FestabookColor.gray400,
-            ),
-        )
-        Text(
-            modifier = Modifier.padding(start = festabookSpacing.paddingBody1),
-            text = label,
-            style = FestabookTypography.bodySmall,
-            color = FestabookColor.gray500,
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(
+                modifier = Modifier.clip(festabookShapes.radius1),
+                checked = isAgreed,
+                onCheckedChange = { onToggle() },
+                colors = CheckboxDefaults.colors(
+                    checkedColor = FestabookColor.black,
+                    uncheckedColor = FestabookColor.gray400,
+                    checkmarkColor = FestabookColor.white,
+                ),
+            )
+            Text(
+                modifier = Modifier.clickable { uriHandler.openUri(PRIVACY_AGREEMENT_URL) },
+                text = stringResource(Res.string.waiting_register_agreement_service),
+                style = FestabookTypography.bodyMedium.copy(textDecoration = TextDecoration.Underline),
+                color = FestabookColor.gray600,
+            )
+        }
     }
 }
 
@@ -428,7 +400,7 @@ private fun WaitingRegisterSubmitButton(
             .fillMaxWidth()
             .height(52.dp)
             .clip(festabookShapes.radius2)
-            .background(if (isEnabled) FestabookColor.accentBlue else FestabookColor.gray300)
+            .background(if (isEnabled) FestabookColor.black else FestabookColor.gray300)
             .clickable(enabled = isEnabled) { onClick() },
         contentAlignment = Alignment.Center,
     ) {

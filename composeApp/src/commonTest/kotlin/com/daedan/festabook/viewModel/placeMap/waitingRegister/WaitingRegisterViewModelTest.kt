@@ -175,27 +175,12 @@ class WaitingRegisterViewModelTest {
         }
 
     @Test
-    fun `toggleMarketingAgreement 호출 시 isMarketingAgreed 가 토글된다`() =
-        runTest {
-            // given
-            advanceUntilIdle()
-
-            // when
-            viewModel.toggleMarketingAgreement()
-
-            // then
-            val state = viewModel.uiState.value
-            assertIs<WaitingRegisterUiState.Success>(state)
-            assertTrue(state.isMarketingAgreed)
-        }
-
-    @Test
     fun `약관 미동의 상태에서 submitWaitingRegister 를 호출해도 API 를 호출하지 않는다`() =
         runTest {
             // given
             advanceUntilIdle()
 
-            // when - isServiceAgreed, isMarketingAgreed 모두 false 인 기본 상태
+            // when - isServiceAgreed 가 false 인 기본 상태
             viewModel.submitWaitingRegister()
             advanceUntilIdle()
 
@@ -213,7 +198,6 @@ class WaitingRegisterViewModelTest {
             everySuspend { waitingRegisterInfoRepository.registerWaiting(any(), any()) } returns
                 Result.success(fakeMyWaiting)
             viewModel.toggleServiceAgreement()
-            viewModel.toggleMarketingAgreement()
 
             // when
             val event = observeEvent(viewModel.registerSuccessEvent)
@@ -232,7 +216,6 @@ class WaitingRegisterViewModelTest {
             everySuspend { waitingRegisterInfoRepository.registerWaiting(any(), any()) } returns
                 Result.success(fakeMyWaiting)
             viewModel.toggleServiceAgreement()
-            viewModel.toggleMarketingAgreement()
 
             // when
             viewModel.submitWaitingRegister()
@@ -277,7 +260,6 @@ class WaitingRegisterViewModelTest {
             everySuspend { waitingRegisterInfoRepository.registerWaiting(any(), any()) } returns
                 Result.failure(exception)
             viewModel.toggleServiceAgreement()
-            viewModel.toggleMarketingAgreement()
 
             // when
             val event = observeEvent(viewModel.registerFailureEvent)

@@ -148,8 +148,7 @@
     <string name="waiting_register_party_size_title">인원 수</string>
     <string name="waiting_register_party_size_limit_notice">9명 이상 웨이팅은 부스에 따로 문의해주세요</string>
     <string name="waiting_register_agreement_title">약관 동의</string>
-    <string name="waiting_register_agreement_service">(필수) 서비스 이용 약관 동의</string>
-    <string name="waiting_register_agreement_marketing">(선택) 마케팅 정보 수신 동의</string>
+    <string name="waiting_register_agreement_service">(필수) 개인정보 제3자 제공 동의서</string>
     <string name="waiting_register_submit">웨이팅 등록하기</string>
     <string name="waiting_register_success">웨이팅 등록이 완료되었습니다</string>
     <string name="content_description_waiting_register_back">이전 화면으로 돌아가기</string>

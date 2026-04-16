@@ -7,13 +7,11 @@ sealed interface WaitingRegisterUiState {
         val placeSummary: WaitingPlaceSummaryUiModel,
         val partySize: Int = MIN_PARTY_SIZE,
         val isServiceAgreed: Boolean = false,
-        val isMarketingAgreed: Boolean = false,
         val isSubmitting: Boolean = false,
-    ) : WaitingRegisterUiState {
-        val canDecreasePartySize: Boolean get() = partySize > MIN_PARTY_SIZE
-        val canIncreasePartySize: Boolean get() = partySize < MAX_PARTY_SIZE
-        val canSubmit: Boolean get() = isServiceAgreed && !isSubmitting
-    }
+        val canDecreasePartySize: Boolean = false,
+        val canIncreasePartySize: Boolean = true,
+        val canSubmit: Boolean = false,
+    ) : WaitingRegisterUiState
 
     data class Error(val throwable: Throwable) : WaitingRegisterUiState
 

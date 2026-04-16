@@ -30,7 +30,6 @@ class WaitingRegisterViewModel(
     private val waitingRegisterInfoRepository: WaitingRegisterInfoRepository,
     @Assisted private val placeId: Long,
 ) : ViewModel() {
-
     @AssistedFactory
     @ViewModelAssistedFactoryKey(WaitingRegisterViewModel::class)
     @ContributesIntoMap(AppScope::class)
@@ -60,9 +59,11 @@ class WaitingRegisterViewModel(
             placeDetailRepository
                 .getPlaceDetail(placeId)
                 .onSuccess { placeDetail ->
-                    _uiState.value = WaitingRegisterUiState.Success(
-                        placeSummary = placeDetail.toWaitingPlaceSummaryUiModel(),
-                    )
+                    _uiState.value =
+                        WaitingRegisterUiState
+                            .Success(
+                                placeSummary = placeDetail.toWaitingPlaceSummaryUiModel(),
+                            ).withDerivedState()
                 }.onFailure { throwable ->
                     _uiState.value = WaitingRegisterUiState.Error(throwable)
                 }
@@ -73,7 +74,7 @@ class WaitingRegisterViewModel(
         _uiState.update { current ->
             if (current !is WaitingRegisterUiState.Success) return@update current
             if (!current.canIncreasePartySize) return@update current
-            current.copy(partySize = current.partySize + 1)
+            current.copy(partySize = current.partySize + 1).withDerivedState()
         }
     }
 
@@ -81,21 +82,14 @@ class WaitingRegisterViewModel(
         _uiState.update { current ->
             if (current !is WaitingRegisterUiState.Success) return@update current
             if (!current.canDecreasePartySize) return@update current
-            current.copy(partySize = current.partySize - 1)
+            current.copy(partySize = current.partySize - 1).withDerivedState()
         }
     }
 
     fun toggleServiceAgreement() {
         _uiState.update { current ->
             if (current !is WaitingRegisterUiState.Success) return@update current
-            current.copy(isServiceAgreed = !current.isServiceAgreed)
-        }
-    }
-
-    fun toggleMarketingAgreement() {
-        _uiState.update { current ->
-            if (current !is WaitingRegisterUiState.Success) return@update current
-            current.copy(isMarketingAgreed = !current.isMarketingAgreed)
+            current.copy(isServiceAgreed = !current.isServiceAgreed).withDerivedState()
         }
     }
 
@@ -107,23 +101,23 @@ class WaitingRegisterViewModel(
         viewModelScope.launch {
             _uiState.update { state ->
                 if (state is WaitingRegisterUiState.Success) {
-                    state.copy(isSubmitting = true)
+                    state.copy(isSubmitting = true).withDerivedState()
                 } else {
                     state
                 }
             }
-            // NOTE: registerWaiting API에는 phoneNumber 파라미터가 없음.
-            // 서버가 인증 토큰 기반으로 전화번호를 관리한다고 가정함.
-            // 실제 전화번호 선행 등록 플로우 확인 필요 (open-questions.md 참조)
+            // NOTE: 이 메서드 호출 상태는 phoneNumber가 local, remote에 저장이 되어 있다고 가정
+            // TODO 만약 저장이 되어 있지 않다면 전화번호 등록 화면 표시
             runCatching {
-                waitingRegisterInfoRepository.registerWaiting(
-                    placeId = placeId,
-                    partySize = current.partySize,
-                ).getOrThrow()
+                waitingRegisterInfoRepository
+                    .registerWaiting(
+                        placeId = placeId,
+                        partySize = current.partySize,
+                    ).getOrThrow()
             }.onSuccess {
                 _uiState.update { state ->
                     if (state is WaitingRegisterUiState.Success) {
-                        state.copy(isSubmitting = false)
+                        state.copy(isSubmitting = false).withDerivedState()
                     } else {
                         state
                     }
@@ -133,7 +127,7 @@ class WaitingRegisterViewModel(
                 if (throwable is CancellationException) throw throwable
                 _uiState.update { state ->
                     if (state is WaitingRegisterUiState.Success) {
-                        state.copy(isSubmitting = false)
+                        state.copy(isSubmitting = false).withDerivedState()
                     } else {
                         state
                     }
@@ -142,6 +136,14 @@ class WaitingRegisterViewModel(
             }
         }
     }
+
+    // TODO 도메인 로직으로 이동
+    private fun WaitingRegisterUiState.Success.withDerivedState(): WaitingRegisterUiState.Success =
+        copy(
+            canDecreasePartySize = partySize > WaitingRegisterUiState.MIN_PARTY_SIZE,
+            canIncreasePartySize = partySize < WaitingRegisterUiState.MAX_PARTY_SIZE,
+            canSubmit = isServiceAgreed && !isSubmitting,
+        )
 
     object PlaceIdKey : CreationExtras.Key<Long>
 }
