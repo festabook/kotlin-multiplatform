@@ -13,28 +13,31 @@ import androidx.core.util.Consumer
 actual typealias Intent = Intent
 
 @Composable
-actual fun RememberDeepLinkHandler(
-    onFestivalChanged: (announcementId: Long) -> Unit,
-    onDeepLink: (Intent) -> Unit,
-) {
+actual fun RememberDeepLinkHandler(onNotificationClicked: (announcementId: Long, festivalIdChanged: Boolean) -> Unit) {
     val context = LocalContext.current
     val activity = context as? ComponentActivity ?: return
-    val currentOnDeepLink by rememberUpdatedState(onDeepLink)
+    val currentOnNotificationClicked by rememberUpdatedState(onNotificationClicked)
 
     LaunchedEffect(Unit) {
-        currentOnDeepLink(activity.intent)
-        activity.intent.removeExtra(DeepLinkKeys.KEY_CAN_NAVIGATE_TO_NEWS)
-        activity.intent.removeExtra(DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND)
+        activity.intent.handleDeepLink(currentOnNotificationClicked)
     }
 
     DisposableEffect(activity) {
         val listener =
             Consumer<Intent> { intent ->
-                currentOnDeepLink(intent)
-                intent.removeExtra(DeepLinkKeys.KEY_CAN_NAVIGATE_TO_NEWS)
-                intent.removeExtra(DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND)
+                intent.handleDeepLink(currentOnNotificationClicked)
             }
         activity.addOnNewIntentListener(listener)
         onDispose { activity.removeOnNewIntentListener(listener) }
+    }
+}
+
+private fun Intent.handleDeepLink(onNotificationClicked: (announcementId: Long, festivalIdChanged: Boolean) -> Unit) {
+    val announcementId =
+        getLongExtra(DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND, DeepLinkKeys.INITIALIZED_ID)
+    if (announcementId != DeepLinkKeys.INITIALIZED_ID) {
+        onNotificationClicked(announcementId, false)
+        removeExtra(DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND)
+        removeExtra(DeepLinkKeys.KEY_CAN_NAVIGATE_TO_NEWS)
     }
 }

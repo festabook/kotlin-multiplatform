@@ -23,12 +23,10 @@ expect class Intent {
 }
 
 /**
- * @param onFestivalChanged festivalId가 변경되었을 때 호출됨. announcementId를 전달.
- *  iOS에서만 실제로 호출되며, Android에서는 Activity 재시작으로 처리되므로 호출되지 않음.
- * @param onDeepLink 일반 딥링크 처리 콜백 (festivalId 변경 없는 경우)
+ * FCM 알림 클릭 시 호출되는 딥링크 핸들러.
+ *
+ * @param onNotificationClicked announcementId와 festivalId 변경 여부를 전달.
+ *  Android에서는 festivalIdChanged가 항상 false (Activity 재시작으로 처리).
  */
 @Composable
-expect fun RememberDeepLinkHandler(
-    onFestivalChanged: (announcementId: Long) -> Unit,
-    onDeepLink: (Intent) -> Unit,
-)
+expect fun RememberDeepLinkHandler(onNotificationClicked: (announcementId: Long, festivalIdChanged: Boolean) -> Unit)

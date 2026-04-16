@@ -21,27 +21,12 @@ actual class Intent(
 }
 
 @Composable
-actual fun RememberDeepLinkHandler(
-    onFestivalChanged: (announcementId: Long) -> Unit,
-    onDeepLink: (Intent) -> Unit,
-) {
-    val currentOnFestivalChanged by rememberUpdatedState(onFestivalChanged)
-    val currentOnDeepLink by rememberUpdatedState(onDeepLink)
+actual fun RememberDeepLinkHandler(onNotificationClicked: (announcementId: Long, festivalIdChanged: Boolean) -> Unit) {
+    val currentOnNotificationClicked by rememberUpdatedState(onNotificationClicked)
 
     LaunchedEffect(Unit) {
         PendingFcmNotification.pending.collectLatest { data ->
-            if (data.festivalIdChanged) {
-                currentOnFestivalChanged(data.announcementId)
-            } else {
-                currentOnDeepLink(
-                    Intent(
-                        mapOf(
-                            DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND to data.announcementId,
-                            DeepLinkKeys.KEY_CAN_NAVIGATE_TO_NEWS to true,
-                        ),
-                    ),
-                )
-            }
+            currentOnNotificationClicked(data.announcementId, data.festivalIdChanged)
         }
     }
 }
