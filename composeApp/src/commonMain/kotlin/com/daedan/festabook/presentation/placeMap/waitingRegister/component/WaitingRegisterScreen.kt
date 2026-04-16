@@ -25,7 +25,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -120,6 +123,7 @@ fun WaitingRegisterScreen(
     val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
     val state = rememberNavigationEventState(NavigationEventInfo.None)
     val isSubmitting = (uiState as? WaitingRegisterUiState.Success)?.isSubmitting ?: false
+    var showConfirmBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     NavigationBackHandler(
         state = state,
@@ -194,12 +198,22 @@ fun WaitingRegisterScreen(
                     WaitingRegisterSubmitButton(
                         isEnabled = uiState.canSubmit,
                         isSubmitting = uiState.isSubmitting,
-                        onClick = onSubmit,
+                        onClick = { showConfirmBottomSheet = true },
                         modifier = Modifier.align(Alignment.BottomCenter),
                     )
                 }
             }
         }
+    }
+
+    if (showConfirmBottomSheet) {
+        WaitingRegisterConfirmBottomSheet(
+            onConfirm = {
+                showConfirmBottomSheet = false
+                onSubmit()
+            },
+            onDismiss = { showConfirmBottomSheet = false },
+        )
     }
 }
 

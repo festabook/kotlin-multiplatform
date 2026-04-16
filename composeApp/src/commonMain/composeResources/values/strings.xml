@@ -154,6 +154,11 @@
     <string name="content_description_waiting_register_back">이전 화면으로 돌아가기</string>
     <string name="content_description_waiting_party_size_decrease">인원 수 감소</string>
     <string name="content_description_waiting_party_size_increase">인원 수 증가</string>
+    <string name="waiting_register_confirm_title">호출 알림은 푸시로 전송돼요\n알림을 놓치지 않도록 허용 상태를 확인해주세요</string>
+    <string name="waiting_register_confirm_description">제시간에 방문하지 않으면 노쇼로 처리될 수 있어요</string>
+    <string name="waiting_register_confirm_checkbox">네 , 확인했어요</string>
+    <string name="waiting_register_confirm_later">다음에 웨이팅하기</string>
+    <string name="waiting_register_confirm_submit">확인</string>
     <string name="schedule_location">위치</string>
     <string name="schedule_time">시간</string>
     <string name="all_book_mark">북마크</string>
