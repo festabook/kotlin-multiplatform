@@ -1,10 +1,15 @@
 package com.daedan.festabook.home
 
+import com.daedan.festabook.domain.model.MyWaiting
+import com.daedan.festabook.domain.model.MyWaitingWithPlace
+import com.daedan.festabook.domain.model.WaitingStatus
 import com.daedan.festabook.domain.repository.FestivalRepository
+import com.daedan.festabook.domain.repository.MyWaitingRepository
 import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.LineUpItemOfDayUiModel
 import com.daedan.festabook.presentation.home.LineupUiState
+import com.daedan.festabook.presentation.home.WaitingBarUiState
 import com.daedan.festabook.presentation.home.toUiModel
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
@@ -30,11 +35,23 @@ class HomeViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var festivalRepository: FestivalRepository
+    private lateinit var myWaitingRepository: MyWaitingRepository
+
+    private val fakeMyWaiting = MyWaiting(
+        waitingId = 1L,
+        waitingOrder = 3,
+        partySize = 2,
+        waitingStatus = WaitingStatus.WAITING,
+        totalWaitingTeams = 10,
+        estimatedWaitTime = 15,
+        phoneNumber = "010-1234-5678",
+    )
 
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         festivalRepository = mock()
+        myWaitingRepository = mock()
         everySuspend { festivalRepository.getFestivalInfo() } returns
             Result.success(
                 FAKE_ORGANIZATION,
@@ -45,8 +62,9 @@ class HomeViewModelTest {
                     FAKE_LINEUP[0].performanceAt.date to FAKE_LINEUP,
                 ),
             )
+        everySuspend { myWaitingRepository.getMyWaiting() } returns Result.success(null)
 
-        homeViewModel = HomeViewModel(festivalRepository)
+        homeViewModel = HomeViewModel(festivalRepository, myWaitingRepository)
     }
 
     @AfterTest
@@ -155,5 +173,52 @@ class HomeViewModelTest {
             assertEquals(1, events.size)
 
             job.cancel()
+        }
+
+    @Test
+    fun `웨이팅이 있으면 WaitingBarUiState가 Visible이 된다`() =
+        runTest {
+            // given
+            everySuspend { myWaitingRepository.getMyWaiting() } returns
+                Result.success(MyWaitingWithPlace(fakeMyWaiting, placeId = 1L))
+
+            // when
+            homeViewModel.loadWaitingBar()
+            advanceUntilIdle()
+
+            // then
+            val actual = homeViewModel.waitingBarUiState.value
+            assertIs<WaitingBarUiState.Visible>(actual)
+            assertEquals(fakeMyWaiting.waitingOrder, actual.order)
+            assertEquals(fakeMyWaiting.estimatedWaitTime, actual.estimatedWaitTime)
+        }
+
+    @Test
+    fun `웨이팅이 없으면 WaitingBarUiState가 Hidden이 된다`() =
+        runTest {
+            // given
+            everySuspend { myWaitingRepository.getMyWaiting() } returns Result.success(null)
+
+            // when
+            homeViewModel.loadWaitingBar()
+            advanceUntilIdle()
+
+            // then
+            assertIs<WaitingBarUiState.Hidden>(homeViewModel.waitingBarUiState.value)
+        }
+
+    @Test
+    fun `웨이팅 조회 실패 시 WaitingBarUiState가 Hidden이 된다`() =
+        runTest {
+            // given
+            everySuspend { myWaitingRepository.getMyWaiting() } returns
+                Result.failure(Throwable("Network Error"))
+
+            // when
+            homeViewModel.loadWaitingBar()
+            advanceUntilIdle()
+
+            // then
+            assertIs<WaitingBarUiState.Hidden>(homeViewModel.waitingBarUiState.value)
         }
 }

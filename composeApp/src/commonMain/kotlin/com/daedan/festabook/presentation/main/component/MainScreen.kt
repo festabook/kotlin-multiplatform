@@ -29,7 +29,6 @@ import com.daedan.festabook.presentation.common.component.SnackbarManager
 import com.daedan.festabook.presentation.common.component.rememberAppSnackbarManager
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.navigation.homeNavGraph
-import com.daedan.festabook.presentation.waiting.navigation.myWaitingNavGraph
 import com.daedan.festabook.presentation.main.FestabookMainTab
 import com.daedan.festabook.presentation.main.FestabookNavigator
 import com.daedan.festabook.presentation.main.FestabookRoute
@@ -51,6 +50,7 @@ import com.daedan.festabook.presentation.setting.component.platform.rememberNoti
 import com.daedan.festabook.presentation.setting.component.platform.rememberOpenAppSettings
 import com.daedan.festabook.presentation.setting.navigation.settingNavGraph
 import com.daedan.festabook.presentation.setting.waitinginfo.WaitingInfoViewModel
+import com.daedan.festabook.presentation.waiting.navigation.myWaitingNavGraph
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.back_press_exit_message
 import org.jetbrains.compose.resources.stringResource
@@ -302,7 +302,7 @@ private fun FestabookNavHost(
         )
         myWaitingNavGraph(
             onBack = {
-                homeViewModel.refreshWaitingBar()
+                homeViewModel.loadWaitingBar()
                 navigator.popBackStack()
             },
             onShowSnackbar = snackbarManager::show,

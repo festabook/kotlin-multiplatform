@@ -72,23 +72,21 @@ class HomeViewModel(
 
     fun loadWaitingBar() {
         viewModelScope.launch {
-            myWaitingRepository.getMyWaiting()
+            myWaitingRepository
+                .getMyWaiting()
                 .onSuccess { result ->
                     _waitingBarUiState.value = result?.let {
                         WaitingBarUiState.Visible(
-                            order = it.myWaiting.waitingOrder,
-                            estimatedWaitTime = it.myWaiting.estimatedWaitTime,
+                            order = it.waitingOrder,
+                            estimatedWaitTime = it.estimatedWaitTime,
                         )
                     } ?: WaitingBarUiState.Hidden
-                }
-                .onFailure { t ->
+                }.onFailure { t ->
                     Napier.e("웨이팅 바 로딩 실패", t)
                     _waitingBarUiState.value = WaitingBarUiState.Hidden
                 }
         }
     }
-
-    fun refreshWaitingBar() = loadWaitingBar()
 
     private fun loadLineup() {
         viewModelScope.launch {

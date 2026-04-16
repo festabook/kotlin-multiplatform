@@ -3,8 +3,8 @@ package com.daedan.festabook.presentation.waiting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.daedan.festabook.di.viewmodel.ViewModelKey
-import com.daedan.festabook.domain.model.PlaceDetail
 import com.daedan.festabook.domain.model.MyWaiting
+import com.daedan.festabook.domain.model.PlaceDetail
 import com.daedan.festabook.domain.repository.MyWaitingRepository
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
 import com.daedan.festabook.presentation.placeMap.model.PlaceCategoryUiModel
@@ -44,23 +44,26 @@ class MyWaitingViewModel(
     fun loadMyWaiting() {
         viewModelScope.launch {
             _uiState.value = MyWaitingUiState.Loading
-            myWaitingRepository.getMyWaiting()
+            myWaitingRepository
+                .getMyWaiting()
                 .onSuccess { withPlace ->
                     if (withPlace == null) {
                         _uiState.value = MyWaitingUiState.Empty
                         return@onSuccess
                     }
-                    val place = withPlace.placeId?.let { pid ->
-                        placeDetailRepository.getPlaceDetail(pid)
-                            .getOrNull()
-                            ?.toMyWaitingPlaceUiModel()
-                    }
-                    _uiState.value = withPlace.myWaiting.toSuccessUiState(
-                        placeId = withPlace.placeId,
-                        place = place,
-                    )
-                }
-                .onFailure { _uiState.value = MyWaitingUiState.Error(it) }
+                    val place =
+                        withPlace.placeId?.let { pid ->
+                            placeDetailRepository
+                                .getPlaceDetail(pid)
+                                .getOrNull()
+                                ?.toMyWaitingPlaceUiModel()
+                        }
+                    _uiState.value =
+                        withPlace.toSuccessUiState(
+                            placeId = withPlace.placeId,
+                            place = place,
+                        )
+                }.onFailure { _uiState.value = MyWaitingUiState.Error(it) }
         }
     }
 
@@ -68,24 +71,27 @@ class MyWaitingViewModel(
         val current = _uiState.value as? MyWaitingUiState.Success ?: return
         _uiState.value = current.copy(isRefreshing = true)
         viewModelScope.launch {
-            myWaitingRepository.getMyWaiting()
-                .onSuccess { withPlace ->
-                    if (withPlace == null) {
+            myWaitingRepository
+                .getMyWaiting()
+                .onSuccess { myWaiting ->
+                    if (myWaiting == null) {
                         _uiState.value = MyWaitingUiState.Empty
                         return@onSuccess
                     }
-                    val place = withPlace.placeId?.let { pid ->
-                        placeDetailRepository.getPlaceDetail(pid)
-                            .getOrNull()
-                            ?.toMyWaitingPlaceUiModel()
-                    }
-                    _uiState.value = withPlace.myWaiting.toSuccessUiState(
-                        placeId = withPlace.placeId,
-                        place = place,
-                        isRefreshing = false,
-                    )
-                }
-                .onFailure {
+                    val place =
+                        myWaiting.placeId?.let { pid ->
+                            placeDetailRepository
+                                .getPlaceDetail(pid)
+                                .getOrNull()
+                                ?.toMyWaitingPlaceUiModel()
+                        }
+                    _uiState.value =
+                        myWaiting.toSuccessUiState(
+                            placeId = myWaiting.placeId,
+                            place = place,
+                            isRefreshing = false,
+                        )
+                }.onFailure {
                     _uiState.update { state ->
                         (state as? MyWaitingUiState.Success)?.copy(isRefreshing = false) ?: state
                     }
@@ -98,14 +104,14 @@ class MyWaitingViewModel(
         val current = _uiState.value as? MyWaitingUiState.Success ?: return
         _uiState.value = current.copy(isCanceling = true)
         viewModelScope.launch {
-            myWaitingRepository.cancelWaiting(current.waitingId)
+            myWaitingRepository
+                .cancelWaiting(current.waitingId)
                 .onSuccess {
                     _uiState.update { state ->
                         (state as? MyWaitingUiState.Success)?.copy(isCanceling = false) ?: state
                     }
                     _cancelSuccessEvent.tryEmit(Unit)
-                }
-                .onFailure {
+                }.onFailure {
                     _uiState.update { state ->
                         (state as? MyWaitingUiState.Success)?.copy(isCanceling = false) ?: state
                     }

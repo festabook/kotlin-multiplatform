@@ -79,6 +79,10 @@ fun HomeScreen(
         onNavigateToMyWaiting()
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.loadWaitingBar()
+    }
+
     LaunchedEffect(festivalUiState) {
         when (val state = festivalUiState) {
             is FestivalUiState.Error -> {
@@ -113,16 +117,23 @@ fun HomeScreen(
                     onNavigateToExplore = onNavigateToExplore,
                     onNavigateToSchedule = viewModel::navigateToScheduleClick,
                 )
-                if (waitingBarUiState is WaitingBarUiState.Visible) {
-                    HomeWaitingBar(
-                        order = waitingBarUiState.order,
-                        estimatedMinutes = waitingBarUiState.estimatedWaitTime,
-                        onClick = viewModel::navigateToMyWaitingClick,
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .fillMaxWidth()
-                            .padding(start = 20.dp, end = 20.dp, bottom = 16.dp),
-                    )
+                when (val waitingBarUiState = waitingBarUiState) {
+                    is WaitingBarUiState.Visible -> {
+                        HomeWaitingBar(
+                            order = waitingBarUiState.order,
+                            estimatedMinutes = waitingBarUiState.estimatedWaitTime,
+                            onClick = viewModel::navigateToMyWaitingClick,
+                            modifier =
+                                Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .fillMaxWidth()
+                                    .padding(start = 20.dp, end = 20.dp, bottom = 16.dp),
+                        )
+                    }
+
+                    else -> {
+                        Unit
+                    }
                 }
             }
         }
