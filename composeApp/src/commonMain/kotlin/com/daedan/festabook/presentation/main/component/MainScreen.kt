@@ -15,7 +15,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
+import com.daedan.festabook.Platform
 import com.daedan.festabook.di.FestabookAppGraph
+import com.daedan.festabook.getPlatform
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.FestabookSnackbar
@@ -96,7 +98,9 @@ fun MainScreen(
     NavigationBackHandler(
         state = state,
     ) {
-        mainViewModel.onBackPressed()
+        if (getPlatform() == Platform.ANDROID) {
+            mainViewModel.onBackPressed()
+        }
     }
 
     RememberDeepLinkHandler { intent ->
