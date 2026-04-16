@@ -96,7 +96,8 @@
     <string name="setting_notice_detail">앱 알림 세부 설정</string>
     <string name="setting_app_info_title">앱 정보</string>
     <string name="setting_app_version">앱 버전</string>
-    <string name="setting_service_policy">약관 및 정책</string>
+    <string name="setting_service_policy">서비스 이용약관</string>
+    <string name="setting_personal_information_policy">개인정보 처리방침</string>
     <string name="setting_contact_us">개발자 문의하기</string>
     <string name="setting_contact_us_email_subject">개발자 문의하기</string>
     <string name="setting_contact_us_email">festabook2025@gmail.com</string>

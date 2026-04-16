@@ -56,6 +56,7 @@ import festabookkmp.composeapp.generated.resources.setting_contact_us
 import festabookkmp.composeapp.generated.resources.setting_current_university_notice
 import festabookkmp.composeapp.generated.resources.setting_notice_enabled
 import festabookkmp.composeapp.generated.resources.setting_notice_title
+import festabookkmp.composeapp.generated.resources.setting_personal_information_policy
 import festabookkmp.composeapp.generated.resources.setting_service_policy
 import festabookkmp.composeapp.generated.resources.setting_title
 import festabookkmp.composeapp.generated.resources.setting_waiting_info_not_registered
@@ -66,8 +67,11 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-private const val POLICY_URL: String =
-    "https://www.notion.so/244a540dc0b780638e56e31c4bdb3c9f"
+private const val SERVICE_POLICY_URL: String =
+    "https://www.notion.so/festabook-2026-04-01-335a540dc0b78055a450d7c82a1bdd40?source=copy_link"
+
+private const val PERSONAL_INFORMATION_POLICY_URL: String =
+    "https://www.notion.so/festabook-2026-04-01-335a540dc0b780fdb79cc83372595721?source=copy_link"
 
 private const val CONTACT_US_URL =
     "https://forms.gle/XjqJFfQrTPgkZzGZ9"
@@ -139,7 +143,8 @@ fun SettingRoute(
         isSubscribeEnabled = !isSubscribedLoading,
         phoneNumber = phoneNumber,
         onSubscribeClick = { settingViewModel.notificationAllowClick() },
-        onPolicyClick = { uriHandler.openUri(POLICY_URL) },
+        onServicePolicyClick = { uriHandler.openUri(SERVICE_POLICY_URL) },
+        onPersonalInformationPolicyClick = { uriHandler.openUri(PERSONAL_INFORMATION_POLICY_URL) },
         onContactUsClick = { uriHandler.openUri(CONTACT_US_URL) },
         onPhoneNumberClick = onPhoneNumberClick,
         onError = {
@@ -157,7 +162,8 @@ fun SettingScreen(
     phoneNumber: String?,
     modifier: Modifier = Modifier,
     onSubscribeClick: (Boolean) -> Unit = {},
-    onPolicyClick: () -> Unit = {},
+    onServicePolicyClick: () -> Unit = {},
+    onPersonalInformationPolicyClick: () -> Unit = {},
     onContactUsClick: () -> Unit = {},
     onPhoneNumberClick: () -> Unit = {},
     onError: (FestivalUiState.Error) -> Unit = {},
@@ -238,7 +244,8 @@ fun SettingScreen(
 
             AppInfoContent(
                 appVersion = appVersion,
-                onPolicyClick = onPolicyClick,
+                onServicePolicyClick = onServicePolicyClick,
+                onPersonalInformationPolicyClick = onPersonalInformationPolicyClick,
                 onContactUsClick = onContactUsClick,
             )
         }
@@ -345,7 +352,8 @@ private fun SubscriptionContent(
 @Composable
 private fun AppInfoContent(
     appVersion: String,
-    onPolicyClick: () -> Unit,
+    onServicePolicyClick: () -> Unit,
+    onPersonalInformationPolicyClick: () -> Unit,
     onContactUsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -362,8 +370,14 @@ private fun AppInfoContent(
 
         AppInfoButton(
             text = stringResource(Res.string.setting_service_policy),
-            onClick = onPolicyClick,
+            onClick = onServicePolicyClick,
         )
+
+        AppInfoButton(
+            text = stringResource(Res.string.setting_personal_information_policy),
+            onClick = onPersonalInformationPolicyClick,
+        )
+
         AppInfoButton(
             text = stringResource(Res.string.setting_contact_us),
             onClick = onContactUsClick,

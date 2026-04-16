@@ -1,6 +1,7 @@
 package com.daedan.festabook.presentation.waitinginfo.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,9 +36,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daedan.festabook.presentation.common.ObserveAsEvents
@@ -64,6 +67,9 @@ import festabookkmp.composeapp.generated.resources.setting_waiting_info_save_suc
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+private const val TERMS_URL =
+    "https://www.notion.so/2026-04-01-335a540dc0b780fa9897e0a3bdf45bae"
 
 @Composable
 fun AddWaitingInfoRoute(
@@ -306,10 +312,15 @@ private fun WaitingInfoAddTerms(
                         checkmarkColor = FestabookColor.white,
                     ),
             )
+            val uriHandler = LocalUriHandler.current
             Text(
                 text = stringResource(Res.string.setting_waiting_info_add_terms_item),
-                style = FestabookTypography.bodyMedium,
+                style = FestabookTypography.bodyMedium.copy(textDecoration = TextDecoration.Underline),
                 color = FestabookColor.gray600,
+                modifier =
+                    Modifier.clickable {
+                        uriHandler.openUri(TERMS_URL)
+                    },
             )
         }
     }
