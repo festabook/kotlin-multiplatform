@@ -10,8 +10,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.util.Consumer
 
-actual typealias Intent = Intent
-
 @Composable
 actual fun RememberDeepLinkHandler(onNotificationClicked: (announcementId: Long, festivalIdChanged: Boolean) -> Unit) {
     val context = LocalContext.current

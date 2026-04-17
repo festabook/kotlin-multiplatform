@@ -10,18 +10,6 @@ object DeepLinkKeys {
     const val INITIALIZED_ID = -1L
 }
 
-expect class Intent {
-    fun getLongExtra(
-        key: String,
-        defaultValue: Long,
-    ): Long
-
-    fun getBooleanExtra(
-        key: String,
-        defaultValue: Boolean,
-    ): Boolean
-}
-
 /**
  * FCM 알림 클릭 시 호출되는 딥링크 핸들러.
  *
