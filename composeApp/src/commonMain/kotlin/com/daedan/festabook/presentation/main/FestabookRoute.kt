@@ -24,7 +24,13 @@ sealed interface FestabookRoute {
     data object Main : FestabookRoute
 
     @Serializable
-    data object AddWaitingInfo : FestabookRoute
+    data class AddWaitingInfo(
+        val placeId: Long = NO_PLACE_ID,
+    ) : FestabookRoute {
+        companion object {
+            const val NO_PLACE_ID: Long = -1L
+        }
+    }
 }
 
 @Serializable

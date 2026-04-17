@@ -29,12 +29,14 @@ class MyWaitingRepositoryImpl(
             return Result.success(null)
         }
 
-        return waitingRemoteDataSource.fetchMyWaiting()
+        return waitingRemoteDataSource
+            .fetchMyWaiting()
             .toResult()
             .mapCatching { it.toDomain() }
             .mapCatching { myWaiting ->
                 // 서버 측 종료 상태 감지 → placeId 클리어 후 null 반환
-                if (myWaiting.waitingStatus in setOf(
+                if (myWaiting.waitingStatus in
+                    setOf(
                         WaitingStatus.CANCELED,
                         WaitingStatus.ARRIVED,
                         WaitingStatus.NO_SHOW,
@@ -49,7 +51,8 @@ class MyWaitingRepositoryImpl(
     }
 
     override suspend fun cancelWaiting(waitingId: Long): Result<Unit> =
-        waitingRemoteDataSource.cancelWaiting(waitingId)
+        waitingRemoteDataSource
+            .cancelWaiting(waitingId)
             .toResult()
             .onSuccess { waitingLocalDataSource.clearPlaceId() }
 }

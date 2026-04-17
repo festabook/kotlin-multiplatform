@@ -65,7 +65,6 @@ import festabookkmp.composeapp.generated.resources.setting_waiting_info_add_term
 import festabookkmp.composeapp.generated.resources.setting_waiting_info_add_terms_title
 import festabookkmp.composeapp.generated.resources.setting_waiting_info_add_title
 import festabookkmp.composeapp.generated.resources.setting_waiting_info_back
-import festabookkmp.composeapp.generated.resources.setting_waiting_info_save_success
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -77,20 +76,18 @@ private const val TERMS_URL =
 fun AddWaitingInfoRoute(
     viewModel: WaitingInfoViewModel,
     onBackClick: () -> Unit,
-    onShowSnackBar: (String) -> Unit,
     onShowErrorSnackBar: (Throwable) -> Unit,
     modifier: Modifier = Modifier,
+    onSaveSuccess: () -> Unit = onBackClick,
 ) {
     val waitingInfoUiState by viewModel.waitingInfoUiState.collectAsStateWithLifecycle()
     val phoneNumber by viewModel.phoneNumber.collectAsStateWithLifecycle()
     val isTermsAgreed by viewModel.isTermsAgreed.collectAsStateWithLifecycle()
     val isSaveEnabled by viewModel.isSaveEnabled.collectAsStateWithLifecycle()
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
-    val saveSuccessMessage = stringResource(Res.string.setting_waiting_info_save_success)
 
     ObserveAsEvents(flow = viewModel.saveSuccessEvent) {
-        onShowSnackBar(saveSuccessMessage)
-        onBackClick()
+        onSaveSuccess()
     }
     ObserveAsEvents(flow = viewModel.errorEvent) {
         onShowErrorSnackBar(it)

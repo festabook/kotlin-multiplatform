@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.navigation.compose.NavHost
+import androidx.navigation.navOptions
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
@@ -232,14 +233,22 @@ private fun FestabookNavHost(
         )
         placeMapNavGraph(
             innerPadding = innerPadding,
-            notificationPermissionManager = notificationPermissionManager,
+            settingViewModel = settingViewModel,
             onBackToPreviousClick = { navigator.popBackStack() },
             onShowErrorSnackbar = snackbarManager::showError,
             onNavigateToAddWaitingInfo = { placeId ->
                 navigator.navigate(FestabookRoute.WaitingRegister(placeId))
             },
-            onNavigateToPhoneRegistration = { navigator.navigate(FestabookRoute.AddWaitingInfo) },
+            onNavigateToPhoneRegistration = { placeId ->
+                navigator.navigate(
+                    FestabookRoute.AddWaitingInfo(placeId = placeId),
+                    navOptions {
+                        popUpTo<FestabookRoute.WaitingRegister> { inclusive = true }
+                    },
+                )
+            },
             onShowSnackbar = snackbarManager::show,
+            notificationPermissionManager = notificationPermissionManager,
         )
         newsNavGraph(
             innerPadding = innerPadding,
@@ -254,7 +263,15 @@ private fun FestabookNavHost(
             notificationPermissionManager = notificationPermissionManager,
             onShowSnackBar = snackbarManager::show,
             onShowErrorSnackBar = snackbarManager::showError,
-            onNavigateToAddWaitingInfo = { navigator.navigate(FestabookRoute.AddWaitingInfo) },
+            onNavigateToAddWaitingInfo = { navigator.navigate(FestabookRoute.AddWaitingInfo()) },
+            onNavigateToWaitingRegister = { placeId ->
+                navigator.navigate(
+                    FestabookRoute.WaitingRegister(placeId),
+                    navOptions {
+                        popUpTo<FestabookRoute.AddWaitingInfo> { inclusive = true }
+                    },
+                )
+            },
             onBackClick = { navigator.popBackStack() },
         )
     }

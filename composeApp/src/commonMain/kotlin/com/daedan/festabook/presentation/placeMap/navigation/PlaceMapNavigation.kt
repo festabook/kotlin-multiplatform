@@ -28,17 +28,19 @@ import com.daedan.festabook.presentation.placeMap.placeDetail.component.PlaceDet
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.waitingRegister.WaitingRegisterViewModel
 import com.daedan.festabook.presentation.placeMap.waitingRegister.component.WaitingRegisterRoute
+import com.daedan.festabook.presentation.setting.SettingViewModel
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.serialization.json.Json
 import kotlin.reflect.typeOf
 
 fun NavGraphBuilder.placeMapNavGraph(
     innerPadding: PaddingValues,
+    settingViewModel: SettingViewModel,
     notificationPermissionManager: NotificationPermissionManager,
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
     onNavigateToAddWaitingInfo: (Long) -> Unit,
-    onNavigateToPhoneRegistration: () -> Unit,
+    onNavigateToPhoneRegistration: (Long) -> Unit,
     onShowSnackbar: (String) -> Unit,
 ) {
     composable<MainTabRoute.PlaceMap>(
@@ -103,12 +105,13 @@ fun NavGraphBuilder.placeMapNavGraph(
 
         WaitingRegisterRoute(
             viewModel = viewModel,
-            notificationPermissionManager = notificationPermissionManager,
+            settingViewModel = settingViewModel,
             modifier = Modifier.padding(innerPadding),
             onBackToPreviousClick = onBackToPreviousClick,
             onShowErrorSnackbar = onShowErrorSnackbar,
             onShowSnackbar = onShowSnackbar,
-            onNavigateToPhoneRegistration = onNavigateToPhoneRegistration,
+            onNavigateToPhoneRegistration = { onNavigateToPhoneRegistration(route.placeId) },
+            notificationPermissionManager = notificationPermissionManager,
         )
     }
 }

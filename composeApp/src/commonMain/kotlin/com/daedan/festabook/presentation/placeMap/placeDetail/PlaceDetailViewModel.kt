@@ -102,8 +102,23 @@ class PlaceDetailViewModel(
                     WaitingTeamUiState.Success(totalTeams = placeWaiting.totalWaitingTeams)
 
                 updateInnerState { current ->
+                    val nextWaitingStatus =
+                        when (current.waitingStatus) {
+                            is WaitingStatusUiState.Active -> {
+                                WaitingStatusUiState.Active(estimatedMinutes = placeWaiting.estimatedWaitTime)
+                            }
+
+                            is WaitingStatusUiState.Closed -> {
+                                WaitingStatusUiState.Closed(estimatedMinutes = placeWaiting.estimatedWaitTime)
+                            }
+
+                            else -> {
+                                current.waitingStatus
+                            }
+                        }
                     current.copy(
                         waitingTeam = waitingTeamUiState,
+                        waitingStatus = nextWaitingStatus,
                     )
                 }
             }.onFailure { throwable ->

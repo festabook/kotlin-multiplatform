@@ -27,7 +27,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -56,12 +55,13 @@ import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailU
 import com.daedan.festabook.presentation.placeMap.waitingRegister.WaitingRegisterViewModel
 import com.daedan.festabook.presentation.placeMap.waitingRegister.model.WaitingPlaceSummaryUiModel
 import com.daedan.festabook.presentation.placeMap.waitingRegister.model.WaitingRegisterUiState
+import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.setting.component.NotificationPermissionDialog
+import com.daedan.festabook.presentation.setting.component.platform.rememberOpenAppSettings
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import com.daedan.festabook.presentation.theme.festabookShapes
 import com.daedan.festabook.presentation.theme.festabookSpacing
-import kotlinx.coroutines.launch
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.btn_back_to_previous
 import festabookkmp.composeapp.generated.resources.content_description_waiting_party_size_decrease
@@ -83,6 +83,7 @@ private const val PRIVACY_AGREEMENT_URL =
 @Composable
 fun WaitingRegisterRoute(
     viewModel: WaitingRegisterViewModel,
+    settingViewModel: SettingViewModel,
     notificationPermissionManager: NotificationPermissionManager,
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
@@ -91,10 +92,11 @@ fun WaitingRegisterRoute(
     modifier: Modifier = Modifier,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isNotificationAllowed by settingViewModel.isAllowed.collectAsStateWithLifecycle()
     val successMessage = stringResource(Res.string.waiting_register_success)
     var showConfirmBottomSheet by rememberSaveable { mutableStateOf(false) }
     var showPermissionDialog by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
+    val onOpenAppSettings = rememberOpenAppSettings()
 
     // TODO 나의 웨이팅 화면으로 이동
     ObserveAsEvents(viewModel.registerSuccessEvent) {
@@ -106,6 +108,21 @@ fun WaitingRegisterRoute(
     }
     ObserveAsEvents(viewModel.navigateToPhoneRegistrationEvent) {
         onNavigateToPhoneRegistration()
+    }
+    ObserveAsEvents(flow = settingViewModel.permissionCheckEvent) {
+        val permission = notificationPermissionManager.checkPermission()
+
+        when (permission) {
+            PermissionState.GRANTED -> {
+                showConfirmBottomSheet = false
+                settingViewModel.saveNotificationId()
+                viewModel.submitWaitingRegister()
+            }
+
+            PermissionState.NEED_RATIONALE, PermissionState.DENIED -> {
+                onOpenAppSettings()
+            }
+        }
     }
 
     WaitingRegisterScreen(
@@ -122,21 +139,11 @@ fun WaitingRegisterRoute(
     if (showConfirmBottomSheet) {
         WaitingRegisterConfirmBottomSheet(
             onConfirm = {
-                scope.launch {
-                    when (notificationPermissionManager.checkPermission()) {
-                        PermissionState.GRANTED -> {
-                            showConfirmBottomSheet = false
-                            viewModel.submitWaitingRegister()
-                        }
-
-                        PermissionState.NEED_RATIONALE -> {
-                            showPermissionDialog = true
-                        }
-
-                        PermissionState.DENIED -> {
-                            notificationPermissionManager.requestPermission()
-                        }
-                    }
+                if (isNotificationAllowed) {
+                    showConfirmBottomSheet = false
+                    viewModel.submitWaitingRegister()
+                } else {
+                    showPermissionDialog = true
                 }
             },
             onDismiss = { showConfirmBottomSheet = false },
@@ -147,7 +154,7 @@ fun WaitingRegisterRoute(
         NotificationPermissionDialog(
             onConfirm = {
                 showPermissionDialog = false
-                notificationPermissionManager.requestPermission()
+                settingViewModel.notificationAllowClick()
             },
         )
     }
