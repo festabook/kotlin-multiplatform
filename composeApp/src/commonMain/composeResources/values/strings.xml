@@ -159,6 +159,9 @@
     <string name="waiting_register_confirm_checkbox">네 , 확인했어요</string>
     <string name="waiting_register_confirm_later">다음에 웨이팅하기</string>
     <string name="waiting_register_confirm_submit">확인</string>
+    <string name="waiting_duplicate_title">기기당 하나의 플레이스만\n웨이팅을 할 수 있어요</string>
+    <string name="waiting_duplicate_later">다음에 하기</string>
+    <string name="waiting_duplicate_my_waiting">나의 웨이팅</string>
     <string name="schedule_location">위치</string>
     <string name="schedule_time">시간</string>
     <string name="all_book_mark">북마크</string>

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.daedan.festabook.domain.model.PlaceWaiting
+import com.daedan.festabook.domain.repository.MyWaitingRepository
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
 import com.daedan.festabook.domain.repository.WaitingRegisterInfoRepository
 import com.daedan.festabook.presentation.news.notice.model.NoticeUiModel
@@ -19,8 +20,11 @@ import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
 import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -28,6 +32,7 @@ import kotlinx.coroutines.launch
 class PlaceDetailViewModel(
     private val placeDetailRepository: PlaceDetailRepository,
     private val waitingRegisterInfoRepository: WaitingRegisterInfoRepository,
+    private val myWaitingRepository: MyWaitingRepository,
     @Assisted private val placeId: Long,
 ) : ViewModel() {
     @AssistedFactory
@@ -47,6 +52,12 @@ class PlaceDetailViewModel(
             PlaceDetailUiState.Loading,
         )
     val placeDetail: StateFlow<PlaceDetailUiState> = _placeDetail
+
+    private val _navigateToWaitingRegisterEvent = MutableSharedFlow<Long>(replay = 0, extraBufferCapacity = 1)
+    val navigateToWaitingRegisterEvent: SharedFlow<Long> = _navigateToWaitingRegisterEvent.asSharedFlow()
+
+    private val _showDuplicateWaitingDialogEvent = MutableSharedFlow<Unit>(replay = 0, extraBufferCapacity = 1)
+    val showDuplicateWaitingDialogEvent: SharedFlow<Unit> = _showDuplicateWaitingDialogEvent.asSharedFlow()
 
     init {
         loadPlaceDetail(placeId)
@@ -113,6 +124,26 @@ class PlaceDetailViewModel(
                             },
                     ),
             )
+        }
+    }
+
+    fun onRegisterWaitingClick() {
+        val current = _placeDetail.value
+        if (current !is PlaceDetailUiState.Success) return
+        val placeId = current.placeDetail.place.id
+
+        viewModelScope.launch {
+            myWaitingRepository
+                .getMyWaiting()
+                .onSuccess { myWaiting ->
+                    if (myWaiting == null) {
+                        _navigateToWaitingRegisterEvent.tryEmit(placeId)
+                    } else {
+                        _showDuplicateWaitingDialogEvent.tryEmit(Unit)
+                    }
+                }.onFailure {
+                    _navigateToWaitingRegisterEvent.tryEmit(placeId)
+                }
         }
     }
 

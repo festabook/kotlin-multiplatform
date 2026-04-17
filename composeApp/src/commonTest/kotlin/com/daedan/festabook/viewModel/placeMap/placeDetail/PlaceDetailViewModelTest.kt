@@ -1,5 +1,6 @@
 package com.daedan.festabook.placeMap.placeDetail
 
+import com.daedan.festabook.domain.repository.MyWaitingRepository
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
 import com.daedan.festabook.domain.repository.WaitingRegisterInfoRepository
 import com.daedan.festabook.news.FAKE_NOTICES
@@ -35,6 +36,7 @@ class PlaceDetailViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var placeDetailRepository: PlaceDetailRepository
     private lateinit var waitingRegisterInfoRepository: WaitingRegisterInfoRepository
+    private lateinit var myWaitingRepository: MyWaitingRepository
     private lateinit var placeDetailViewModel: PlaceDetailViewModel
 
     @BeforeTest
@@ -42,16 +44,19 @@ class PlaceDetailViewModelTest {
         Dispatchers.setMain(testDispatcher)
         placeDetailRepository = mock()
         waitingRegisterInfoRepository = mock()
+        myWaitingRepository = mock()
         everySuspend { placeDetailRepository.getPlaceDetail(any()) } returns
             Result.success(
                 FAKE_PLACE_DETAIL,
             )
         everySuspend { waitingRegisterInfoRepository.getPlaceWaiting(any()) } returns
             Result.success(FAKE_PLACE_WAITING)
+        everySuspend { myWaitingRepository.getMyWaiting() } returns Result.success(null)
         placeDetailViewModel =
             PlaceDetailViewModel(
                 placeDetailRepository,
                 waitingRegisterInfoRepository,
+                myWaitingRepository,
                 FAKE_PLACES.first().id,
             )
     }
@@ -121,6 +126,7 @@ class PlaceDetailViewModelTest {
                 PlaceDetailViewModel(
                     placeDetailRepository,
                     waitingRegisterInfoRepository,
+                    myWaitingRepository,
                     expected.place.id,
                 )
             advanceUntilIdle()

@@ -50,6 +50,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
+import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.EmptyStateScreen
 import com.daedan.festabook.presentation.common.component.FestabookImage
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
@@ -95,12 +96,32 @@ fun PlaceDetailRoute(
 ) {
     val placeDetailUiState by viewModel.placeDetail.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
+    var showDuplicateDialog by remember { mutableStateOf(false) }
+
+    ObserveAsEvents(viewModel.navigateToWaitingRegisterEvent) { placeId ->
+        onNavigateToWaitingRegister(placeId)
+    }
+    ObserveAsEvents(viewModel.showDuplicateWaitingDialogEvent) {
+        showDuplicateDialog = true
+    }
+
+    if (showDuplicateDialog) {
+        WaitingDuplicateDialog(
+            onLaterClick = { showDuplicateDialog = false },
+            onMyWaitingClick = {
+                showDuplicateDialog = false
+                // TODO 나의 웨이팅 화면으로 이동
+            },
+            onDismissRequest = { showDuplicateDialog = false },
+        )
+    }
+
     PlaceDetailScreen(
         modifier = modifier,
         uiState = placeDetailUiState,
         onBackToPreviousClick = onBackToPreviousClick,
         onShowErrorSnackbar = onShowErrorSnackbar,
-        onNavigateToWaitingRegister = onNavigateToWaitingRegister,
+        onRegisterWaitingClick = viewModel::onRegisterWaitingClick,
         onWaitingRefresh = {
             scope.launch { viewModel.refreshWaitingStatus() }
         },
@@ -114,7 +135,7 @@ fun PlaceDetailScreen(
     onWaitingRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     onShowErrorSnackbar: (Throwable) -> Unit = {}, // TODO Fragment 제거 시 필수 파라미터로 변경
-    onNavigateToWaitingRegister: (placeId: Long) -> Unit = {},
+    onRegisterWaitingClick: () -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
     val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
@@ -188,9 +209,7 @@ fun PlaceDetailScreen(
                 PlaceDetailBottomBar(
                     waiting = uiState.waitingStatus,
                     modifier = Modifier.align(Alignment.BottomCenter),
-                    onRegisterWaitingClick = {
-                        onNavigateToWaitingRegister(uiState.placeDetail.place.id)
-                    },
+                    onRegisterWaitingClick = onRegisterWaitingClick,
                 )
             }
         }
