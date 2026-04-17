@@ -144,7 +144,7 @@ kotlin {
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.compottie)
             implementation(libs.metrox.viewmodel.compose)
-            implementation("io.github.kevinnzou:compose-webview-multiplatform:2.0.3")
+            implementation(libs.compose.webview.multiplatform)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
