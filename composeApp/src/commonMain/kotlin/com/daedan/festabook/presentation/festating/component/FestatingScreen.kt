@@ -10,6 +10,8 @@ import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewState
 
+private const val HEADER_FESTIVAL_ID = "festivalId"
+
 @Composable
 fun FestatingScreen(
     festivalId: Long,
@@ -18,7 +20,7 @@ fun FestatingScreen(
     val state =
         rememberWebViewState(
             url = BuildKonfig.FESTA_TING_URL,
-            additionalHttpHeaders = mapOf("festivalId" to festivalId.toString()),
+            additionalHttpHeaders = mapOf(HEADER_FESTIVAL_ID to festivalId.toString()),
         )
     val navigator = rememberWebViewNavigator()
 
