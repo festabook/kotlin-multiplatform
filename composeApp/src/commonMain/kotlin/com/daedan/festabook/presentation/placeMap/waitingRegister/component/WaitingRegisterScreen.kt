@@ -123,7 +123,7 @@ fun WaitingRegisterScreen(
 ) {
     val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
     val state = rememberNavigationEventState(NavigationEventInfo.None)
-    val isSubmitting = (uiState as? WaitingRegisterUiState.Success)?.isSubmitting ?: false
+    val isSubmitting = (uiState as? WaitingRegisterUiState.Success)?.waitingRegister?.isSubmitting ?: false
     var showConfirmBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     NavigationBackHandler(
@@ -156,6 +156,7 @@ fun WaitingRegisterScreen(
             }
 
             is WaitingRegisterUiState.Success -> {
+                val waitingRegister = uiState.waitingRegister
                 Box(modifier = Modifier.weight(1f)) {
                     Column(
                         modifier =
@@ -164,7 +165,7 @@ fun WaitingRegisterScreen(
                                 .verticalScroll(rememberScrollState()),
                     ) {
                         WaitingPlaceSummaryCard(
-                            summary = uiState.placeSummary,
+                            summary = waitingRegister.placeSummary,
                             modifier = Modifier.padding(top = 40.dp),
                         )
 
@@ -175,9 +176,9 @@ fun WaitingRegisterScreen(
                         )
 
                         PartySizeSection(
-                            partySize = uiState.partySize,
-                            canDecrease = uiState.canDecreasePartySize,
-                            canIncrease = uiState.canIncreasePartySize,
+                            partySize = waitingRegister.partySize,
+                            canDecrease = waitingRegister.canDecreasePartySize,
+                            canIncrease = waitingRegister.canIncreasePartySize,
                             onDecrease = onDecreasePartySize,
                             onIncrease = onIncreasePartySize,
                         )
@@ -189,7 +190,7 @@ fun WaitingRegisterScreen(
                         )
 
                         AgreementSection(
-                            isAgreed = uiState.isServiceAgreed,
+                            isAgreed = waitingRegister.isServiceAgreed,
                             onToggle = onToggleServiceAgreement,
                         )
 
@@ -197,8 +198,8 @@ fun WaitingRegisterScreen(
                     }
 
                     WaitingRegisterSubmitButton(
-                        isEnabled = uiState.canSubmit,
-                        isSubmitting = uiState.isSubmitting,
+                        isEnabled = waitingRegister.canSubmit,
+                        isSubmitting = waitingRegister.isSubmitting,
                         onClick = { showConfirmBottomSheet = true },
                         modifier = Modifier.align(Alignment.BottomCenter),
                     )

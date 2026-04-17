@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
 import com.daedan.festabook.domain.repository.WaitingInfoRepository
 import com.daedan.festabook.domain.repository.WaitingRegisterInfoRepository
+import com.daedan.festabook.presentation.placeMap.waitingRegister.model.WaitingRegisterUiModel
 import com.daedan.festabook.presentation.placeMap.waitingRegister.model.WaitingRegisterUiState
 import com.daedan.festabook.presentation.placeMap.waitingRegister.model.toWaitingPlaceSummaryUiModel
 import dev.zacsweers.metro.AppScope
@@ -70,10 +71,12 @@ class WaitingRegisterViewModel(
                 .getPlaceDetail(placeId)
                 .onSuccess { placeDetail ->
                     _uiState.value =
-                        WaitingRegisterUiState
-                            .Success(
-                                placeSummary = placeDetail.toWaitingPlaceSummaryUiModel(),
-                            ).withDerivedState()
+                        WaitingRegisterUiState.Success(
+                            waitingRegister =
+                                WaitingRegisterUiModel(
+                                    placeSummary = placeDetail.toWaitingPlaceSummaryUiModel(),
+                                ).withDerivedState(),
+                        )
                 }.onFailure { throwable ->
                     _uiState.value = WaitingRegisterUiState.Error(throwable)
                 }
@@ -81,24 +84,21 @@ class WaitingRegisterViewModel(
     }
 
     fun increasePartySize() {
-        _uiState.update { current ->
-            if (current !is WaitingRegisterUiState.Success) return@update current
-            if (!current.canIncreasePartySize) return@update current
+        updateRegister { current ->
+            if (!current.canIncreasePartySize) return@updateRegister current
             current.copy(partySize = current.partySize + 1).withDerivedState()
         }
     }
 
     fun decreasePartySize() {
-        _uiState.update { current ->
-            if (current !is WaitingRegisterUiState.Success) return@update current
-            if (!current.canDecreasePartySize) return@update current
+        updateRegister { current ->
+            if (!current.canDecreasePartySize) return@updateRegister current
             current.copy(partySize = current.partySize - 1).withDerivedState()
         }
     }
 
     fun toggleServiceAgreement() {
-        _uiState.update { current ->
-            if (current !is WaitingRegisterUiState.Success) return@update current
+        updateRegister { current ->
             current.copy(isServiceAgreed = !current.isServiceAgreed).withDerivedState()
         }
     }
@@ -106,51 +106,40 @@ class WaitingRegisterViewModel(
     fun submitWaitingRegister() {
         val current = _uiState.value
         if (current !is WaitingRegisterUiState.Success) return
-        if (!current.canSubmit) return
+        if (!current.waitingRegister.canSubmit) return
 
         viewModelScope.launch {
-            _uiState.update { state ->
-                if (state is WaitingRegisterUiState.Success) {
-                    state.copy(isSubmitting = true).withDerivedState()
-                } else {
-                    state
-                }
-            }
+            updateRegister { it.copy(isSubmitting = true).withDerivedState() }
 
             runCatching {
                 waitingRegisterInfoRepository
                     .registerWaiting(
                         placeId = placeId,
-                        partySize = current.partySize,
+                        partySize = current.waitingRegister.partySize,
                     ).getOrThrow()
             }.onSuccess {
-                _uiState.update { state ->
-                    if (state is WaitingRegisterUiState.Success) {
-                        state.copy(isSubmitting = false).withDerivedState()
-                    } else {
-                        state
-                    }
-                }
+                updateRegister { it.copy(isSubmitting = false).withDerivedState() }
                 _registerSuccessEvent.tryEmit(Unit)
             }.onFailure { throwable ->
                 if (throwable is CancellationException) throw throwable
-                _uiState.update { state ->
-                    if (state is WaitingRegisterUiState.Success) {
-                        state.copy(isSubmitting = false).withDerivedState()
-                    } else {
-                        state
-                    }
-                }
+                updateRegister { it.copy(isSubmitting = false).withDerivedState() }
                 _registerFailureEvent.tryEmit(throwable)
             }
         }
     }
 
+    private inline fun updateRegister(transform: (WaitingRegisterUiModel) -> WaitingRegisterUiModel) {
+        _uiState.update { state ->
+            if (state !is WaitingRegisterUiState.Success) return@update state
+            state.copy(waitingRegister = transform(state.waitingRegister))
+        }
+    }
+
     // TODO 도메인 로직으로 이동
-    private fun WaitingRegisterUiState.Success.withDerivedState(): WaitingRegisterUiState.Success =
+    private fun WaitingRegisterUiModel.withDerivedState(): WaitingRegisterUiModel =
         copy(
-            canDecreasePartySize = partySize > WaitingRegisterUiState.MIN_PARTY_SIZE,
-            canIncreasePartySize = partySize < WaitingRegisterUiState.MAX_PARTY_SIZE,
+            canDecreasePartySize = partySize > WaitingRegisterUiModel.MIN_PARTY_SIZE,
+            canIncreasePartySize = partySize < WaitingRegisterUiModel.MAX_PARTY_SIZE,
             canSubmit = isServiceAgreed && !isSubmitting,
         )
 

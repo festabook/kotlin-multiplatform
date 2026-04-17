@@ -9,6 +9,7 @@ import com.daedan.festabook.domain.repository.WaitingRegisterInfoRepository
 import com.daedan.festabook.observeEvent
 import com.daedan.festabook.placeMap.placeDetail.FAKE_PLACE_DETAIL
 import com.daedan.festabook.presentation.placeMap.waitingRegister.WaitingRegisterViewModel
+import com.daedan.festabook.presentation.placeMap.waitingRegister.model.WaitingRegisterUiModel
 import com.daedan.festabook.presentation.placeMap.waitingRegister.model.WaitingRegisterUiState
 import com.daedan.festabook.presentation.placeMap.waitingRegister.model.toWaitingPlaceSummaryUiModel
 import dev.mokkery.answering.returns
@@ -102,7 +103,7 @@ class WaitingRegisterViewModelTest {
             // then
             val state = viewModel.uiState.value
             assertIs<WaitingRegisterUiState.Success>(state)
-            assertEquals(FAKE_PLACE_DETAIL.toWaitingPlaceSummaryUiModel(), state.placeSummary)
+            assertEquals(FAKE_PLACE_DETAIL.toWaitingPlaceSummaryUiModel(), state.waitingRegister.placeSummary)
         }
 
     @Test
@@ -134,7 +135,7 @@ class WaitingRegisterViewModelTest {
             // then
             val state = viewModel.uiState.value
             assertIs<WaitingRegisterUiState.Success>(state)
-            assertEquals(WaitingRegisterUiState.MIN_PARTY_SIZE + 1, state.partySize)
+            assertEquals(WaitingRegisterUiModel.MIN_PARTY_SIZE + 1, state.waitingRegister.partySize)
         }
 
     @Test
@@ -142,7 +143,7 @@ class WaitingRegisterViewModelTest {
         runTest {
             // given
             advanceUntilIdle()
-            repeat(WaitingRegisterUiState.MAX_PARTY_SIZE - WaitingRegisterUiState.MIN_PARTY_SIZE) {
+            repeat(WaitingRegisterUiModel.MAX_PARTY_SIZE - WaitingRegisterUiModel.MIN_PARTY_SIZE) {
                 viewModel.increasePartySize()
             }
 
@@ -152,7 +153,7 @@ class WaitingRegisterViewModelTest {
             // then
             val state = viewModel.uiState.value
             assertIs<WaitingRegisterUiState.Success>(state)
-            assertEquals(WaitingRegisterUiState.MAX_PARTY_SIZE, state.partySize)
+            assertEquals(WaitingRegisterUiModel.MAX_PARTY_SIZE, state.waitingRegister.partySize)
         }
 
     @Test
@@ -168,7 +169,7 @@ class WaitingRegisterViewModelTest {
             // then
             val state = viewModel.uiState.value
             assertIs<WaitingRegisterUiState.Success>(state)
-            assertEquals(WaitingRegisterUiState.MIN_PARTY_SIZE, state.partySize)
+            assertEquals(WaitingRegisterUiModel.MIN_PARTY_SIZE, state.waitingRegister.partySize)
         }
 
     @Test
@@ -183,7 +184,7 @@ class WaitingRegisterViewModelTest {
             // then
             val state = viewModel.uiState.value
             assertIs<WaitingRegisterUiState.Success>(state)
-            assertEquals(WaitingRegisterUiState.MIN_PARTY_SIZE, state.partySize)
+            assertEquals(WaitingRegisterUiModel.MIN_PARTY_SIZE, state.waitingRegister.partySize)
         }
 
     @Test
@@ -198,7 +199,7 @@ class WaitingRegisterViewModelTest {
             // then
             val state = viewModel.uiState.value
             assertIs<WaitingRegisterUiState.Success>(state)
-            assertTrue(state.isServiceAgreed)
+            assertTrue(state.waitingRegister.isServiceAgreed)
         }
 
     @Test
@@ -251,7 +252,7 @@ class WaitingRegisterViewModelTest {
             // then
             val state = viewModel.uiState.value
             assertIs<WaitingRegisterUiState.Success>(state)
-            assertEquals(false, state.isSubmitting)
+            assertEquals(false, state.waitingRegister.isSubmitting)
         }
 
     @Test
@@ -273,7 +274,7 @@ class WaitingRegisterViewModelTest {
             verifySuspend {
                 waitingRegisterInfoRepository.registerWaiting(
                     placeId = FAKE_PLACE_DETAIL.place.id,
-                    partySize = WaitingRegisterUiState.MIN_PARTY_SIZE + 2,
+                    partySize = WaitingRegisterUiModel.MIN_PARTY_SIZE + 2,
                 )
             }
         }
