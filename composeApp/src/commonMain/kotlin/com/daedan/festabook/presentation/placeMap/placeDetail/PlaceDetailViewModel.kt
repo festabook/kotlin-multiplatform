@@ -56,8 +56,11 @@ class PlaceDetailViewModel(
     private val _navigateToWaitingRegisterEvent = MutableSharedFlow<Long>(replay = 0, extraBufferCapacity = 1)
     val navigateToWaitingRegisterEvent: SharedFlow<Long> = _navigateToWaitingRegisterEvent.asSharedFlow()
 
-    private val _showDuplicateWaitingDialogEvent = MutableSharedFlow<Unit>(replay = 0, extraBufferCapacity = 1)
-    val showDuplicateWaitingDialogEvent: SharedFlow<Unit> = _showDuplicateWaitingDialogEvent.asSharedFlow()
+    private val _showDuplicateWaitingBottomSheetEvent = MutableSharedFlow<Long>(replay = 0, extraBufferCapacity = 1)
+    val showDuplicateWaitingBottomSheetEvent: SharedFlow<Long> = _showDuplicateWaitingBottomSheetEvent.asSharedFlow()
+
+    private val _cancelWaitingFailureEvent = MutableSharedFlow<Throwable>(replay = 0, extraBufferCapacity = 1)
+    val cancelWaitingFailureEvent: SharedFlow<Throwable> = _cancelWaitingFailureEvent.asSharedFlow()
 
     init {
         loadPlaceDetail(placeId)
@@ -139,10 +142,26 @@ class PlaceDetailViewModel(
                     if (myWaiting == null) {
                         _navigateToWaitingRegisterEvent.tryEmit(placeId)
                     } else {
-                        _showDuplicateWaitingDialogEvent.tryEmit(Unit)
+                        _showDuplicateWaitingBottomSheetEvent.tryEmit(myWaiting.waitingId)
                     }
                 }.onFailure {
                     _navigateToWaitingRegisterEvent.tryEmit(placeId)
+                }
+        }
+    }
+
+    fun cancelAndRegister(waitingId: Long) {
+        val current = _placeDetail.value
+        if (current !is PlaceDetailUiState.Success) return
+        val placeId = current.placeDetail.place.id
+
+        viewModelScope.launch {
+            myWaitingRepository
+                .cancelWaiting(waitingId)
+                .onSuccess {
+                    _navigateToWaitingRegisterEvent.tryEmit(placeId)
+                }.onFailure { throwable ->
+                    _cancelWaitingFailureEvent.tryEmit(throwable)
                 }
         }
     }

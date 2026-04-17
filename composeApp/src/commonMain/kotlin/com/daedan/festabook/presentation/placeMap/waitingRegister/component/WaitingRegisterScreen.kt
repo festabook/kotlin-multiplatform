@@ -26,6 +26,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -42,6 +44,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
+import com.daedan.festabook.presentation.NotificationPermissionManager
+import com.daedan.festabook.presentation.PermissionState
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
@@ -52,10 +56,12 @@ import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailU
 import com.daedan.festabook.presentation.placeMap.waitingRegister.WaitingRegisterViewModel
 import com.daedan.festabook.presentation.placeMap.waitingRegister.model.WaitingPlaceSummaryUiModel
 import com.daedan.festabook.presentation.placeMap.waitingRegister.model.WaitingRegisterUiState
+import com.daedan.festabook.presentation.setting.component.NotificationPermissionDialog
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import com.daedan.festabook.presentation.theme.festabookShapes
 import com.daedan.festabook.presentation.theme.festabookSpacing
+import kotlinx.coroutines.launch
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.btn_back_to_previous
 import festabookkmp.composeapp.generated.resources.content_description_waiting_party_size_decrease
@@ -77,6 +83,7 @@ private const val PRIVACY_AGREEMENT_URL =
 @Composable
 fun WaitingRegisterRoute(
     viewModel: WaitingRegisterViewModel,
+    notificationPermissionManager: NotificationPermissionManager,
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
     onShowSnackbar: (String) -> Unit,
@@ -85,6 +92,9 @@ fun WaitingRegisterRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val successMessage = stringResource(Res.string.waiting_register_success)
+    var showConfirmBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showPermissionDialog by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     // TODO 나의 웨이팅 화면으로 이동
     ObserveAsEvents(viewModel.registerSuccessEvent) {
@@ -104,10 +114,43 @@ fun WaitingRegisterRoute(
         onIncreasePartySize = viewModel::increasePartySize,
         onDecreasePartySize = viewModel::decreasePartySize,
         onToggleServiceAgreement = viewModel::toggleServiceAgreement,
-        onSubmit = viewModel::submitWaitingRegister,
+        onSubmitClick = { showConfirmBottomSheet = true },
         onShowErrorSnackbar = onShowErrorSnackbar,
         modifier = modifier,
     )
+
+    if (showConfirmBottomSheet) {
+        WaitingRegisterConfirmBottomSheet(
+            onConfirm = {
+                scope.launch {
+                    when (notificationPermissionManager.checkPermission()) {
+                        PermissionState.GRANTED -> {
+                            showConfirmBottomSheet = false
+                            viewModel.submitWaitingRegister()
+                        }
+
+                        PermissionState.NEED_RATIONALE -> {
+                            showPermissionDialog = true
+                        }
+
+                        PermissionState.DENIED -> {
+                            notificationPermissionManager.requestPermission()
+                        }
+                    }
+                }
+            },
+            onDismiss = { showConfirmBottomSheet = false },
+        )
+    }
+
+    if (showPermissionDialog) {
+        NotificationPermissionDialog(
+            onConfirm = {
+                showPermissionDialog = false
+                notificationPermissionManager.requestPermission()
+            },
+        )
+    }
 }
 
 @Composable
@@ -117,14 +160,13 @@ fun WaitingRegisterScreen(
     onIncreasePartySize: () -> Unit,
     onDecreasePartySize: () -> Unit,
     onToggleServiceAgreement: () -> Unit,
-    onSubmit: () -> Unit,
+    onSubmitClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
     val state = rememberNavigationEventState(NavigationEventInfo.None)
     val isSubmitting = (uiState as? WaitingRegisterUiState.Success)?.waitingRegister?.isSubmitting ?: false
-    var showConfirmBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     NavigationBackHandler(
         state = state,
@@ -200,22 +242,12 @@ fun WaitingRegisterScreen(
                     WaitingRegisterSubmitButton(
                         isEnabled = waitingRegister.canSubmit,
                         isSubmitting = waitingRegister.isSubmitting,
-                        onClick = { showConfirmBottomSheet = true },
+                        onClick = onSubmitClick,
                         modifier = Modifier.align(Alignment.BottomCenter),
                     )
                 }
             }
         }
-    }
-
-    if (showConfirmBottomSheet) {
-        WaitingRegisterConfirmBottomSheet(
-            onConfirm = {
-                showConfirmBottomSheet = false
-                onSubmit()
-            },
-            onDismiss = { showConfirmBottomSheet = false },
-        )
     }
 }
 

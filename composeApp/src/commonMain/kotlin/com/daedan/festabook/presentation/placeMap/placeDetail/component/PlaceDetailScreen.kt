@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -86,6 +87,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaceDetailRoute(
     viewModel: PlaceDetailViewModel,
@@ -96,23 +98,42 @@ fun PlaceDetailRoute(
 ) {
     val placeDetailUiState by viewModel.placeDetail.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
-    var showDuplicateDialog by remember { mutableStateOf(false) }
+    var duplicateWaitingId by remember { mutableStateOf<Long?>(null) }
+    var showCancelConfirmDialog by remember { mutableStateOf(false) }
 
     ObserveAsEvents(viewModel.navigateToWaitingRegisterEvent) { placeId ->
+        duplicateWaitingId = null
+        showCancelConfirmDialog = false
         onNavigateToWaitingRegister(placeId)
     }
-    ObserveAsEvents(viewModel.showDuplicateWaitingDialogEvent) {
-        showDuplicateDialog = true
+    ObserveAsEvents(viewModel.showDuplicateWaitingBottomSheetEvent) { waitingId ->
+        duplicateWaitingId = waitingId
+    }
+    ObserveAsEvents(viewModel.cancelWaitingFailureEvent) { throwable ->
+        showCancelConfirmDialog = false
+        onShowErrorSnackbar(throwable)
     }
 
-    if (showDuplicateDialog) {
-        WaitingDuplicateDialog(
-            onLaterClick = { showDuplicateDialog = false },
+    if (duplicateWaitingId != null && !showCancelConfirmDialog) {
+        WaitingDuplicateBottomSheet(
             onMyWaitingClick = {
-                showDuplicateDialog = false
                 // TODO 나의 웨이팅 화면으로 이동
             },
-            onDismissRequest = { showDuplicateDialog = false },
+            onRegisterNewClick = { showCancelConfirmDialog = true },
+            onDismiss = { duplicateWaitingId = null },
+        )
+    }
+
+    if (showCancelConfirmDialog) {
+        WaitingCancelConfirmDialog(
+            onDismissClick = {
+                duplicateWaitingId = null
+                showCancelConfirmDialog = false
+            },
+            onCancelClick = {
+                duplicateWaitingId?.let { viewModel.cancelAndRegister(it) }
+            },
+            onDismissRequest = { showCancelConfirmDialog = false },
         )
     }
 

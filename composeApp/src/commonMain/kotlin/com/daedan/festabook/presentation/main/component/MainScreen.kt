@@ -232,6 +232,7 @@ private fun FestabookNavHost(
         )
         placeMapNavGraph(
             innerPadding = innerPadding,
+            notificationPermissionManager = notificationPermissionManager,
             onBackToPreviousClick = { navigator.popBackStack() },
             onShowErrorSnackbar = snackbarManager::showError,
             onNavigateToAddWaitingInfo = { placeId ->

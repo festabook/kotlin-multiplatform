@@ -19,6 +19,7 @@ import androidx.navigation.toRoute
 import androidx.savedstate.SavedState
 import androidx.savedstate.read
 import androidx.savedstate.write
+import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.main.FestabookRoute
 import com.daedan.festabook.presentation.main.MainTabRoute
 import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
@@ -33,6 +34,7 @@ import kotlin.reflect.typeOf
 
 fun NavGraphBuilder.placeMapNavGraph(
     innerPadding: PaddingValues,
+    notificationPermissionManager: NotificationPermissionManager,
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
     onNavigateToAddWaitingInfo: (Long) -> Unit,
@@ -101,6 +103,7 @@ fun NavGraphBuilder.placeMapNavGraph(
 
         WaitingRegisterRoute(
             viewModel = viewModel,
+            notificationPermissionManager = notificationPermissionManager,
             modifier = Modifier.padding(innerPadding),
             onBackToPreviousClick = onBackToPreviousClick,
             onShowErrorSnackbar = onShowErrorSnackbar,
