@@ -124,9 +124,7 @@ fun MainScreen(
                                 placeMapViewModel.onMenuItemReClicked()
                             }
 
-                            else -> {
-                                Unit
-                            }
+                            else -> {}
                         }
                     },
                 )
@@ -201,7 +199,9 @@ private fun FestabookNavHost(
             homeViewModel = homeViewModel,
             mainViewModel = mainViewModel,
             onNavigateToExplore = { festabookNavigator.navigate(FestabookRoute.Explore) },
-            onNavigateToFestating = { festabookNavigator.navigate(FestabookRoute.Festating) },
+            onNavigateToFestating = { festivalId ->
+                festabookNavigator.navigate(FestabookRoute.Festating(festivalId))
+            },
             onSubscriptionConfirm = {
                 settingViewModel.notificationAllowClick()
                 mainViewModel.declineAlert()

@@ -43,8 +43,8 @@ class HomeViewModel(
 
             val result = festivalRepository.getFestivalInfo()
             result
-                .onSuccess { festival ->
-                    _festivalUiState.value = FestivalUiState.Success(festival.toUiModel())
+                .onSuccess { organization ->
+                    _festivalUiState.value = FestivalUiState.Success(organization.toUiModel())
                 }.onFailure {
                     _festivalUiState.value = FestivalUiState.Error(it)
                 }

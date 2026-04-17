@@ -54,7 +54,7 @@ fun HomeScreen(
     homeViewModel: HomeViewModel,
     settingViewModel: SettingViewModel,
     notificationPermissionManager: NotificationPermissionManager,
-    onNavigateToFestating: () -> Unit,
+    onNavigateToFestating: (festivalId: Long) -> Unit,
     onNavigateToExplore: () -> Unit,
     onShowSnackBar: (String) -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
@@ -107,7 +107,7 @@ fun HomeScreen(
                 lineupUiState = lineupUiState,
                 onNavigateToExplore = onNavigateToExplore,
                 onNavigateToSchedule = homeViewModel::navigateToScheduleClick,
-                onFestatingClick = onNavigateToFestating,
+                onFestatingClick = { festivalId -> onNavigateToFestating(festivalId) },
                 modifier = modifier,
             )
         }
@@ -120,7 +120,7 @@ private fun HomeContent(
     lineupUiState: LineupUiState,
     onNavigateToExplore: () -> Unit,
     onNavigateToSchedule: () -> Unit,
-    onFestatingClick: () -> Unit,
+    onFestatingClick: (festivalId: Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val universityName = festivalUiState.organization.organizationName
@@ -192,7 +192,7 @@ private fun HomeContent(
                 // TODO if문 묶기
                 item {
                     FestatingPoster(
-                        onClick = onFestatingClick,
+                        onClick = { onFestatingClick(festivalUiState.organization.id) },
                         modifier =
                             Modifier
                                 .fillMaxSize()

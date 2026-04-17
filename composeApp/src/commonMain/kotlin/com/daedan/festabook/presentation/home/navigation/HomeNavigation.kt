@@ -21,7 +21,7 @@ fun NavGraphBuilder.homeNavGraph(
     onShowErrorSnackbar: (Throwable) -> Unit,
     onSubscriptionConfirm: () -> Unit,
     onNavigateToExplore: () -> Unit,
-    onNavigateToFestating: () -> Unit,
+    onNavigateToFestating: (festivalId: Long) -> Unit,
 ) {
     composable<MainTabRoute.Home> {
         val isFirstVisit by mainViewModel.isFirstVisit.collectAsStateWithLifecycle()

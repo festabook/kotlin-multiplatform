@@ -11,8 +11,15 @@ import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewState
 
 @Composable
-fun FestatingScreen(modifier: Modifier = Modifier) {
-    val state = rememberWebViewState(BuildKonfig.FESTA_TING_URL)
+fun FestatingScreen(
+    festivalId: Long,
+    modifier: Modifier = Modifier,
+) {
+    val state =
+        rememberWebViewState(
+            url = BuildKonfig.FESTA_TING_URL,
+            additionalHttpHeaders = mapOf("festivalId" to festivalId.toString()),
+        )
     val navigator = rememberWebViewNavigator()
 
     Scaffold(modifier = modifier) { innerPadding ->

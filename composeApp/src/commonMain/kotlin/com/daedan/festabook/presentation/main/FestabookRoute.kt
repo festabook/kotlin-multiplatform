@@ -22,7 +22,9 @@ sealed interface FestabookRoute {
     data object Main : FestabookRoute
 
     @Serializable
-    data object Festating : FestabookRoute
+    data class Festating(
+        val festivalId: Long,
+    ) : FestabookRoute
 }
 
 @Serializable
