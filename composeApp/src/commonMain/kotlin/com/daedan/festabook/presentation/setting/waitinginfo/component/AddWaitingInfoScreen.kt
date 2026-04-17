@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Phone
@@ -19,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -83,6 +85,7 @@ fun AddWaitingInfoRoute(
     val phoneNumber by viewModel.phoneNumber.collectAsStateWithLifecycle()
     val isTermsAgreed by viewModel.isTermsAgreed.collectAsStateWithLifecycle()
     val isSaveEnabled by viewModel.isSaveEnabled.collectAsStateWithLifecycle()
+    val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
     val saveSuccessMessage = stringResource(Res.string.setting_waiting_info_save_success)
 
     ObserveAsEvents(flow = viewModel.saveSuccessEvent) {
@@ -110,6 +113,7 @@ fun AddWaitingInfoRoute(
                 phoneNumber = phoneNumber,
                 isTermsAgreed = isTermsAgreed,
                 isSaveEnabled = isSaveEnabled,
+                isSaving = isSaving,
                 onPhoneNumberChange = viewModel::updatePhoneNumber,
                 onTermsAgreedChange = viewModel::setTermsAgreed,
                 onSaveClick = viewModel::saveWaitingInfo,
@@ -125,6 +129,7 @@ fun AddWaitingInfoScreen(
     phoneNumber: String,
     isTermsAgreed: Boolean,
     isSaveEnabled: Boolean,
+    isSaving: Boolean,
     onPhoneNumberChange: (String) -> Unit,
     onTermsAgreedChange: (Boolean) -> Unit,
     onSaveClick: (String) -> Unit,
@@ -219,6 +224,7 @@ fun AddWaitingInfoScreen(
                 ConfirmButton(
                     phoneNumber = phoneNumber,
                     isSaveEnabled = isSaveEnabled,
+                    isSaving = isSaving,
                     onSaveClick = onSaveClick,
                 )
             }
@@ -330,6 +336,7 @@ private fun WaitingInfoAddTerms(
 private fun ConfirmButton(
     phoneNumber: String,
     isSaveEnabled: Boolean,
+    isSaving: Boolean,
     onSaveClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -349,11 +356,19 @@ private fun ConfirmButton(
                 disabledContentColor = FestabookColor.gray400,
             ),
     ) {
-        Text(
-            text = stringResource(Res.string.setting_waiting_info_add_button),
-            style = FestabookTypography.displaySmall,
-            modifier = Modifier.padding(vertical = festabookSpacing.paddingBody2),
-        )
+        if (isSaving) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(28.dp),
+                color = FestabookColor.white,
+                strokeWidth = 4.dp,
+            )
+        } else {
+            Text(
+                text = stringResource(Res.string.setting_waiting_info_add_button),
+                style = FestabookTypography.displaySmall,
+                modifier = Modifier.padding(vertical = festabookSpacing.paddingBody2),
+            )
+        }
     }
 }
 
@@ -364,6 +379,7 @@ private fun AddWaitingInfoScreenEmptyPreview() {
         phoneNumber = "",
         isTermsAgreed = false,
         isSaveEnabled = false,
+        isSaving = false,
         onPhoneNumberChange = {},
         onTermsAgreedChange = {},
         onSaveClick = {},
@@ -378,6 +394,7 @@ private fun AddWaitingInfoScreenFilledPreview() {
         phoneNumber = "010-1234-5678",
         isTermsAgreed = true,
         isSaveEnabled = true,
+        isSaving = false,
         onPhoneNumberChange = {},
         onTermsAgreedChange = {},
         onSaveClick = {},

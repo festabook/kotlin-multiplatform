@@ -86,6 +86,7 @@ fun WaitingRegisterRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val successMessage = stringResource(Res.string.waiting_register_success)
 
+    // TODO 나의 웨이팅 화면으로 이동
     ObserveAsEvents(viewModel.registerSuccessEvent) {
         onShowSnackbar(successMessage)
         onBackToPreviousClick()
@@ -432,9 +433,9 @@ private fun WaitingRegisterSubmitButton(
     ) {
         if (isSubmitting) {
             CircularProgressIndicator(
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(28.dp),
                 color = FestabookColor.white,
-                strokeWidth = 2.dp,
+                strokeWidth = 4.dp,
             )
         } else {
             Text(
