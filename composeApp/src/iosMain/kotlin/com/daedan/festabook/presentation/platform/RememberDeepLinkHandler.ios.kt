@@ -7,8 +7,8 @@ import androidx.compose.runtime.rememberUpdatedState
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-actual fun RememberDeepLinkHandler(onNotificationClicked: (announcementId: Long, festivalIdChanged: Boolean) -> Unit) {
-    val currentOnNotificationClicked by rememberUpdatedState(onNotificationClicked)
+actual fun RememberDeepLinkHandler(onNotificationClick: (announcementId: Long, festivalIdChanged: Boolean) -> Unit) {
+    val currentOnNotificationClicked by rememberUpdatedState(onNotificationClick)
 
     LaunchedEffect(Unit) {
         PendingFcmNotification.pending.collectLatest { data ->

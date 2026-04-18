@@ -11,10 +11,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.util.Consumer
 
 @Composable
-actual fun RememberDeepLinkHandler(onNotificationClicked: (announcementId: Long, festivalIdChanged: Boolean) -> Unit) {
+actual fun RememberDeepLinkHandler(onNotificationClick: (announcementId: Long, festivalIdChanged: Boolean) -> Unit) {
     val context = LocalContext.current
     val activity = context as? ComponentActivity ?: return
-    val currentOnNotificationClicked by rememberUpdatedState(onNotificationClicked)
+    val currentOnNotificationClicked by rememberUpdatedState(onNotificationClick)
 
     LaunchedEffect(Unit) {
         activity.intent.handleDeepLink(currentOnNotificationClicked)
