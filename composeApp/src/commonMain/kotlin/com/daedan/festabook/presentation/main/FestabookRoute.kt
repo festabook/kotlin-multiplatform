@@ -16,7 +16,9 @@ sealed interface FestabookRoute {
     data object Explore : FestabookRoute
 
     @Serializable
-    data object Main : FestabookRoute
+    data class Main(
+        val pendingAnnouncementId: Long? = null,
+    ) : FestabookRoute
 
     @Serializable
     data object AddWaitingInfo : FestabookRoute

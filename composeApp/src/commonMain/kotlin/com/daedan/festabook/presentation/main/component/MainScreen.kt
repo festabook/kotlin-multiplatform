@@ -7,6 +7,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -14,6 +15,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.navigation.compose.NavHost
+import androidx.navigation.navOptions
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
@@ -40,8 +42,6 @@ import com.daedan.festabook.presentation.placeMap.component.PlaceMapRoute
 import com.daedan.festabook.presentation.placeMap.intent.event.SelectEvent
 import com.daedan.festabook.presentation.placeMap.navigation.placeMapNavGraph
 import com.daedan.festabook.presentation.placeMap.platform.LocationSource
-import com.daedan.festabook.presentation.platform.DeepLinkKeys
-import com.daedan.festabook.presentation.platform.Intent
 import com.daedan.festabook.presentation.platform.RememberDeepLinkHandler
 import com.daedan.festabook.presentation.schedule.ScheduleViewModel
 import com.daedan.festabook.presentation.schedule.navigation.scheduleNavGraph
@@ -62,6 +62,7 @@ fun MainScreen(
     locationSource: LocationSource,
     onAppFinish: () -> Unit,
     festabookNavigator: FestabookNavigator,
+    pendingAnnouncementId: Long?,
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
     scheduleViewModel: ScheduleViewModel,
@@ -107,8 +108,23 @@ fun MainScreen(
         }
     }
 
-    RememberDeepLinkHandler { intent ->
-        handleNavigation(intent, newsViewModel, mainViewModel)
+    LaunchedEffect(pendingAnnouncementId) {
+        pendingAnnouncementId?.let { announcementId ->
+            navigateToNewsScreen(newsViewModel, mainViewModel, announcementId)
+        }
+    }
+
+    RememberDeepLinkHandler { announcementId, festivalIdChanged ->
+        if (festivalIdChanged) {
+            festabookNavigator.navigate(
+                FestabookRoute.Main(pendingAnnouncementId = announcementId),
+                navOptions {
+                    popUpTo<FestabookRoute.Main> { inclusive = true }
+                },
+            )
+        } else {
+            navigateToNewsScreen(newsViewModel, mainViewModel, announcementId)
+        }
     }
     Scaffold(
         snackbarHost = {
@@ -191,6 +207,15 @@ fun MainScreen(
     }
 }
 
+private fun navigateToNewsScreen(
+    newsViewModel: NewsViewModel,
+    mainViewModel: MainViewModel,
+    id: Long,
+) {
+    newsViewModel.expandNotice(id)
+    mainViewModel.navigateToNews()
+}
+
 @Composable
 private fun FestabookNavHost(
     innerPadding: PaddingValues,
@@ -252,16 +277,4 @@ private fun FestabookNavHost(
             onBackClick = { navigator.popBackStack() },
         )
     }
-}
-
-private fun handleNavigation(
-    intent: Intent,
-    newsViewModel: NewsViewModel,
-    mainViewModel: MainViewModel,
-) {
-    val noticeIdToExpand =
-        intent.getLongExtra(DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND, DeepLinkKeys.INITIALIZED_ID)
-    if (noticeIdToExpand != DeepLinkKeys.INITIALIZED_ID) newsViewModel.expandNotice(noticeIdToExpand)
-    val canNavigateToNews = intent.getBooleanExtra(DeepLinkKeys.KEY_CAN_NAVIGATE_TO_NEWS, false)
-    if (canNavigateToNews) mainViewModel.navigateToNews()
 }

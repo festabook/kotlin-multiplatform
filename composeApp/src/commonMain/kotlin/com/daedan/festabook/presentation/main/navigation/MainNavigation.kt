@@ -2,6 +2,7 @@ package com.daedan.festabook.presentation.main.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.daedan.festabook.di.FestabookAppGraph
 import com.daedan.festabook.presentation.main.FestabookNavigator
 import com.daedan.festabook.presentation.main.FestabookRoute
@@ -15,7 +16,8 @@ fun NavGraphBuilder.mainNavGraph(
     locationSource: LocationSource,
     festabookNavigator: FestabookNavigator,
 ) {
-    composable<FestabookRoute.Main> {
+    composable<FestabookRoute.Main> { backStackEntry ->
+        val mainRoute = backStackEntry.toRoute<FestabookRoute.Main>()
         val mainBackEntry =
             festabookNavigator.navController.getBackStackEntry<FestabookRoute.Main>()
         MainScreen(
@@ -23,6 +25,7 @@ fun NavGraphBuilder.mainNavGraph(
             locationSource = locationSource,
             onAppFinish = onAppFinish,
             festabookNavigator = festabookNavigator,
+            pendingAnnouncementId = mainRoute.pendingAnnouncementId,
             homeViewModel = metroViewModel(mainBackEntry),
             scheduleViewModel = metroViewModel(mainBackEntry),
             placeMapViewModel = metroViewModel(mainBackEntry),

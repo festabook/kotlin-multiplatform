@@ -10,24 +10,32 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.util.Consumer
 
-actual typealias Intent = Intent
-
 @Composable
-actual fun RememberDeepLinkHandler(onDeepLink: (Intent) -> Unit) {
+actual fun RememberDeepLinkHandler(onNotificationClick: (announcementId: Long, festivalIdChanged: Boolean) -> Unit) {
     val context = LocalContext.current
     val activity = context as? ComponentActivity ?: return
-    val currentOnDeepLink by rememberUpdatedState(onDeepLink)
+    val currentOnNotificationClicked by rememberUpdatedState(onNotificationClick)
 
     LaunchedEffect(Unit) {
-        currentOnDeepLink(activity.intent)
+        activity.intent.handleDeepLink(currentOnNotificationClicked)
     }
 
     DisposableEffect(activity) {
         val listener =
             Consumer<Intent> { intent ->
-                currentOnDeepLink(intent)
+                intent.handleDeepLink(currentOnNotificationClicked)
             }
         activity.addOnNewIntentListener(listener)
         onDispose { activity.removeOnNewIntentListener(listener) }
+    }
+}
+
+private fun Intent.handleDeepLink(onNotificationClicked: (announcementId: Long, festivalIdChanged: Boolean) -> Unit) {
+    val announcementId =
+        getLongExtra(DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND, DeepLinkKeys.INITIALIZED_ID)
+    if (announcementId != DeepLinkKeys.INITIALIZED_ID) {
+        onNotificationClicked(announcementId, false)
+        removeExtra(DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND)
+        removeExtra(DeepLinkKeys.KEY_CAN_NAVIGATE_TO_NEWS)
     }
 }
