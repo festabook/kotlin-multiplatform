@@ -27,6 +27,7 @@ fun NavGraphBuilder.mainNavGraph(
             scheduleViewModel = metroViewModel(mainBackEntry),
             placeMapViewModel = metroViewModel(mainBackEntry),
             settingViewModel = metroViewModel(mainBackEntry),
+            waitingInfoViewModel = metroViewModel(mainBackEntry),
             mainViewModel = metroViewModel(mainBackEntry),
             newsViewModel = metroViewModel(mainBackEntry),
         )

@@ -104,11 +104,27 @@
     <string name="setting_notice_detail">앱 알림 세부 설정</string>
     <string name="setting_app_info_title">앱 정보</string>
     <string name="setting_app_version">앱 버전</string>
-    <string name="setting_service_policy">약관 및 정책</string>
+    <string name="setting_service_policy">서비스 이용약관</string>
+    <string name="setting_personal_information_policy">개인정보 처리방침</string>
     <string name="setting_contact_us">개발자 문의하기</string>
     <string name="setting_contact_us_email_subject">개발자 문의하기</string>
     <string name="setting_contact_us_email">festabook2025@gmail.com</string>
     <string name="setting_notice_enabled">알림이 설정되었습니다</string>
+    <string name="setting_waiting_info_section_title">등록 정보</string>
+    <string name="setting_waiting_info_phone_number">전화번호</string>
+    <string name="setting_waiting_info_not_registered">미등록</string>
+    <string name="setting_waiting_info_title">전화번호</string>
+    <string name="setting_waiting_info_back">뒤로가기</string>
+    <string name="setting_waiting_info_add_title">전화번호 등록</string>
+    <string name="setting_waiting_info_add_headline">1번의 전화번호 등록으로\n바로 웨이팅을 시작할 수 있어요</string>
+    <string name="setting_waiting_info_add_label">전화번호</string>
+    <string name="setting_waiting_info_add_description">입력하신 전화번호를 바탕으로 웨이팅이 진행됩니다.</string>
+    <string name="setting_waiting_info_add_hint">010-0000-0000</string>
+    <string name="setting_waiting_info_add_phone_icon">전화번호 아이콘</string>
+    <string name="setting_waiting_info_add_terms_title">약관 동의</string>
+    <string name="setting_waiting_info_add_terms_item">(필수) 개인 정보 수집 및 이용 동의</string>
+    <string name="setting_waiting_info_add_button">전화번호 등록하기</string>
+    <string name="setting_waiting_info_save_success">전화번호가 등록되었습니다</string>
 
     <!-- icon description -->
     <string name="iv_speaker">공지 아이콘</string>

@@ -1,9 +1,13 @@
 package com.daedan.festabook.presentation.placeMap.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
@@ -26,10 +30,14 @@ import kotlinx.serialization.json.Json
 import kotlin.reflect.typeOf
 
 fun NavGraphBuilder.placeMapNavGraph(
+    innerPadding: PaddingValues,
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
 ) {
-    composable<MainTabRoute.PlaceMap> {
+    composable<MainTabRoute.PlaceMap>(
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+    ) {
     }
 
     composable<FestabookRoute.PlaceDetail>(
@@ -56,10 +64,12 @@ fun NavGraphBuilder.placeMapNavGraph(
 
         PlaceDetailRoute(
             modifier =
-                Modifier.graphicsLayer(
-                    compositingStrategy = CompositingStrategy.Offscreen,
-                    clip = true,
-                ),
+                Modifier
+                    .padding(innerPadding)
+                    .graphicsLayer(
+                        compositingStrategy = CompositingStrategy.Offscreen,
+                        clip = true,
+                    ),
             viewModel = viewModel,
             onBackToPreviousClick = onBackToPreviousClick,
             onShowErrorSnackbar = onShowErrorSnackbar,

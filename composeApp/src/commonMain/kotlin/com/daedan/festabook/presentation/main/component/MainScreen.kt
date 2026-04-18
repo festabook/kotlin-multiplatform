@@ -1,7 +1,7 @@
 package com.daedan.festabook.presentation.main.component
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -49,6 +49,7 @@ import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.setting.component.platform.rememberNotificationPermissionManager
 import com.daedan.festabook.presentation.setting.component.platform.rememberOpenAppSettings
 import com.daedan.festabook.presentation.setting.navigation.settingNavGraph
+import com.daedan.festabook.presentation.setting.waitinginfo.WaitingInfoViewModel
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.back_press_exit_message
 import org.jetbrains.compose.resources.stringResource
@@ -67,6 +68,7 @@ fun MainScreen(
     placeMapViewModel: PlaceMapViewModel,
     newsViewModel: NewsViewModel,
     settingViewModel: SettingViewModel,
+    waitingInfoViewModel: WaitingInfoViewModel,
     modifier: Modifier = Modifier,
 ) {
     val mainNavigator = rememberFestabookNavigator(MainTabRoute.Home)
@@ -110,7 +112,10 @@ fun MainScreen(
     }
     Scaffold(
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState) { data ->
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.imePadding(),
+            ) { data ->
                 FestabookSnackbar(data)
             }
         },
@@ -171,13 +176,14 @@ fun MainScreen(
             },
         )
         FestabookNavHost(
-            modifier = Modifier.padding(innerPadding),
+            innerPadding = innerPadding,
             festabookNavigator = festabookNavigator,
             navigator = mainNavigator,
             mainViewModel = mainViewModel,
             homeViewModel = homeViewModel,
             scheduleViewModel = scheduleViewModel,
             settingViewModel = settingViewModel,
+            waitingInfoViewModel = waitingInfoViewModel,
             newsViewModel = newsViewModel,
             notificationPermissionManager = notificationPermissionManager,
             snackbarManager = snackbarManager,
@@ -187,6 +193,7 @@ fun MainScreen(
 
 @Composable
 private fun FestabookNavHost(
+    innerPadding: PaddingValues,
     navigator: FestabookNavigator,
     festabookNavigator: FestabookNavigator,
     mainViewModel: MainViewModel,
@@ -194,6 +201,7 @@ private fun FestabookNavHost(
     scheduleViewModel: ScheduleViewModel,
     newsViewModel: NewsViewModel,
     settingViewModel: SettingViewModel,
+    waitingInfoViewModel: WaitingInfoViewModel,
     notificationPermissionManager: NotificationPermissionManager,
     snackbarManager: SnackbarManager,
     modifier: Modifier = Modifier,
@@ -202,10 +210,9 @@ private fun FestabookNavHost(
         modifier = modifier,
         startDestination = navigator.startRoute,
         navController = navigator.navController,
-        enterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None },
     ) {
         homeNavGraph(
+            innerPadding = innerPadding,
             viewModel = homeViewModel,
             mainViewModel = mainViewModel,
             onNavigateToExplore = { festabookNavigator.navigate(FestabookRoute.Explore) },
@@ -219,23 +226,30 @@ private fun FestabookNavHost(
             notificationPermissionManager = notificationPermissionManager,
         )
         scheduleNavGraph(
+            innerPadding = innerPadding,
             viewModel = scheduleViewModel,
             onShowErrorSnackbar = snackbarManager::showError,
         )
         placeMapNavGraph(
+            innerPadding = innerPadding,
             onBackToPreviousClick = { navigator.popBackStack() },
             onShowErrorSnackbar = snackbarManager::showError,
         )
         newsNavGraph(
+            innerPadding = innerPadding,
             viewModel = newsViewModel,
             onShowErrorSnackbar = snackbarManager::showError,
         )
         settingNavGraph(
+            innerPadding = innerPadding,
             homeViewModel = homeViewModel,
             settingViewModel = settingViewModel,
+            waitingInfoViewModel = waitingInfoViewModel,
             notificationPermissionManager = notificationPermissionManager,
             onShowSnackBar = snackbarManager::show,
             onShowErrorSnackBar = snackbarManager::showError,
+            onNavigateToAddWaitingInfo = { navigator.navigate(FestabookRoute.AddWaitingInfo) },
+            onBackClick = { navigator.popBackStack() },
         )
     }
 }
