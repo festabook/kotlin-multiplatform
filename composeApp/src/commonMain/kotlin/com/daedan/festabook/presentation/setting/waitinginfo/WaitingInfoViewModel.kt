@@ -44,7 +44,7 @@ class WaitingInfoViewModel(
             _isTermsAgreed,
             isSaving,
         ) { phone, terms, saving ->
-            phone.count { it.isDigit() } >= 9 && terms && !saving
+            phone.count { it.isDigit() } >= MIN_DIGIT_COUNT && terms && !saving
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
@@ -58,7 +58,7 @@ class WaitingInfoViewModel(
     val errorEvent: SharedFlow<Throwable> = _errorEvent.asSharedFlow()
 
     fun updatePhoneNumber(input: String) {
-        if (input.count() > 11) return
+        if (input.count() > MAX_DIGIT_COUNT) return
         _phoneNumber.value = input.filter { it.isDigit() }
     }
 
@@ -111,5 +111,10 @@ class WaitingInfoViewModel(
                     _errorEvent.emit(throwable)
                 }
         }
+    }
+
+    companion object {
+        private const val MAX_DIGIT_COUNT = 11
+        private const val MIN_DIGIT_COUNT = 9
     }
 }
