@@ -1,9 +1,7 @@
 package com.daedan.festabook.presentation.placeMap.model
 
 import com.daedan.festabook.domain.model.Place
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class PlaceUiModel(
     val id: Long,
     val imageUrl: String?,

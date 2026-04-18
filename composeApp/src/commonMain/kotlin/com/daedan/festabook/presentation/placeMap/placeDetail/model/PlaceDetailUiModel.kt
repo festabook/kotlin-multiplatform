@@ -7,9 +7,7 @@ import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
 import com.daedan.festabook.presentation.placeMap.model.toUiModel
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.format.char
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class PlaceDetailUiModel(
     val place: PlaceUiModel,
     val notices: List<NoticeUiModel>,
@@ -17,13 +15,8 @@ data class PlaceDetailUiModel(
     val startTime: String?,
     val endTime: String?,
     val images: List<ImageUiModel>,
-) {
-    val featuredImage: String?
-        get() = images.firstOrNull()?.url
-
-    val operatingHours: String
-        get() = "$startTime ~ $endTime"
-}
+    val isWaitingActive: Boolean = false,
+)
 
 fun PlaceDetail.toUiModel() =
     PlaceDetailUiModel(
@@ -33,6 +26,7 @@ fun PlaceDetail.toUiModel() =
         startTime = startTime.toFormattedString(),
         endTime = endTime.toFormattedString(),
         images = sortedImages.map { it.toUiModel() },
+        isWaitingActive = isWaitingActive,
     )
 
 private fun LocalTime?.toFormattedString(): String? = this?.let { timeFormat.format(it) }

@@ -1,13 +1,16 @@
 package com.daedan.festabook.placeMap.placeDetail
 
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
+import com.daedan.festabook.domain.repository.WaitingRegisterInfoRepository
 import com.daedan.festabook.news.FAKE_NOTICES
 import com.daedan.festabook.placeMap.FAKE_PLACES
 import com.daedan.festabook.presentation.news.notice.model.toUiModel
-import com.daedan.festabook.presentation.placeMap.model.toUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.PlaceDetailViewModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiState
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingStatusUiState
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingTeamUiState
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.toUiModel
+import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
@@ -31,18 +34,26 @@ import kotlin.test.fail
 class PlaceDetailViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var placeDetailRepository: PlaceDetailRepository
+    private lateinit var waitingRegisterInfoRepository: WaitingRegisterInfoRepository
     private lateinit var placeDetailViewModel: PlaceDetailViewModel
 
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         placeDetailRepository = mock()
+        waitingRegisterInfoRepository = mock()
         everySuspend { placeDetailRepository.getPlaceDetail(any()) } returns
             Result.success(
                 FAKE_PLACE_DETAIL,
             )
+        everySuspend { waitingRegisterInfoRepository.getPlaceWaiting(any()) } returns
+            Result.success(FAKE_PLACE_WAITING)
         placeDetailViewModel =
-            PlaceDetailViewModel(placeDetailRepository, FAKE_PLACES.first().toUiModel(), null)
+            PlaceDetailViewModel(
+                placeDetailRepository,
+                waitingRegisterInfoRepository,
+                FAKE_PLACES.first().id,
+            )
     }
 
     @AfterTest
@@ -64,10 +75,15 @@ class PlaceDetailViewModelTest {
             advanceUntilIdle()
 
             // then
-            val expected = FAKE_PLACE_DETAIL.toUiModel()
+            val expected =
+                PlaceDetailUiState.Success(
+                    placeDetail = FAKE_PLACE_DETAIL.toUiModel(),
+                    waitingTeam = WaitingTeamUiState.Success(totalTeams = FAKE_PLACE_WAITING.totalWaitingTeams),
+                    waitingStatus = WaitingStatusUiState.Active(estimatedMinutes = FAKE_PLACE_WAITING.estimatedWaitTime),
+                )
             val actual = placeDetailViewModel.placeDetail.value
             verifySuspend { placeDetailRepository.getPlaceDetail(FAKE_PLACES.first().id) }
-            assertEquals(PlaceDetailUiState.Success(expected), actual)
+            assertEquals(expected, actual)
         }
 
     @Test
@@ -94,23 +110,23 @@ class PlaceDetailViewModelTest {
         }
 
     @Test
-    fun `처음 뷰모델 생성 시에 플레이스 상세 정보가 있다면 서버에 요청하지 않는다`() =
+    fun `뷰모델 생성 시마다 플레이스를 로드한다`() =
         runTest {
             // given
             val expected = FAKE_PLACE_DETAIL.toUiModel()
-            val placeDetailRepository = mock<PlaceDetailRepository>()
+            val placeDetailRepository = mock<PlaceDetailRepository>(MockMode.autofill)
 
             // when
             placeDetailViewModel =
-                PlaceDetailViewModel(placeDetailRepository, null, expected)
+                PlaceDetailViewModel(
+                    placeDetailRepository,
+                    waitingRegisterInfoRepository,
+                    expected.place.id,
+                )
+            advanceUntilIdle()
 
             // then
-            verifySuspend(VerifyMode.exactly(0)) { placeDetailRepository.getPlaceDetail(any()) }
-            val actual = placeDetailViewModel.placeDetail.value
-            assertEquals(
-                PlaceDetailUiState.Success(expected),
-                actual,
-            )
+            verifySuspend(VerifyMode.exactly(1)) { placeDetailRepository.getPlaceDetail(any()) }
         }
 
     @Test

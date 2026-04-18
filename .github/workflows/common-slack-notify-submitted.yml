@@ -13,7 +13,7 @@ concurrency:
 # 리뷰 완료 알림
 jobs:
   notify:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
