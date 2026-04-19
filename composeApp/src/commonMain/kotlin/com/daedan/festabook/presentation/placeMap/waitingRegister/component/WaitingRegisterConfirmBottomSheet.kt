@@ -75,7 +75,7 @@ fun WaitingRegisterConfirmBottomSheet(
                 contentDescription = null,
                 modifier =
                     Modifier
-                        .padding(vertical = 40.dp)
+                        .padding(vertical = festabookSpacing.paddingTitleHorizontal)
                         .size(100.dp),
             )
 
@@ -86,7 +86,7 @@ fun WaitingRegisterConfirmBottomSheet(
                 textAlign = TextAlign.Center,
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(festabookSpacing.paddingBody2))
 
             Text(
                 text = stringResource(Res.string.waiting_register_confirm_description),
