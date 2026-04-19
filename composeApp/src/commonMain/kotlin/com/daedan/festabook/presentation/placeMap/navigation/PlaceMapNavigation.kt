@@ -56,10 +56,10 @@ fun NavGraphBuilder.placeMapNavGraph(
                 typeOf<PlaceUiModel?>() to defaultNavType<PlaceUiModel?>(),
             ),
         enterTransition = {
-            slideInVertically(initialOffsetY = { it / 10 }) + fadeIn()
+            slideInVertically(initialOffsetY = { it / INITIAL_OFFSET_CONSTANT }) + fadeIn()
         },
         exitTransition = {
-            slideOutVertically(targetOffsetY = { it / 10 }) + fadeOut()
+            slideOutVertically(targetOffsetY = { it / INITIAL_OFFSET_CONSTANT }) + fadeOut()
         },
     ) { backStackEntry ->
         val route = backStackEntry.toRoute<FestabookRoute.PlaceDetail>()
@@ -115,6 +115,8 @@ fun NavGraphBuilder.placeMapNavGraph(
         )
     }
 }
+
+private const val INITIAL_OFFSET_CONSTANT = 10
 
 private inline fun <reified T> defaultNavType() =
     object : NavType<T>(isNullableAllowed = true) {
