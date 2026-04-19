@@ -1,5 +1,8 @@
 package com.daedan.festabook.presentation.waiting.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.daedan.festabook.presentation.main.FestabookRoute
@@ -8,7 +11,9 @@ import com.daedan.festabook.presentation.waiting.component.MyWaitingRoute
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 fun NavGraphBuilder.myWaitingNavGraph(
+    innerPadding: PaddingValues,
     onBack: () -> Unit,
+    onNavigateToPlaceDetail: (Long) -> Unit,
     onShowSnackbar: (String) -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
 ) {
@@ -17,6 +22,7 @@ fun NavGraphBuilder.myWaitingNavGraph(
         MyWaitingRoute(
             viewModel = viewModel,
             onBack = onBack,
+            onNavigateToPlaceDetail = onNavigateToPlaceDetail,
             onShowSnackbar = onShowSnackbar,
             onShowErrorSnackbar = onShowErrorSnackbar,
         )

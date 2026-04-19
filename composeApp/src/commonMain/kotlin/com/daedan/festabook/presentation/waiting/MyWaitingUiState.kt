@@ -1,7 +1,7 @@
 package com.daedan.festabook.presentation.waiting
 
 import com.daedan.festabook.domain.model.WaitingStatus
-import com.daedan.festabook.presentation.placeMap.model.PlaceCategoryUiModel
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 
 sealed interface MyWaitingUiState {
     data object Loading : MyWaitingUiState
@@ -11,7 +11,7 @@ sealed interface MyWaitingUiState {
     data class Success(
         val waitingId: Long,
         val placeId: Long?,
-        val place: MyWaitingPlaceUiModel?,
+        val placeDetail: PlaceDetailUiModel?,
         val order: Int,
         val partySize: Int,
         val phoneNumber: String,
@@ -24,12 +24,3 @@ sealed interface MyWaitingUiState {
 
     data class Error(val throwable: Throwable) : MyWaitingUiState
 }
-
-data class MyWaitingPlaceUiModel(
-    val title: String,
-    val category: PlaceCategoryUiModel,
-    val imageUrl: String?,
-    val location: String?,
-    val host: String?,
-    val operatingTime: String?,
-)

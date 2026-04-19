@@ -301,9 +301,13 @@ private fun FestabookNavHost(
             onBackClick = { navigator.popBackStack() },
         )
         myWaitingNavGraph(
+            innerPadding = innerPadding,
             onBack = {
                 homeViewModel.loadWaitingBar()
                 navigator.popBackStack()
+            },
+            onNavigateToPlaceDetail = { placeId ->
+                navigator.navigate(FestabookRoute.PlaceDetail(placeId))
             },
             onShowSnackbar = snackbarManager::show,
             onShowErrorSnackbar = snackbarManager::showError,

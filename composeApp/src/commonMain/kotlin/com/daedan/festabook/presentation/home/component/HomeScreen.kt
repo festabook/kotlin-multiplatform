@@ -34,6 +34,7 @@ import com.daedan.festabook.presentation.home.LineupUiState
 import com.daedan.festabook.presentation.home.WaitingBarUiState
 import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.theme.FestabookColor
+import com.daedan.festabook.presentation.theme.festabookSpacing
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.error_fail_to_load_info
 import festabookkmp.composeapp.generated.resources.setting_notice_enabled
@@ -127,7 +128,11 @@ fun HomeScreen(
                                 Modifier
                                     .align(Alignment.BottomCenter)
                                     .fillMaxWidth()
-                                    .padding(start = 20.dp, end = 20.dp, bottom = 16.dp),
+                                    .padding(
+                                        start = festabookSpacing.paddingBody4,
+                                        end = festabookSpacing.paddingBody4,
+                                        bottom = festabookSpacing.paddingBody4,
+                                    ),
                         )
                     }
 
