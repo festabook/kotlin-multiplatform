@@ -46,10 +46,11 @@ class DefaultUserNotificationDelegate(
             (userInfo[DeepLinkKeys.KEY_FESTIVAL_ID] as? String)?.toLongOrNull()
                 ?: DeepLinkKeys.INITIALIZED_ID
 
-        val action = userInfo.toDeepLinkAction() ?: run {
-            withCompletionHandler()
-            return
-        }
+        val action =
+            userInfo.toDeepLinkAction() ?: run {
+                withCompletionHandler()
+                return
+            }
 
         ioCoroutineScope.launch {
             val currentFestivalId = festivalLocalDataSource.getFestivalId().firstOrNull()

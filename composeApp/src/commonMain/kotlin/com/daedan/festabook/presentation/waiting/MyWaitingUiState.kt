@@ -11,5 +11,7 @@ sealed interface MyWaitingUiState {
         val myWaiting: MyWaitingUiModel,
     ) : MyWaitingUiState
 
-    data class Error(val throwable: Throwable) : MyWaitingUiState
+    data class Error(
+        val throwable: Throwable,
+    ) : MyWaitingUiState
 }

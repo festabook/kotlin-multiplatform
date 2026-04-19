@@ -1,7 +1,6 @@
 package com.daedan.festabook.presentation.waiting.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,10 +15,7 @@ import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -71,7 +67,6 @@ import festabookkmp.composeapp.generated.resources.my_waiting_party_size_label
 import festabookkmp.composeapp.generated.resources.my_waiting_phone_label
 import festabookkmp.composeapp.generated.resources.my_waiting_title
 import festabookkmp.composeapp.generated.resources.setting_waiting_info_section_title
-import festabookkmp.composeapp.generated.resources.waiting_register_submit
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 

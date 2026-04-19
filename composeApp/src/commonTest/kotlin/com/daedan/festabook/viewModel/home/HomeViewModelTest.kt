@@ -190,7 +190,7 @@ class HomeViewModelTest {
             // then
             val actual = homeViewModel.waitingBarUiState.value
             assertIs<WaitingBarUiState.Visible>(actual)
-            assertEquals(fakeMyWaiting.waitingOrderFromZero, actual.order)
+            assertEquals(fakeMyWaiting.waitingOrder, actual.order)
             assertEquals(fakeMyWaiting.estimatedWaitTime, actual.estimatedWaitTime)
         }
 

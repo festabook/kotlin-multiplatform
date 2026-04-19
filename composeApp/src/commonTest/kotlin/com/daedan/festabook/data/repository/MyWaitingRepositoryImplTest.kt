@@ -28,9 +28,10 @@ class MyWaitingRepositoryImplTest {
     @BeforeTest
     fun setUp() {
         waitingRemoteDataSource = mock()
-        repository = MyWaitingRepositoryImpl(
-            waitingRemoteDataSource = waitingRemoteDataSource,
-        )
+        repository =
+            MyWaitingRepositoryImpl(
+                waitingRemoteDataSource = waitingRemoteDataSource,
+            )
     }
 
     @Test
@@ -72,9 +73,10 @@ class MyWaitingRepositoryImplTest {
     fun `서버가 CANCELED 상태를 반환하면 null을 반환한다`() =
         runTest {
             // given
-            val canceledResponse = FAKE_MY_WAITING_RESPONSE.copy(
-                waitingStatus = WaitingStatus.CANCELED,
-            )
+            val canceledResponse =
+                FAKE_MY_WAITING_RESPONSE.copy(
+                    waitingStatus = WaitingStatus.CANCELED,
+                )
             everySuspend { waitingRemoteDataSource.fetchMyWaitingExist() } returns
                 ApiResult.Success(FAKE_WAITING_EXIST_RESPONSE)
             everySuspend { waitingRemoteDataSource.fetchMyWaiting() } returns

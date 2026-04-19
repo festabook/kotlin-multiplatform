@@ -62,5 +62,4 @@ class WaitingLocalDataSourceTest {
             // then
             assertEquals(expected, result)
         }
-
 }

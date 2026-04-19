@@ -76,10 +76,11 @@ fun HomeWaitingBar(
                 )
             }
             Spacer(modifier = Modifier.width(festabookSpacing.paddingBody3))
-            val barText = when (status) {
-                WaitingStatus.CALLED -> stringResource(Res.string.my_waiting_enter_now)
-                else -> stringResource(Res.string.home_waiting_bar_format, order, estimatedMinutes)
-            }
+            val barText =
+                when (status) {
+                    WaitingStatus.CALLED -> stringResource(Res.string.my_waiting_enter_now)
+                    else -> stringResource(Res.string.home_waiting_bar_format, order, estimatedMinutes)
+                }
             Text(
                 text = barText,
                 style = FestabookTypography.titleSmall,

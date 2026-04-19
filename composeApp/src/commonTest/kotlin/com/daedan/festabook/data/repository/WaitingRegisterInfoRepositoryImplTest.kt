@@ -24,9 +24,10 @@ class WaitingRegisterInfoRepositoryImplTest {
     @BeforeTest
     fun setUp() {
         waitingRemoteDataSource = mock()
-        repository = WaitingRegisterInfoRepositoryImpl(
-            waitingRemoteDataSource = waitingRemoteDataSource,
-        )
+        repository =
+            WaitingRegisterInfoRepositoryImpl(
+                waitingRemoteDataSource = waitingRemoteDataSource,
+            )
     }
 
     @Test
