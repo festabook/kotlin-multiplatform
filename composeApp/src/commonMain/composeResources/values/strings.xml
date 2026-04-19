@@ -160,7 +160,7 @@
     <string name="waiting_register_confirm_later">다음에 웨이팅하기</string>
     <string name="waiting_register_confirm_submit">확인</string>
     <string name="waiting_duplicate_title">한 번에 하나의 플레이스만\n웨이팅을 할 수 있어요</string>
-    <string name="waiting_duplicate_discription">이전에 등록한 웨이팅은 취소돼요</string>
+    <string name="waiting_duplicate_description">이전에 등록한 웨이팅은 취소돼요</string>
     <string name="waiting_duplicate_my_waiting">나의 웨이팅</string>
     <string name="waiting_duplicate_register_new">새로 웨이팅하기</string>
     <string name="waiting_cancel_confirm_title">기존에 등록한 웨이팅을 취소하고\n새로 등록할까요?</string>
