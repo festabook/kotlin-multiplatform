@@ -114,7 +114,13 @@ class WaitingRegisterViewModelTest {
             everySuspend { placeDetailRepository.getPlaceDetail(any()) } returns Result.failure(exception)
 
             // when
-            viewModel.loadPlaceSummary()
+            viewModel =
+                WaitingRegisterViewModel(
+                    placeDetailRepository = placeDetailRepository,
+                    waitingInfoRepository = waitingInfoRepository,
+                    waitingRegisterInfoRepository = waitingRegisterInfoRepository,
+                    placeId = FAKE_PLACE_DETAIL.place.id,
+                )
             advanceUntilIdle()
 
             // then

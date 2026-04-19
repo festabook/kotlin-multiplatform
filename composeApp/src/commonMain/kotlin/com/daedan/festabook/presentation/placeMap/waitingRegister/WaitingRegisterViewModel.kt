@@ -59,7 +59,7 @@ class WaitingRegisterViewModel(
         loadPlaceSummary()
     }
 
-    fun loadPlaceSummary() {
+    private fun loadPlaceSummary() {
         viewModelScope.launch {
             _uiState.value = WaitingRegisterUiState.Loading
             val waitingInfo = waitingInfoRepository.getWaitingInfo().getOrNull()

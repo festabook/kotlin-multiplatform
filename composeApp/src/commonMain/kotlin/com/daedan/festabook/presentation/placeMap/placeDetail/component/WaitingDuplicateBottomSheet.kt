@@ -26,7 +26,7 @@ import com.daedan.festabook.presentation.theme.FestabookTypography
 import com.daedan.festabook.presentation.theme.festabookShapes
 import com.daedan.festabook.presentation.theme.festabookSpacing
 import festabookkmp.composeapp.generated.resources.Res
-import festabookkmp.composeapp.generated.resources.waiting_duplicate_discription
+import festabookkmp.composeapp.generated.resources.waiting_duplicate_description
 import festabookkmp.composeapp.generated.resources.waiting_duplicate_my_waiting
 import festabookkmp.composeapp.generated.resources.waiting_duplicate_register_new
 import festabookkmp.composeapp.generated.resources.waiting_duplicate_title
@@ -67,7 +67,7 @@ fun WaitingDuplicateBottomSheet(
             )
 
             Text(
-                text = stringResource(Res.string.waiting_duplicate_discription),
+                text = stringResource(Res.string.waiting_duplicate_description),
                 style = FestabookTypography.bodyLarge,
                 color = FestabookColor.black,
                 textAlign = TextAlign.Center,
