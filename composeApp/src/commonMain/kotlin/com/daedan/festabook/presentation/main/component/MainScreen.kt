@@ -29,6 +29,7 @@ import com.daedan.festabook.presentation.common.component.SnackbarManager
 import com.daedan.festabook.presentation.common.component.rememberAppSnackbarManager
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.navigation.homeNavGraph
+import com.daedan.festabook.presentation.waiting.navigation.myWaitingNavGraph
 import com.daedan.festabook.presentation.main.FestabookMainTab
 import com.daedan.festabook.presentation.main.FestabookNavigator
 import com.daedan.festabook.presentation.main.FestabookRoute
@@ -249,6 +250,7 @@ private fun FestabookNavHost(
             onShowErrorSnackbar = snackbarManager::showError,
             settingViewModel = settingViewModel,
             notificationPermissionManager = notificationPermissionManager,
+            onNavigateToMyWaiting = { navigator.navigate(FestabookRoute.MyWaiting) },
         )
         scheduleNavGraph(
             innerPadding = innerPadding,
@@ -297,6 +299,14 @@ private fun FestabookNavHost(
                 )
             },
             onBackClick = { navigator.popBackStack() },
+        )
+        myWaitingNavGraph(
+            onBack = {
+                homeViewModel.refreshWaitingBar()
+                navigator.popBackStack()
+            },
+            onShowSnackbar = snackbarManager::show,
+            onShowErrorSnackbar = snackbarManager::showError,
         )
     }
 }

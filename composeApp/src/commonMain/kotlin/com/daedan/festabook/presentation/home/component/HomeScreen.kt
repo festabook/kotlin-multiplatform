@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -30,6 +31,7 @@ import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.LineUpItemGroupUiModel
 import com.daedan.festabook.presentation.home.LineupItemUiModel
 import com.daedan.festabook.presentation.home.LineupUiState
+import com.daedan.festabook.presentation.home.WaitingBarUiState
 import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.theme.FestabookColor
 import festabookkmp.composeapp.generated.resources.Res
@@ -50,12 +52,14 @@ fun HomeScreen(
     settingViewModel: SettingViewModel,
     notificationPermissionManager: NotificationPermissionManager,
     onNavigateToExplore: () -> Unit,
+    onNavigateToMyWaiting: () -> Unit,
     onShowSnackBar: (String) -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val festivalUiState by viewModel.festivalUiState.collectAsStateWithLifecycle()
     val lineupUiState by viewModel.lineupUiState.collectAsStateWithLifecycle()
+    val waitingBarUiState by viewModel.waitingBarUiState.collectAsStateWithLifecycle()
     val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
     val settingEnabledText = stringResource(Res.string.setting_notice_enabled)
 
@@ -69,6 +73,10 @@ fun HomeScreen(
 
     ObserveAsEvents(flow = settingViewModel.error) {
         currentOnShowErrorSnackbar(it)
+    }
+
+    ObserveAsEvents(flow = viewModel.navigateToMyWaitingEvent) {
+        onNavigateToMyWaiting()
     }
 
     LaunchedEffect(festivalUiState) {
@@ -98,13 +106,25 @@ fun HomeScreen(
         }
 
         is FestivalUiState.Success -> {
-            FestivalOverview(
-                festivalUiState = state,
-                lineupUiState = lineupUiState,
-                onNavigateToExplore = onNavigateToExplore,
-                onNavigateToSchedule = viewModel::navigateToScheduleClick,
-                modifier = modifier,
-            )
+            Box(modifier = modifier.fillMaxSize()) {
+                FestivalOverview(
+                    festivalUiState = state,
+                    lineupUiState = lineupUiState,
+                    onNavigateToExplore = onNavigateToExplore,
+                    onNavigateToSchedule = viewModel::navigateToScheduleClick,
+                )
+                if (waitingBarUiState is WaitingBarUiState.Visible) {
+                    HomeWaitingBar(
+                        order = waitingBarUiState.order,
+                        estimatedMinutes = waitingBarUiState.estimatedWaitTime,
+                        onClick = viewModel::navigateToMyWaitingClick,
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, end = 20.dp, bottom = 16.dp),
+                    )
+                }
+            }
         }
     }
 }
