@@ -1,13 +1,15 @@
 package com.daedan.festabook.presentation.common.format
 
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.format.char
+import kotlinx.datetime.format
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
+import kotlinx.datetime.format.byUnicodePattern
 
-val placeTimeFormat =
-    LocalTime.Format {
-        hour()
-        char(':')
-        minute()
-    }
-
-fun LocalTime?.toFormattedString(): String? = this?.let { placeTimeFormat.format(it) }
+@OptIn(FormatStringsInDatetimeFormats::class)
+fun LocalTime?.toFormattedString(): String? {
+    val format =
+        LocalTime.Format {
+            byUnicodePattern("HH:mm")
+        }
+    return this?.format(format)
+}
