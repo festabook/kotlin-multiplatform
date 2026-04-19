@@ -89,6 +89,7 @@ fun WaitingRegisterRoute(
     onShowErrorSnackbar: (Throwable) -> Unit,
     onShowSnackbar: (String) -> Unit,
     onNavigateToPhoneRegistration: () -> Unit,
+    onNavigateToMyWaiting: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -98,10 +99,9 @@ fun WaitingRegisterRoute(
     var showPermissionDialog by remember { mutableStateOf(false) }
     val onOpenAppSettings = rememberOpenAppSettings()
 
-    // TODO 나의 웨이팅 화면으로 이동
     ObserveAsEvents(viewModel.registerSuccessEvent) {
         onShowSnackbar(successMessage)
-        onBackToPreviousClick()
+        onNavigateToMyWaiting()
     }
     ObserveAsEvents(viewModel.registerFailureEvent) { throwable ->
         onShowErrorSnackbar(throwable)

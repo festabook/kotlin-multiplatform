@@ -273,6 +273,14 @@ private fun FestabookNavHost(
                     },
                 )
             },
+            onNavigateToMyWaiting = {
+                navigator.navigate(
+                    FestabookRoute.MyWaiting,
+                    navOptions {
+                        popUpTo<FestabookRoute.WaitingRegister> { inclusive = true }
+                    },
+                )
+            },
             onShowSnackbar = snackbarManager::show,
             notificationPermissionManager = notificationPermissionManager,
         )
@@ -301,7 +309,6 @@ private fun FestabookNavHost(
             onBackClick = { navigator.popBackStack() },
         )
         myWaitingNavGraph(
-            innerPadding = innerPadding,
             onBack = {
                 homeViewModel.loadWaitingBar()
                 navigator.popBackStack()

@@ -11,16 +11,14 @@ import com.daedan.festabook.presentation.waiting.component.MyWaitingRoute
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 fun NavGraphBuilder.myWaitingNavGraph(
-    innerPadding: PaddingValues,
     onBack: () -> Unit,
     onNavigateToPlaceDetail: (Long) -> Unit,
     onShowSnackbar: (String) -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
 ) {
     composable<FestabookRoute.MyWaiting> {
-        val viewModel = metroViewModel<MyWaitingViewModel>()
         MyWaitingRoute(
-            viewModel = viewModel,
+            viewModel = metroViewModel<MyWaitingViewModel>(),
             onBack = onBack,
             onNavigateToPlaceDetail = onNavigateToPlaceDetail,
             onShowSnackbar = onShowSnackbar,

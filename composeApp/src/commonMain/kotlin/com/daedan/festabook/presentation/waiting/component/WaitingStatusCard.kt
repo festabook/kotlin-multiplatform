@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -84,7 +85,10 @@ fun WaitingStatusCard(
         Spacer(Modifier.height(festabookSpacing.paddingBody5))
 
         Box(
-            modifier = Modifier.fillMaxWidth(),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
             contentAlignment = Alignment.Center,
         ) {
             if (showEnterNow) {
@@ -96,7 +100,10 @@ fun WaitingStatusCard(
             } else {
                 val orderFormatted = stringResource(Res.string.my_waiting_order_format)
                 val numberText = order.toString()
-                Row(verticalAlignment = Alignment.Bottom) {
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier.offset(y = (-4).dp),
+                ) {
                     Text(
                         text = numberText,
                         style = FestabookTypography.displayLarge.copy(fontSize = 48.sp),
@@ -106,7 +113,7 @@ fun WaitingStatusCard(
                         text = orderFormatted,
                         style = FestabookTypography.titleLarge,
                         color = FestabookColor.white,
-                        modifier = Modifier.padding(start = 2.dp, bottom = 8.dp),
+                        modifier = Modifier.padding(start = 2.dp),
                     )
                 }
             }

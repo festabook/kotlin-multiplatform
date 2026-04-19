@@ -31,8 +31,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +51,7 @@ import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
 import com.daedan.festabook.presentation.common.component.cardBackground
 import com.daedan.festabook.presentation.placeMap.component.PlaceDetailPreviewContent
+import com.daedan.festabook.presentation.placeMap.placeDetail.component.WaitingCancelConfirmDialog
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import com.daedan.festabook.presentation.theme.festabookShapes
@@ -60,6 +63,7 @@ import festabookkmp.composeapp.generated.resources.explore_back
 import festabookkmp.composeapp.generated.resources.ic_arrow_back
 import festabookkmp.composeapp.generated.resources.ic_info
 import festabookkmp.composeapp.generated.resources.my_waiting_cancel_button
+import festabookkmp.composeapp.generated.resources.my_waiting_cancel_confirm_title
 import festabookkmp.composeapp.generated.resources.my_waiting_cancel_success
 import festabookkmp.composeapp.generated.resources.my_waiting_notice_text
 import festabookkmp.composeapp.generated.resources.my_waiting_party_size_format
@@ -192,6 +196,19 @@ private fun MyWaitingContent(
                 windowInfo.containerSize.width.toDp()
             }
         }
+    var showCancelConfirmDialog by remember { mutableStateOf(false) }
+
+    if (showCancelConfirmDialog) {
+        WaitingCancelConfirmDialog(
+            title = stringResource(Res.string.my_waiting_cancel_confirm_title),
+            onDismissClick = { showCancelConfirmDialog = false },
+            onCancelClick = {
+                showCancelConfirmDialog = false
+                onCancelWaiting()
+            },
+            onDismissRequest = { showCancelConfirmDialog = false },
+        )
+    }
 
     Box(
         modifier =
@@ -277,7 +294,7 @@ private fun MyWaitingContent(
         WaitingCancelButton(
             isEnabled = true,
             isCancelling = false,
-            onClick = onCancelWaiting,
+            onClick = { showCancelConfirmDialog = true },
             modifier = Modifier.align(Alignment.BottomCenter),
         )
     }
