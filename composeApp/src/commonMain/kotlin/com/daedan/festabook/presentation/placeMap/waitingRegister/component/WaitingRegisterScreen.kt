@@ -57,6 +57,7 @@ import com.daedan.festabook.presentation.placeMap.waitingRegister.model.WaitingP
 import com.daedan.festabook.presentation.placeMap.waitingRegister.model.WaitingRegisterUiState
 import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.setting.component.NotificationPermissionDialog
+import com.daedan.festabook.presentation.setting.component.platform.rememberNotificationPermissionManager
 import com.daedan.festabook.presentation.setting.component.platform.rememberOpenAppSettings
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
@@ -84,7 +85,7 @@ private const val PRIVACY_AGREEMENT_URL =
 fun WaitingRegisterRoute(
     viewModel: WaitingRegisterViewModel,
     settingViewModel: SettingViewModel,
-    notificationPermissionManager: NotificationPermissionManager,
+    notificationPermissionManagerFactory: NotificationPermissionManager.Factory,
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
     onShowSnackbar: (String) -> Unit,
@@ -98,6 +99,17 @@ fun WaitingRegisterRoute(
     var showConfirmBottomSheet by rememberSaveable { mutableStateOf(false) }
     var showPermissionDialog by remember { mutableStateOf(false) }
     val onOpenAppSettings = rememberOpenAppSettings()
+
+    val notificationPermissionManager =
+        rememberNotificationPermissionManager(
+            notificationPermissionManagerFactory = notificationPermissionManagerFactory,
+            onPermissionGrant = {
+                showConfirmBottomSheet = false
+                settingViewModel.saveNotificationId()
+                viewModel.submitWaitingRegister()
+            },
+            onPermissionDeny = {},
+        )
 
     ObserveAsEvents(viewModel.registerSuccessEvent) {
         onShowSnackbar(successMessage)

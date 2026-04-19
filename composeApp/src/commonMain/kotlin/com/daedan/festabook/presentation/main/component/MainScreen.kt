@@ -248,6 +248,7 @@ fun MainScreen(
             waitingInfoViewModel = waitingInfoViewModel,
             newsViewModel = newsViewModel,
             notificationPermissionManager = notificationPermissionManager,
+            notificationPermissionManagerFactory = appGraph.notificationPermissionManagerFactory,
             snackbarManager = snackbarManager,
         )
     }
@@ -274,6 +275,7 @@ private fun FestabookNavHost(
     settingViewModel: SettingViewModel,
     waitingInfoViewModel: WaitingInfoViewModel,
     notificationPermissionManager: NotificationPermissionManager,
+    notificationPermissionManagerFactory: NotificationPermissionManager.Factory,
     snackbarManager: SnackbarManager,
     modifier: Modifier = Modifier,
 ) {
@@ -327,7 +329,7 @@ private fun FestabookNavHost(
                 )
             },
             onShowSnackbar = snackbarManager::show,
-            notificationPermissionManager = notificationPermissionManager,
+            notificationPermissionManagerFactory = notificationPermissionManagerFactory,
         )
         newsNavGraph(
             innerPadding = innerPadding,

@@ -36,7 +36,7 @@ import kotlin.reflect.typeOf
 fun NavGraphBuilder.placeMapNavGraph(
     innerPadding: PaddingValues,
     settingViewModel: SettingViewModel,
-    notificationPermissionManager: NotificationPermissionManager,
+    notificationPermissionManagerFactory: NotificationPermissionManager.Factory,
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
     onNavigateToAddWaitingInfo: (Long) -> Unit,
@@ -114,7 +114,7 @@ fun NavGraphBuilder.placeMapNavGraph(
             onShowSnackbar = onShowSnackbar,
             onNavigateToPhoneRegistration = { onNavigateToPhoneRegistration(route.placeId) },
             onNavigateToMyWaiting = onNavigateToMyWaiting,
-            notificationPermissionManager = notificationPermissionManager,
+            notificationPermissionManagerFactory = notificationPermissionManagerFactory,
         )
     }
 }
