@@ -2,6 +2,8 @@ package com.daedan.festabook.delegate
 
 import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
 import com.daedan.festabook.presentation.platform.DeepLinkKeys
+import com.daedan.festabook.presentation.platform.FcmDeepLinkAction
+import com.daedan.festabook.presentation.platform.FcmMessageType
 import com.daedan.festabook.presentation.platform.PendingFcmNotification
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -44,11 +46,10 @@ class DefaultUserNotificationDelegate(
             (userInfo[DeepLinkKeys.KEY_FESTIVAL_ID] as? String)?.toLongOrNull()
                 ?: DeepLinkKeys.INITIALIZED_ID
 
-        val announcementId =
-            (userInfo[DeepLinkKeys.KEY_ANNOUNCEMENT_ID] as? String)?.toLongOrNull() ?: run {
-                withCompletionHandler()
-                return
-            }
+        val action = userInfo.toDeepLinkAction() ?: run {
+            withCompletionHandler()
+            return
+        }
 
         ioCoroutineScope.launch {
             val currentFestivalId = festivalLocalDataSource.getFestivalId().firstOrNull()
@@ -60,11 +61,31 @@ class DefaultUserNotificationDelegate(
             }
 
             PendingFcmNotification.store(
-                announcementId = announcementId,
+                action = action,
                 festivalIdChanged = festivalIdChanged,
             )
             withContext(Dispatchers.Main) {
                 withCompletionHandler()
+            }
+        }
+    }
+
+    private fun Map<Any?, *>.toDeepLinkAction(): FcmDeepLinkAction? {
+        val type = FcmMessageType.from(this[DeepLinkKeys.KEY_TYPE] as? String)
+        return when (type) {
+            FcmMessageType.WAITING_CALL,
+            FcmMessageType.WAITING_ALMOST_CALL,
+            -> FcmDeepLinkAction.OpenMyWaiting
+
+            FcmMessageType.WAITING_PLACE_ACCESS_CANCEL -> {
+                val placeId = (this[DeepLinkKeys.KEY_PLACE_ID] as? String)?.toLongOrNull() ?: return null
+                FcmDeepLinkAction.OpenPlaceDetail(placeId)
+            }
+
+            FcmMessageType.ANNOUNCEMENT, null -> {
+                val announcementId =
+                    (this[DeepLinkKeys.KEY_ANNOUNCEMENT_ID] as? String)?.toLongOrNull() ?: return null
+                FcmDeepLinkAction.OpenAnnouncement(announcementId)
             }
         }
     }
