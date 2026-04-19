@@ -57,7 +57,7 @@ fun NavGraphBuilder.settingNavGraph(
             onShowErrorSnackBar = onShowErrorSnackBar,
             onSaveSuccess = {
                 val placeId = route.placeId
-                if (placeId != FestabookRoute.AddWaitingInfo.NO_PLACE_ID) {
+                if (placeId != null) {
                     onNavigateToWaitingRegister(placeId)
                 } else {
                     onShowSnackBar(saveSuccessMessage)
