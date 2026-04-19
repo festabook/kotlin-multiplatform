@@ -1,7 +1,5 @@
 package com.daedan.festabook.placeMap.placeDetail
 
-import com.daedan.festabook.domain.model.MyWaiting
-import com.daedan.festabook.domain.model.WaitingStatus
 import com.daedan.festabook.domain.repository.MyWaitingRepository
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
 import com.daedan.festabook.domain.repository.WaitingRegisterInfoRepository
@@ -187,7 +185,10 @@ class PlaceDetailViewModelTest {
         runTest {
             // given
             advanceUntilIdle()
-            everySuspend { myWaitingRepository.getMyWaiting() } returns Result.success(FAKE_MY_WAITING)
+            everySuspend { myWaitingRepository.getMyWaiting() } returns
+                Result.success(
+                    FAKE_MY_WAITING,
+                )
 
             // when
             val event = observeEvent(placeDetailViewModel.showDuplicateWaitingBottomSheetEvent)
@@ -221,7 +222,10 @@ class PlaceDetailViewModelTest {
             // given
             advanceUntilIdle()
             val exception = Throwable("웨이팅 취소 실패")
-            everySuspend { myWaitingRepository.cancelWaiting(any()) } returns Result.failure(exception)
+            everySuspend { myWaitingRepository.cancelWaiting(any()) } returns
+                Result.failure(
+                    exception,
+                )
 
             // when
             val event = observeEvent(placeDetailViewModel.cancelWaitingFailureEvent)
@@ -231,17 +235,4 @@ class PlaceDetailViewModelTest {
             // then
             assertEquals(exception, event.await())
         }
-
-    companion object {
-        private val FAKE_MY_WAITING =
-            MyWaiting(
-                waitingId = 42L,
-                waitingOrder = 3,
-                partySize = 2,
-                waitingStatus = WaitingStatus.WAITING,
-                totalWaitingTeams = 10,
-                estimatedWaitTime = 15,
-                phoneNumber = "010-1234-5678",
-            )
-    }
 }

@@ -1,12 +1,11 @@
 package com.daedan.festabook.viewModel.placeMap.waitingRegister
 
-import com.daedan.festabook.domain.model.MyWaiting
 import com.daedan.festabook.domain.model.WaitingInfo
-import com.daedan.festabook.domain.model.WaitingStatus
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
 import com.daedan.festabook.domain.repository.WaitingInfoRepository
 import com.daedan.festabook.domain.repository.WaitingRegisterInfoRepository
 import com.daedan.festabook.observeEvent
+import com.daedan.festabook.placeMap.placeDetail.FAKE_MY_WAITING
 import com.daedan.festabook.placeMap.placeDetail.FAKE_PLACE_DETAIL
 import com.daedan.festabook.presentation.placeMap.waitingRegister.WaitingRegisterViewModel
 import com.daedan.festabook.presentation.placeMap.waitingRegister.model.WaitingRegisterUiModel
@@ -21,6 +20,7 @@ import dev.mokkery.verifySuspend
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -40,25 +40,22 @@ class WaitingRegisterViewModelTest {
     private lateinit var waitingRegisterInfoRepository: WaitingRegisterInfoRepository
     private lateinit var viewModel: WaitingRegisterViewModel
 
-    private val fakeMyWaiting =
-        MyWaiting(
-            waitingId = 1L,
-            waitingOrder = 3,
-            partySize = 2,
-            waitingStatus = WaitingStatus.WAITING,
-            totalWaitingTeams = 10,
-            estimatedWaitTime = 15,
-            phoneNumber = "010-1234-5678",
-        )
-
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         placeDetailRepository = mock()
         waitingInfoRepository = mock()
         waitingRegisterInfoRepository = mock()
-        everySuspend { placeDetailRepository.getPlaceDetail(any()) } returns Result.success(FAKE_PLACE_DETAIL)
-        everySuspend { waitingInfoRepository.getWaitingInfo() } returns Result.success(WaitingInfo(phoneNumber = "010-1234-5678"))
+        everySuspend { placeDetailRepository.getPlaceDetail(any()) } returns
+            Result.success(
+                FAKE_PLACE_DETAIL,
+            )
+        everySuspend { waitingInfoRepository.getWaitingInfo() } returns
+            Result.success(
+                WaitingInfo(
+                    phoneNumber = "010-1234-5678",
+                ),
+            )
         viewModel =
             WaitingRegisterViewModel(
                 placeDetailRepository = placeDetailRepository,
@@ -75,7 +72,7 @@ class WaitingRegisterViewModelTest {
 
     @Test
     fun `전화번호 미등록 상태에서 초기화 시 navigateToPhoneRegistrationEvent 를 발행한다`() =
-        runTest {
+        runTest(UnconfinedTestDispatcher()) {
             // given
             everySuspend { waitingInfoRepository.getWaitingInfo() } returns Result.success(null)
             viewModel =
@@ -103,7 +100,10 @@ class WaitingRegisterViewModelTest {
             // then
             val state = viewModel.uiState.value
             assertIs<WaitingRegisterUiState.Success>(state)
-            assertEquals(FAKE_PLACE_DETAIL.toWaitingPlaceSummaryUiModel(), state.waitingRegister.placeSummary)
+            assertEquals(
+                FAKE_PLACE_DETAIL.toWaitingPlaceSummaryUiModel(),
+                state.waitingRegister.placeSummary,
+            )
         }
 
     @Test
@@ -111,7 +111,10 @@ class WaitingRegisterViewModelTest {
         runTest {
             // given
             val exception = Throwable("로드 실패")
-            everySuspend { placeDetailRepository.getPlaceDetail(any()) } returns Result.failure(exception)
+            everySuspend { placeDetailRepository.getPlaceDetail(any()) } returns
+                Result.failure(
+                    exception,
+                )
 
             // when
             viewModel =
@@ -230,7 +233,7 @@ class WaitingRegisterViewModelTest {
             // given
             advanceUntilIdle()
             everySuspend { waitingRegisterInfoRepository.registerWaiting(any(), any()) } returns
-                Result.success(fakeMyWaiting)
+                Result.success(FAKE_MY_WAITING)
             viewModel.toggleServiceAgreement()
 
             // when
@@ -248,7 +251,7 @@ class WaitingRegisterViewModelTest {
             // given
             advanceUntilIdle()
             everySuspend { waitingRegisterInfoRepository.registerWaiting(any(), any()) } returns
-                Result.success(fakeMyWaiting)
+                Result.success(FAKE_MY_WAITING)
             viewModel.toggleServiceAgreement()
 
             // when
@@ -267,7 +270,7 @@ class WaitingRegisterViewModelTest {
             // given
             advanceUntilIdle()
             everySuspend { waitingRegisterInfoRepository.registerWaiting(any(), any()) } returns
-                Result.success(fakeMyWaiting)
+                Result.success(FAKE_MY_WAITING)
             viewModel.increasePartySize()
             viewModel.increasePartySize()
             viewModel.toggleServiceAgreement()
