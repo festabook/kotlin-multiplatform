@@ -78,6 +78,7 @@ class HomeViewModel(
                         WaitingBarUiState.Visible(
                             order = it.waitingOrder,
                             estimatedWaitTime = it.estimatedWaitTime,
+                            status = it.waitingStatus,
                         )
                     } ?: WaitingBarUiState.Hidden
                 }.onFailure { t ->

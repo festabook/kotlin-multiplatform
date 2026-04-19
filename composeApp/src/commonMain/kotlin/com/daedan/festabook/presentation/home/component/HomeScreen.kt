@@ -123,6 +123,7 @@ fun HomeScreen(
                         HomeWaitingBar(
                             order = waitingBarUiState.order,
                             estimatedMinutes = waitingBarUiState.estimatedWaitTime,
+                            status = waitingBarUiState.status,
                             onClick = viewModel::navigateToMyWaitingClick,
                             modifier =
                                 Modifier
