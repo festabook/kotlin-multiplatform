@@ -1,8 +1,10 @@
 package com.daedan.festabook.placeMap.placeDetail
 
+import com.daedan.festabook.domain.repository.MyWaitingRepository
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
 import com.daedan.festabook.domain.repository.WaitingRegisterInfoRepository
 import com.daedan.festabook.news.FAKE_NOTICES
+import com.daedan.festabook.observeEvent
 import com.daedan.festabook.placeMap.FAKE_PLACES
 import com.daedan.festabook.presentation.news.notice.model.toUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.PlaceDetailViewModel
@@ -35,6 +37,7 @@ class PlaceDetailViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var placeDetailRepository: PlaceDetailRepository
     private lateinit var waitingRegisterInfoRepository: WaitingRegisterInfoRepository
+    private lateinit var myWaitingRepository: MyWaitingRepository
     private lateinit var placeDetailViewModel: PlaceDetailViewModel
 
     @BeforeTest
@@ -42,16 +45,20 @@ class PlaceDetailViewModelTest {
         Dispatchers.setMain(testDispatcher)
         placeDetailRepository = mock()
         waitingRegisterInfoRepository = mock()
+        myWaitingRepository = mock()
         everySuspend { placeDetailRepository.getPlaceDetail(any()) } returns
             Result.success(
                 FAKE_PLACE_DETAIL,
             )
         everySuspend { waitingRegisterInfoRepository.getPlaceWaiting(any()) } returns
             Result.success(FAKE_PLACE_WAITING)
+        everySuspend { myWaitingRepository.getMyWaiting() } returns Result.success(null)
+        everySuspend { myWaitingRepository.cancelWaiting(any()) } returns Result.success(Unit)
         placeDetailViewModel =
             PlaceDetailViewModel(
                 placeDetailRepository,
                 waitingRegisterInfoRepository,
+                myWaitingRepository,
                 FAKE_PLACES.first().id,
             )
     }
@@ -121,6 +128,7 @@ class PlaceDetailViewModelTest {
                 PlaceDetailViewModel(
                     placeDetailRepository,
                     waitingRegisterInfoRepository,
+                    myWaitingRepository,
                     expected.place.id,
                 )
             advanceUntilIdle()
@@ -154,5 +162,77 @@ class PlaceDetailViewModelTest {
                     .notices
 
             assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `onRegisterWaitingClick 호출 시 등록된 웨이팅이 없으면 navigateToWaitingRegisterEvent 를 발행한다`() =
+        runTest {
+            // given
+            advanceUntilIdle()
+            everySuspend { myWaitingRepository.getMyWaiting() } returns Result.success(null)
+
+            // when
+            val event = observeEvent(placeDetailViewModel.navigateToWaitingRegisterEvent)
+            placeDetailViewModel.onRegisterWaitingClick()
+            advanceUntilIdle()
+
+            // then
+            assertEquals(FAKE_PLACES.first().id, event.await())
+        }
+
+    @Test
+    fun `onRegisterWaitingClick 호출 시 이미 등록된 웨이팅이 있으면 showDuplicateWaitingBottomSheetEvent 를 발행한다`() =
+        runTest {
+            // given
+            advanceUntilIdle()
+            everySuspend { myWaitingRepository.getMyWaiting() } returns
+                Result.success(
+                    FAKE_MY_WAITING,
+                )
+
+            // when
+            val event = observeEvent(placeDetailViewModel.showDuplicateWaitingBottomSheetEvent)
+            placeDetailViewModel.onRegisterWaitingClick()
+            advanceUntilIdle()
+
+            // then
+            assertEquals(FAKE_MY_WAITING.waitingId, event.await())
+        }
+
+    @Test
+    fun `cancelAndRegister 성공 시 cancelWaiting 호출 후 navigateToWaitingRegisterEvent 를 발행한다`() =
+        runTest {
+            // given
+            advanceUntilIdle()
+            everySuspend { myWaitingRepository.cancelWaiting(any()) } returns Result.success(Unit)
+
+            // when
+            val event = observeEvent(placeDetailViewModel.navigateToWaitingRegisterEvent)
+            placeDetailViewModel.cancelAndRegister(FAKE_MY_WAITING.waitingId)
+            advanceUntilIdle()
+
+            // then
+            verifySuspend { myWaitingRepository.cancelWaiting(FAKE_MY_WAITING.waitingId) }
+            assertEquals(FAKE_PLACES.first().id, event.await())
+        }
+
+    @Test
+    fun `cancelAndRegister 실패 시 cancelWaitingFailureEvent 를 발행한다`() =
+        runTest {
+            // given
+            advanceUntilIdle()
+            val exception = Throwable("웨이팅 취소 실패")
+            everySuspend { myWaitingRepository.cancelWaiting(any()) } returns
+                Result.failure(
+                    exception,
+                )
+
+            // when
+            val event = observeEvent(placeDetailViewModel.cancelWaitingFailureEvent)
+            placeDetailViewModel.cancelAndRegister(FAKE_MY_WAITING.waitingId)
+            advanceUntilIdle()
+
+            // then
+            assertEquals(exception, event.await())
         }
 }

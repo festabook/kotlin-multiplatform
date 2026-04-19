@@ -257,8 +257,22 @@ private fun FestabookNavHost(
         )
         placeMapNavGraph(
             innerPadding = innerPadding,
+            settingViewModel = settingViewModel,
             onBackToPreviousClick = { navigator.popBackStack() },
             onShowErrorSnackbar = snackbarManager::showError,
+            onNavigateToAddWaitingInfo = { placeId ->
+                navigator.navigate(FestabookRoute.WaitingRegister(placeId))
+            },
+            onNavigateToPhoneRegistration = { placeId ->
+                navigator.navigate(
+                    FestabookRoute.AddWaitingInfo(placeId = placeId),
+                    navOptions {
+                        popUpTo<FestabookRoute.WaitingRegister> { inclusive = true }
+                    },
+                )
+            },
+            onShowSnackbar = snackbarManager::show,
+            notificationPermissionManager = notificationPermissionManager,
         )
         newsNavGraph(
             innerPadding = innerPadding,
@@ -273,7 +287,15 @@ private fun FestabookNavHost(
             notificationPermissionManager = notificationPermissionManager,
             onShowSnackBar = snackbarManager::show,
             onShowErrorSnackBar = snackbarManager::showError,
-            onNavigateToAddWaitingInfo = { navigator.navigate(FestabookRoute.AddWaitingInfo) },
+            onNavigateToAddWaitingInfo = { navigator.navigate(FestabookRoute.AddWaitingInfo()) },
+            onNavigateToWaitingRegister = { placeId ->
+                navigator.navigate(
+                    FestabookRoute.WaitingRegister(placeId),
+                    navOptions {
+                        popUpTo<FestabookRoute.AddWaitingInfo> { inclusive = true }
+                    },
+                )
+            },
             onBackClick = { navigator.popBackStack() },
         )
     }

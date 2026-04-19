@@ -1,11 +1,13 @@
 package com.daedan.festabook.placeMap.placeDetail
 
+import com.daedan.festabook.domain.model.MyWaiting
 import com.daedan.festabook.domain.model.Place
 import com.daedan.festabook.domain.model.PlaceCategory
 import com.daedan.festabook.domain.model.PlaceDetail
 import com.daedan.festabook.domain.model.PlaceDetailImage
 import com.daedan.festabook.domain.model.PlaceWaiting
 import com.daedan.festabook.domain.model.TimeTag
+import com.daedan.festabook.domain.model.WaitingStatus
 import com.daedan.festabook.news.FAKE_NOTICES
 import com.daedan.festabook.placeMap.FAKE_PLACES
 import kotlinx.datetime.LocalTime
@@ -60,4 +62,15 @@ val FAKE_ETC_PLACE_DETAIL =
         endTime = null,
         images = emptyList(),
         isWaitingActive = false,
+    )
+
+val FAKE_MY_WAITING =
+    MyWaiting(
+        waitingId = 42L,
+        waitingOrder = 3,
+        partySize = 2,
+        waitingStatus = WaitingStatus.WAITING,
+        totalWaitingTeams = 10,
+        estimatedWaitTime = 15,
+        phoneNumber = "010-1234-5678",
     )

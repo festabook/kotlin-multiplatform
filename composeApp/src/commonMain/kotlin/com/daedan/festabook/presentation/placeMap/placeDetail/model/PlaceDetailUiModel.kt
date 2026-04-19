@@ -1,12 +1,11 @@
 package com.daedan.festabook.presentation.placeMap.placeDetail.model
 
 import com.daedan.festabook.domain.model.PlaceDetail
+import com.daedan.festabook.presentation.common.format.toFormattedString
 import com.daedan.festabook.presentation.news.notice.model.NoticeUiModel
 import com.daedan.festabook.presentation.news.notice.model.toUiModel
 import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
 import com.daedan.festabook.presentation.placeMap.model.toUiModel
-import kotlinx.datetime.LocalTime
-import kotlinx.datetime.format.char
 
 data class PlaceDetailUiModel(
     val place: PlaceUiModel,
@@ -28,12 +27,3 @@ fun PlaceDetail.toUiModel() =
         images = sortedImages.map { it.toUiModel() },
         isWaitingActive = isWaitingActive,
     )
-
-private fun LocalTime?.toFormattedString(): String? = this?.let { timeFormat.format(it) }
-
-private val timeFormat =
-    LocalTime.Format {
-        hour()
-        char(':')
-        minute()
-    }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.daedan.festabook.domain.model.PlaceWaiting
+import com.daedan.festabook.domain.repository.MyWaitingRepository
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
 import com.daedan.festabook.domain.repository.WaitingRegisterInfoRepository
 import com.daedan.festabook.presentation.news.notice.model.NoticeUiModel
@@ -19,8 +20,11 @@ import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
 import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -28,6 +32,7 @@ import kotlinx.coroutines.launch
 class PlaceDetailViewModel(
     private val placeDetailRepository: PlaceDetailRepository,
     private val waitingRegisterInfoRepository: WaitingRegisterInfoRepository,
+    private val myWaitingRepository: MyWaitingRepository,
     @Assisted private val placeId: Long,
 ) : ViewModel() {
     @AssistedFactory
@@ -47,6 +52,15 @@ class PlaceDetailViewModel(
             PlaceDetailUiState.Loading,
         )
     val placeDetail: StateFlow<PlaceDetailUiState> = _placeDetail
+
+    private val _navigateToWaitingRegisterEvent = MutableSharedFlow<Long>(replay = 0, extraBufferCapacity = 1)
+    val navigateToWaitingRegisterEvent: SharedFlow<Long> = _navigateToWaitingRegisterEvent.asSharedFlow()
+
+    private val _showDuplicateWaitingBottomSheetEvent = MutableSharedFlow<Long>(replay = 0, extraBufferCapacity = 1)
+    val showDuplicateWaitingBottomSheetEvent: SharedFlow<Long> = _showDuplicateWaitingBottomSheetEvent.asSharedFlow()
+
+    private val _cancelWaitingFailureEvent = MutableSharedFlow<Throwable>(replay = 0, extraBufferCapacity = 1)
+    val cancelWaitingFailureEvent: SharedFlow<Throwable> = _cancelWaitingFailureEvent.asSharedFlow()
 
     init {
         loadPlaceDetail(placeId)
@@ -88,8 +102,23 @@ class PlaceDetailViewModel(
                     WaitingTeamUiState.Success(totalTeams = placeWaiting.totalWaitingTeams)
 
                 updateInnerState { current ->
+                    val nextWaitingStatus =
+                        when (current.waitingStatus) {
+                            is WaitingStatusUiState.Active -> {
+                                WaitingStatusUiState.Active(estimatedMinutes = placeWaiting.estimatedWaitTime)
+                            }
+
+                            is WaitingStatusUiState.Closed -> {
+                                WaitingStatusUiState.Closed(estimatedMinutes = placeWaiting.estimatedWaitTime)
+                            }
+
+                            else -> {
+                                current.waitingStatus
+                            }
+                        }
                     current.copy(
                         waitingTeam = waitingTeamUiState,
+                        waitingStatus = nextWaitingStatus,
                     )
                 }
             }.onFailure { throwable ->
@@ -113,6 +142,42 @@ class PlaceDetailViewModel(
                             },
                     ),
             )
+        }
+    }
+
+    fun onRegisterWaitingClick() {
+        val current = _placeDetail.value
+        if (current !is PlaceDetailUiState.Success) return
+        val placeId = current.placeDetail.place.id
+
+        viewModelScope.launch {
+            myWaitingRepository
+                .getMyWaiting()
+                .onSuccess { myWaiting ->
+                    if (myWaiting == null) {
+                        _navigateToWaitingRegisterEvent.tryEmit(placeId)
+                    } else {
+                        _showDuplicateWaitingBottomSheetEvent.tryEmit(myWaiting.waitingId)
+                    }
+                }.onFailure {
+                    _navigateToWaitingRegisterEvent.tryEmit(placeId)
+                }
+        }
+    }
+
+    fun cancelAndRegister(waitingId: Long) {
+        val current = _placeDetail.value
+        if (current !is PlaceDetailUiState.Success) return
+        val placeId = current.placeDetail.place.id
+
+        viewModelScope.launch {
+            myWaitingRepository
+                .cancelWaiting(waitingId)
+                .onSuccess {
+                    _navigateToWaitingRegisterEvent.tryEmit(placeId)
+                }.onFailure { throwable ->
+                    _cancelWaitingFailureEvent.tryEmit(throwable)
+                }
         }
     }
 

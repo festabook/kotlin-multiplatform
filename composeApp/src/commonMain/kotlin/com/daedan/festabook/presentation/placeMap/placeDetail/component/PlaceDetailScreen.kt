@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -50,6 +51,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
+import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.EmptyStateScreen
 import com.daedan.festabook.presentation.common.component.FestabookImage
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
@@ -85,20 +87,62 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaceDetailRoute(
     viewModel: PlaceDetailViewModel,
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
+    onNavigateToWaitingRegister: (placeId: Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val placeDetailUiState by viewModel.placeDetail.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
+    var duplicateWaitingId by remember { mutableStateOf<Long?>(null) }
+    var showCancelConfirmDialog by remember { mutableStateOf(false) }
+
+    ObserveAsEvents(viewModel.navigateToWaitingRegisterEvent) { placeId ->
+        duplicateWaitingId = null
+        showCancelConfirmDialog = false
+        onNavigateToWaitingRegister(placeId)
+    }
+    ObserveAsEvents(viewModel.showDuplicateWaitingBottomSheetEvent) { waitingId ->
+        duplicateWaitingId = waitingId
+    }
+    ObserveAsEvents(viewModel.cancelWaitingFailureEvent) { throwable ->
+        showCancelConfirmDialog = false
+        onShowErrorSnackbar(throwable)
+    }
+
+    if (duplicateWaitingId != null && !showCancelConfirmDialog) {
+        WaitingDuplicateBottomSheet(
+            onMyWaitingClick = {
+                // TODO 나의 웨이팅 화면으로 이동
+            },
+            onRegisterNewClick = { showCancelConfirmDialog = true },
+            onDismiss = { duplicateWaitingId = null },
+        )
+    }
+
+    if (showCancelConfirmDialog) {
+        WaitingCancelConfirmDialog(
+            onDismissClick = {
+                duplicateWaitingId = null
+                showCancelConfirmDialog = false
+            },
+            onCancelClick = {
+                duplicateWaitingId?.let { viewModel.cancelAndRegister(it) }
+            },
+            onDismissRequest = { showCancelConfirmDialog = false },
+        )
+    }
+
     PlaceDetailScreen(
         modifier = modifier,
         uiState = placeDetailUiState,
         onBackToPreviousClick = onBackToPreviousClick,
         onShowErrorSnackbar = onShowErrorSnackbar,
+        onRegisterWaitingClick = viewModel::onRegisterWaitingClick,
         onWaitingRefresh = {
             scope.launch { viewModel.refreshWaitingStatus() }
         },
@@ -112,6 +156,7 @@ fun PlaceDetailScreen(
     onWaitingRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     onShowErrorSnackbar: (Throwable) -> Unit = {}, // TODO Fragment 제거 시 필수 파라미터로 변경
+    onRegisterWaitingClick: () -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
     val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
@@ -185,9 +230,7 @@ fun PlaceDetailScreen(
                 PlaceDetailBottomBar(
                     waiting = uiState.waitingStatus,
                     modifier = Modifier.align(Alignment.BottomCenter),
-                    onRegisterWaitingClick = {
-                        // TODO 웨이팅 등록 화면으로 연결
-                    },
+                    onRegisterWaitingClick = onRegisterWaitingClick,
                 )
             }
         }

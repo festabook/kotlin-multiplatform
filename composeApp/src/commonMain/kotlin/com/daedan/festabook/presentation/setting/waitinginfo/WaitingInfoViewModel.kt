@@ -36,13 +36,14 @@ class WaitingInfoViewModel(
     private val _isTermsAgreed = MutableStateFlow(false)
     val isTermsAgreed: StateFlow<Boolean> = _isTermsAgreed.asStateFlow()
 
-    private val isSaving = MutableStateFlow(false)
+    private val _isSaving = MutableStateFlow(false)
+    val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
 
     val isSaveEnabled: StateFlow<Boolean> =
         combine(
             _phoneNumber,
             _isTermsAgreed,
-            isSaving,
+            _isSaving,
         ) { phone, terms, saving ->
             phone.count { it.isDigit() } >= MIN_DIGIT_COUNT && terms && !saving
         }.stateIn(
@@ -67,12 +68,12 @@ class WaitingInfoViewModel(
     }
 
     fun saveWaitingInfo(phoneNumber: String) {
-        if (isSaving.value) return
+        if (_isSaving.value) return
         val currentState = _waitingInfoUiState.value
         if (currentState is WaitingInfoUiState.Loading) return
 
         viewModelScope.launch {
-            isSaving.value = true
+            _isSaving.value = true
             val result =
                 if (currentState is WaitingInfoUiState.Registered) {
                     waitingInfoRepository.updateWaitingInfo(WaitingInfo(phoneNumber))
@@ -87,7 +88,7 @@ class WaitingInfoViewModel(
                 }.onFailure { throwable ->
                     _errorEvent.emit(throwable)
                 }.also {
-                    isSaving.value = false
+                    _isSaving.value = false
                 }
         }
     }

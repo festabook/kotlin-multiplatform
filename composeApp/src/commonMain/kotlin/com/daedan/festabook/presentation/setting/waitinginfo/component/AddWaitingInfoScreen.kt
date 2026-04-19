@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Phone
@@ -19,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -63,7 +65,6 @@ import festabookkmp.composeapp.generated.resources.setting_waiting_info_add_term
 import festabookkmp.composeapp.generated.resources.setting_waiting_info_add_terms_title
 import festabookkmp.composeapp.generated.resources.setting_waiting_info_add_title
 import festabookkmp.composeapp.generated.resources.setting_waiting_info_back
-import festabookkmp.composeapp.generated.resources.setting_waiting_info_save_success
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -75,19 +76,18 @@ private const val TERMS_URL =
 fun AddWaitingInfoRoute(
     viewModel: WaitingInfoViewModel,
     onBackClick: () -> Unit,
-    onShowSnackBar: (String) -> Unit,
     onShowErrorSnackBar: (Throwable) -> Unit,
     modifier: Modifier = Modifier,
+    onSaveSuccess: () -> Unit = onBackClick,
 ) {
     val waitingInfoUiState by viewModel.waitingInfoUiState.collectAsStateWithLifecycle()
     val phoneNumber by viewModel.phoneNumber.collectAsStateWithLifecycle()
     val isTermsAgreed by viewModel.isTermsAgreed.collectAsStateWithLifecycle()
     val isSaveEnabled by viewModel.isSaveEnabled.collectAsStateWithLifecycle()
-    val saveSuccessMessage = stringResource(Res.string.setting_waiting_info_save_success)
+    val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
 
     ObserveAsEvents(flow = viewModel.saveSuccessEvent) {
-        onShowSnackBar(saveSuccessMessage)
-        onBackClick()
+        onSaveSuccess()
     }
     ObserveAsEvents(flow = viewModel.errorEvent) {
         onShowErrorSnackBar(it)
@@ -110,6 +110,7 @@ fun AddWaitingInfoRoute(
                 phoneNumber = phoneNumber,
                 isTermsAgreed = isTermsAgreed,
                 isSaveEnabled = isSaveEnabled,
+                isSaving = isSaving,
                 onPhoneNumberChange = viewModel::updatePhoneNumber,
                 onTermsAgreedChange = viewModel::setTermsAgreed,
                 onSaveClick = viewModel::saveWaitingInfo,
@@ -125,6 +126,7 @@ fun AddWaitingInfoScreen(
     phoneNumber: String,
     isTermsAgreed: Boolean,
     isSaveEnabled: Boolean,
+    isSaving: Boolean,
     onPhoneNumberChange: (String) -> Unit,
     onTermsAgreedChange: (Boolean) -> Unit,
     onSaveClick: (String) -> Unit,
@@ -219,6 +221,7 @@ fun AddWaitingInfoScreen(
                 ConfirmButton(
                     phoneNumber = phoneNumber,
                     isSaveEnabled = isSaveEnabled,
+                    isSaving = isSaving,
                     onSaveClick = onSaveClick,
                 )
             }
@@ -330,6 +333,7 @@ private fun WaitingInfoAddTerms(
 private fun ConfirmButton(
     phoneNumber: String,
     isSaveEnabled: Boolean,
+    isSaving: Boolean,
     onSaveClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -349,11 +353,19 @@ private fun ConfirmButton(
                 disabledContentColor = FestabookColor.gray400,
             ),
     ) {
-        Text(
-            text = stringResource(Res.string.setting_waiting_info_add_button),
-            style = FestabookTypography.displaySmall,
-            modifier = Modifier.padding(vertical = festabookSpacing.paddingBody2),
-        )
+        if (isSaving) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(28.dp),
+                color = FestabookColor.white,
+                strokeWidth = 4.dp,
+            )
+        } else {
+            Text(
+                text = stringResource(Res.string.setting_waiting_info_add_button),
+                style = FestabookTypography.displaySmall,
+                modifier = Modifier.padding(vertical = festabookSpacing.paddingBody2),
+            )
+        }
     }
 }
 
@@ -364,6 +376,7 @@ private fun AddWaitingInfoScreenEmptyPreview() {
         phoneNumber = "",
         isTermsAgreed = false,
         isSaveEnabled = false,
+        isSaving = false,
         onPhoneNumberChange = {},
         onTermsAgreedChange = {},
         onSaveClick = {},
@@ -378,6 +391,7 @@ private fun AddWaitingInfoScreenFilledPreview() {
         phoneNumber = "010-1234-5678",
         isTermsAgreed = true,
         isSaveEnabled = true,
+        isSaving = false,
         onPhoneNumberChange = {},
         onTermsAgreedChange = {},
         onSaveClick = {},
