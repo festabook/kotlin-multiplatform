@@ -28,7 +28,7 @@ data class MyWaitingResponse(
 fun MyWaitingResponse.toDomain() =
     MyWaiting(
         waitingId = waitingId,
-        waitingOrder = waitingOrder,
+        waitingOrderFromZero = waitingOrder,
         partySize = partySize,
         waitingStatus = waitingStatus,
         totalWaitingTeams = totalWaitingTeams,

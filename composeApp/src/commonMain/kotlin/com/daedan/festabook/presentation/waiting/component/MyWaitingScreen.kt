@@ -224,14 +224,14 @@ private fun MyWaitingContent(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            uiState.placeDetail?.let { placeDetail ->
+            uiState.myWaiting.placeDetail?.let { placeDetail ->
                 Box(
                     modifier =
                         Modifier
                             .cardBackground(
                                 backgroundColor = FestabookColor.white,
                                 shape = festabookShapes.radius4,
-                            ).clickable { onNavigateToPlaceDetail(uiState.placeId) },
+                            ).clickable { onNavigateToPlaceDetail(uiState.myWaiting.placeId) },
                 ) {
                     PlaceDetailPreviewContent(placeDetail = placeDetail)
                 }
@@ -260,11 +260,11 @@ private fun MyWaitingContent(
             )
 
             WaitingStatusCard(
-                order = uiState.order,
-                totalWaitingTeams = uiState.totalWaitingTeams,
-                estimatedWaitTime = uiState.estimatedWaitTime,
-                status = uiState.status,
-                isRefreshing = uiState.isRefreshing,
+                order = uiState.myWaiting.order,
+                totalWaitingTeams = uiState.myWaiting.totalWaitingTeams,
+                estimatedWaitTime = uiState.myWaiting.estimatedWaitTime,
+                status = uiState.myWaiting.status,
+                isRefreshing = uiState.myWaiting.isRefreshing,
                 onRefresh = onRefresh,
             )
 
@@ -278,8 +278,8 @@ private fun MyWaitingContent(
             )
 
             WaitingRegistrationInfo(
-                partySize = uiState.partySize,
-                phoneNumber = uiState.phoneNumber,
+                partySize = uiState.myWaiting.partySize,
+                phoneNumber = uiState.myWaiting.phoneNumber,
             )
 
             Spacer(modifier = Modifier.height(100.dp))

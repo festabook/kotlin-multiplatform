@@ -36,16 +36,17 @@ class HomeViewModelTest {
     private lateinit var festivalRepository: FestivalRepository
     private lateinit var myWaitingRepository: MyWaitingRepository
 
-    private val fakeMyWaiting = MyWaiting(
-        waitingId = 1L,
-        waitingOrder = 3,
-        partySize = 2,
-        waitingStatus = WaitingStatus.WAITING,
-        totalWaitingTeams = 10,
-        estimatedWaitTime = 15,
-        phoneNumber = "010-1234-5678",
-        placeId = 1L,
-    )
+    private val fakeMyWaiting =
+        MyWaiting(
+            waitingId = 1L,
+            waitingOrderFromZero = 3,
+            partySize = 2,
+            waitingStatus = WaitingStatus.WAITING,
+            totalWaitingTeams = 10,
+            estimatedWaitTime = 15,
+            phoneNumber = "010-1234-5678",
+            placeId = 1L,
+        )
 
     @BeforeTest
     fun setup() {
@@ -189,7 +190,7 @@ class HomeViewModelTest {
             // then
             val actual = homeViewModel.waitingBarUiState.value
             assertIs<WaitingBarUiState.Visible>(actual)
-            assertEquals(fakeMyWaiting.waitingOrder, actual.order)
+            assertEquals(fakeMyWaiting.waitingOrderFromZero, actual.order)
             assertEquals(fakeMyWaiting.estimatedWaitTime, actual.estimatedWaitTime)
         }
 

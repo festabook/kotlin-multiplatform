@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.daedan.festabook.di.viewmodel.ViewModelKey
 import com.daedan.festabook.domain.repository.FestivalRepository
 import com.daedan.festabook.domain.repository.MyWaitingRepository
-import com.daedan.festabook.presentation.home.FestivalUiState
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject

@@ -119,8 +119,12 @@ fun WaitingRegisterRoute(
                 viewModel.submitWaitingRegister()
             }
 
-            PermissionState.NEED_RATIONALE, PermissionState.DENIED -> {
+            PermissionState.NEED_RATIONALE -> {
                 onOpenAppSettings()
+            }
+
+            PermissionState.DENIED -> {
+                notificationPermissionManager.requestPermission()
             }
         }
     }
