@@ -10,7 +10,7 @@ sealed interface MyWaitingUiState {
 
     data class Success(
         val waitingId: Long,
-        val placeId: Long?,
+        val placeId: Long,
         val placeDetail: PlaceDetailUiModel?,
         val order: Int,
         val partySize: Int,

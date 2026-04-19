@@ -103,13 +103,11 @@ class MyWaitingViewModel(
         }
     }
 
-    private suspend fun fetchPlaceDetail(placeId: Long?): PlaceDetailUiModel? =
-        placeId?.let { pid ->
-            placeDetailRepository
-                .getPlaceDetail(pid)
-                .getOrNull()
-                ?.toUiModel()
-        }
+    private suspend fun fetchPlaceDetail(placeId: Long): PlaceDetailUiModel? =
+        placeDetailRepository
+            .getPlaceDetail(placeId)
+            .getOrNull()
+            ?.toUiModel()
 }
 
 private fun MyWaiting.toSuccessUiState(

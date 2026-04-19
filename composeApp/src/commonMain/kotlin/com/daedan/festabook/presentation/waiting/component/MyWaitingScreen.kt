@@ -225,20 +225,13 @@ private fun MyWaitingContent(
             Spacer(modifier = Modifier.height(16.dp))
 
             uiState.placeDetail?.let { placeDetail ->
-                val placeId = uiState.placeId
                 Box(
                     modifier =
                         Modifier
                             .cardBackground(
                                 backgroundColor = FestabookColor.white,
                                 shape = festabookShapes.radius4,
-                            ).then(
-                                if (placeId != null) {
-                                    Modifier.clickable { onNavigateToPlaceDetail(placeId) }
-                                } else {
-                                    Modifier
-                                },
-                            ),
+                            ).clickable { onNavigateToPlaceDetail(uiState.placeId) },
                 ) {
                     PlaceDetailPreviewContent(placeDetail = placeDetail)
                 }

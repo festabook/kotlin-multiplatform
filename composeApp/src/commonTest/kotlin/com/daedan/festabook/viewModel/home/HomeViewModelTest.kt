@@ -1,7 +1,6 @@
 package com.daedan.festabook.home
 
 import com.daedan.festabook.domain.model.MyWaiting
-import com.daedan.festabook.domain.model.MyWaitingWithPlace
 import com.daedan.festabook.domain.model.WaitingStatus
 import com.daedan.festabook.domain.repository.FestivalRepository
 import com.daedan.festabook.domain.repository.MyWaitingRepository
@@ -45,6 +44,7 @@ class HomeViewModelTest {
         totalWaitingTeams = 10,
         estimatedWaitTime = 15,
         phoneNumber = "010-1234-5678",
+        placeId = 1L,
     )
 
     @BeforeTest
@@ -180,7 +180,7 @@ class HomeViewModelTest {
         runTest {
             // given
             everySuspend { myWaitingRepository.getMyWaiting() } returns
-                Result.success(MyWaitingWithPlace(fakeMyWaiting, placeId = 1L))
+                Result.success(fakeMyWaiting)
 
             // when
             homeViewModel.loadWaitingBar()

@@ -8,5 +8,5 @@ data class MyWaiting(
     val totalWaitingTeams: Int,
     val estimatedWaitTime: Int,
     val phoneNumber: String,
-    val placeId: Long? = null,
+    val placeId: Long,
 )

@@ -26,6 +26,7 @@ val FAKE_MY_WAITING_RESPONSE =
         totalWaitingTeams = 10,
         estimatedWaitTime = 15,
         phoneNumber = "010-1234-5678",
+        placeId = 1L,
     )
 
 val FAKE_PLACE_WAITING_RESPONSE =
