@@ -280,8 +280,8 @@ private fun MyWaitingContent(
             Spacer(modifier = Modifier.height(100.dp))
         }
         WaitingCancelButton(
-            isEnabled = true,
-            isCancelling = false,
+            isEnabled = !uiState.myWaiting.isCanceling,
+            isCancelling = uiState.myWaiting.isCanceling,
             onClick = { showCancelConfirmDialog = true },
             modifier = Modifier.align(Alignment.BottomCenter),
         )
