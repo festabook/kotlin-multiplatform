@@ -44,7 +44,6 @@ class HomeViewModel(
     init {
         loadFestival()
         loadLineup()
-        loadWaitingBar()
     }
 
     fun loadFestival() {
