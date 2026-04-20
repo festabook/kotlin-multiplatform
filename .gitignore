@@ -25,6 +25,7 @@ captures/
 **/xcshareddata/WorkspaceSettings.xcsettings
 *.xcuserstate
 *.xcscheme
+!iosApp/iosApp.xcodeproj/xcshareddata/xcschemes/*.xcscheme
 *.xcworkspace
 xcuserdata/
 
@@ -66,6 +67,7 @@ local.properties
 *.jks
 *.keystore
 google-services.json
+firebase-services.json
 iosApp/iosApp/GoogleService-Info-DEBUG.plist
 iosApp/iosApp/GoogleService-Info-RELEASE.plist
 iosApp/iosApp/GoogleService-Info.plist
@@ -74,3 +76,14 @@ iosApp/iosApp/GoogleService-Info.plist
 /iosApp/Configuration/Debug.xcconfig
 /iosApp/Configuration/Release.xcconfig
 .worktrees/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+fastlane/README.md
+fastlane/build/
+*.p8
+*.p12
+*.mobileprovision

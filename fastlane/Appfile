@@ -1,0 +1,12 @@
+for_platform :android do
+  package_name("com.daedan.festabook")
+
+  for_lane :dev do
+    package_name("com.daedan.festabook.debug")
+  end
+end
+
+for_platform :ios do
+  # bundle id는 Fastfile의 lane 내부에서 local.properties 기반으로 해석합니다.
+  # Appfile 레벨에서는 apple_id / itc_team_id를 고정하지 않습니다.
+end
