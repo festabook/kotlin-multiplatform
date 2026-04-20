@@ -46,6 +46,8 @@ import festabookkmp.composeapp.generated.resources.my_waiting_total_teams_format
 import festabookkmp.composeapp.generated.resources.my_waiting_total_teams_label
 import org.jetbrains.compose.resources.stringResource
 
+private const val WAITING_NEAR_THRESHOLD = 3
+
 @Composable
 fun WaitingStatusCard(
     order: Int,
@@ -242,11 +244,11 @@ private fun statusHeadline(
     order: Int,
 ): String =
     when (status) {
-        WaitingStatus.WAITING if order >= 3 -> {
+        WaitingStatus.WAITING if order >= WAITING_NEAR_THRESHOLD -> {
             stringResource(Res.string.my_waiting_headline_waiting_far)
         }
 
-        WaitingStatus.WAITING if order < 3 -> {
+        WaitingStatus.WAITING if order < WAITING_NEAR_THRESHOLD -> {
             stringResource(Res.string.my_waiting_headline_waiting_near)
         }
 

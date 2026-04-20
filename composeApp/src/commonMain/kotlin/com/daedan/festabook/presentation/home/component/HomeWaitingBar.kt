@@ -44,12 +44,11 @@ fun HomeWaitingBar(
         modifier =
             modifier
                 .fillMaxWidth()
-                .background(FestabookColor.gray800, festabookShapes.radiusFull)
-                .clickable(onClick = onClick)
                 .shadow(
                     elevation = 4.dp,
                     shape = festabookShapes.radiusFull,
-                ),
+                ).background(FestabookColor.gray800, festabookShapes.radiusFull)
+                .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Row(
