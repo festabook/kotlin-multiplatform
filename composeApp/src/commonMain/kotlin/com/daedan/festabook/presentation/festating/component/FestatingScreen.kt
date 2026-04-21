@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
@@ -50,20 +49,10 @@ fun FestatingScreen(
 private fun rememberConfiguredWebViewState(
     url: String,
     headers: Map<String, String> = emptyMap(),
-): WebViewState {
-    val state =
-        rememberWebViewState(
-            url = url,
-            additionalHttpHeaders = headers,
-        )
-
-    LaunchedEffect(state) {
-        with(state.webSettings) {
-            androidWebSettings.apply {
-                domStorageEnabled = true
-            }
-        }
+): WebViewState =
+    rememberWebViewState(
+        url = url,
+        additionalHttpHeaders = headers,
+    ).apply {
+        webSettings.androidWebSettings.domStorageEnabled = true
     }
-
-    return state
-}
