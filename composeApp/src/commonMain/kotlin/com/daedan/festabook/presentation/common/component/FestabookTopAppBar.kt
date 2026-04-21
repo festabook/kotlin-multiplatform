@@ -22,7 +22,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun FestabookTopAppBar(
     title: String,
-    modifier: Modifier = Modifier.background(FestabookColor.white),
+    modifier: Modifier = Modifier,
     navigationIcon: @Composable () -> Unit = {},
     style: TextStyle = FestabookTypography.displayLarge,
 ) {
@@ -30,6 +30,7 @@ fun FestabookTopAppBar(
         modifier =
             modifier
                 .fillMaxWidth()
+                .background(FestabookColor.white)
                 .padding(
                     top = festabookSpacing.paddingTitleHorizontal,
                     bottom = festabookSpacing.paddingBody4,
@@ -46,10 +47,12 @@ fun FestabookTopAppBar(
 @Composable
 @Preview(showBackground = true)
 private fun FestabookTopAppBarPreview() {
-    FestabookTopAppBar(title = "FestaBook" , navigationIcon = { IconButton(onClick = {  }) {
-        Icon(
-            painter = painterResource(Res.drawable.ic_arrow_back),
-            contentDescription = null,
-        )
-    }})
+    FestabookTopAppBar(title = "FestaBook", navigationIcon = {
+        IconButton(onClick = { }) {
+            Icon(
+                painter = painterResource(Res.drawable.ic_arrow_back),
+                contentDescription = null,
+            )
+        }
+    })
 }
