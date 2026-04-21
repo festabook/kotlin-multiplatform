@@ -111,13 +111,15 @@ actual class NaverMap(
         animate: Boolean,
     ) {
         // iOS UIKit은 pt 단위 사용 — Dp는 iOS pt와 동일하므로 .value 직접 사용 가능
-        platformMap.mapView.contentInset =
+        platformMap.mapView.setContentInset(
             UIEdgeInsetsMake(
-                left = left.value.toDouble(),
-                top = top.value.toDouble(),
-                right = right.value.toDouble(),
-                bottom = bottom.value.toDouble(),
-            )
+                top.value.toDouble(),
+                left.value.toDouble(),
+                bottom.value.toDouble(),
+                right.value.toDouble(),
+            ),
+            animate,
+        )
     }
 
     actual fun interface OnCameraChangeListener {

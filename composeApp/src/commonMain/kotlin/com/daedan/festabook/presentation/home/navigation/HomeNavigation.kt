@@ -1,6 +1,11 @@
 package com.daedan.festabook.presentation.home.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -13,6 +18,7 @@ import com.daedan.festabook.presentation.main.component.FirstVisitDialog
 import com.daedan.festabook.presentation.setting.SettingViewModel
 
 fun NavGraphBuilder.homeNavGraph(
+    innerPadding: PaddingValues,
     homeViewModel: HomeViewModel,
     mainViewModel: MainViewModel,
     settingViewModel: SettingViewModel,
@@ -23,7 +29,10 @@ fun NavGraphBuilder.homeNavGraph(
     onNavigateToExplore: () -> Unit,
     onNavigateToFestating: (festivalId: Long) -> Unit,
 ) {
-    composable<MainTabRoute.Home> {
+    composable<MainTabRoute.Home>(
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+    ) {
         val isFirstVisit by mainViewModel.isFirstVisit.collectAsStateWithLifecycle()
         if (isFirstVisit) {
             FirstVisitDialog(
@@ -32,6 +41,7 @@ fun NavGraphBuilder.homeNavGraph(
             )
         }
         HomeScreen(
+            modifier = Modifier.padding(innerPadding),
             homeViewModel = homeViewModel,
             onShowErrorSnackbar = onShowErrorSnackbar,
             onNavigateToExplore = onNavigateToExplore,

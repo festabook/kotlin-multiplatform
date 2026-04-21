@@ -1,9 +1,13 @@
 package com.daedan.festabook.presentation.placeMap.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
@@ -15,21 +19,34 @@ import androidx.navigation.toRoute
 import androidx.savedstate.SavedState
 import androidx.savedstate.read
 import androidx.savedstate.write
+import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.main.FestabookRoute
 import com.daedan.festabook.presentation.main.MainTabRoute
 import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.PlaceDetailViewModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.component.PlaceDetailRoute
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
+import com.daedan.festabook.presentation.placeMap.waitingRegister.WaitingRegisterViewModel
+import com.daedan.festabook.presentation.placeMap.waitingRegister.component.WaitingRegisterRoute
+import com.daedan.festabook.presentation.setting.SettingViewModel
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.serialization.json.Json
 import kotlin.reflect.typeOf
 
 fun NavGraphBuilder.placeMapNavGraph(
+    innerPadding: PaddingValues,
+    settingViewModel: SettingViewModel,
+    notificationPermissionManager: NotificationPermissionManager,
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
+    onNavigateToAddWaitingInfo: (Long) -> Unit,
+    onNavigateToPhoneRegistration: (Long) -> Unit,
+    onShowSnackbar: (String) -> Unit,
 ) {
-    composable<MainTabRoute.PlaceMap> {
+    composable<MainTabRoute.PlaceMap>(
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+    ) {
     }
 
     composable<FestabookRoute.PlaceDetail>(
@@ -39,10 +56,10 @@ fun NavGraphBuilder.placeMapNavGraph(
                 typeOf<PlaceUiModel?>() to defaultNavType<PlaceUiModel?>(),
             ),
         enterTransition = {
-            slideInVertically(initialOffsetY = { it / 10 }) + fadeIn()
+            slideInVertically(initialOffsetY = { it / INITIAL_OFFSET_CONSTANT }) + fadeIn()
         },
         exitTransition = {
-            slideOutVertically(targetOffsetY = { it / 10 }) + fadeOut()
+            slideOutVertically(targetOffsetY = { it / INITIAL_OFFSET_CONSTANT }) + fadeOut()
         },
     ) { backStackEntry ->
         val route = backStackEntry.toRoute<FestabookRoute.PlaceDetail>()
@@ -50,23 +67,56 @@ fun NavGraphBuilder.placeMapNavGraph(
             assistedMetroViewModel<PlaceDetailViewModel>(
                 extras =
                     MutableCreationExtras().apply {
-                        set(PlaceDetailViewModel.PlaceKey, route.placeUiModel)
-                        set(PlaceDetailViewModel.PlaceDetailKey, route.placeDetailUiModel)
+                        set(PlaceDetailViewModel.PlaceIdKey, route.placeId)
                     },
             )
 
         PlaceDetailRoute(
             modifier =
-                Modifier.graphicsLayer(
-                    compositingStrategy = CompositingStrategy.Offscreen,
-                    clip = true,
-                ),
+                Modifier
+                    .padding(innerPadding)
+                    .graphicsLayer(
+                        compositingStrategy = CompositingStrategy.Offscreen,
+                        clip = true,
+                    ),
             viewModel = viewModel,
             onBackToPreviousClick = onBackToPreviousClick,
             onShowErrorSnackbar = onShowErrorSnackbar,
+            onNavigateToWaitingRegister = onNavigateToAddWaitingInfo,
+        )
+    }
+
+    composable<FestabookRoute.WaitingRegister>(
+        enterTransition = {
+            slideInVertically(initialOffsetY = { it / 10 }) + fadeIn()
+        },
+        exitTransition = {
+            slideOutVertically(targetOffsetY = { it / 10 }) + fadeOut()
+        },
+    ) { backStackEntry ->
+        val route = backStackEntry.toRoute<FestabookRoute.WaitingRegister>()
+        val viewModel =
+            assistedMetroViewModel<WaitingRegisterViewModel>(
+                extras =
+                    MutableCreationExtras().apply {
+                        set(WaitingRegisterViewModel.PlaceIdKey, route.placeId)
+                    },
+            )
+
+        WaitingRegisterRoute(
+            viewModel = viewModel,
+            settingViewModel = settingViewModel,
+            modifier = Modifier.padding(innerPadding),
+            onBackToPreviousClick = onBackToPreviousClick,
+            onShowErrorSnackbar = onShowErrorSnackbar,
+            onShowSnackbar = onShowSnackbar,
+            onNavigateToPhoneRegistration = { onNavigateToPhoneRegistration(route.placeId) },
+            notificationPermissionManager = notificationPermissionManager,
         )
     }
 }
+
+private const val INITIAL_OFFSET_CONSTANT = 10
 
 private inline fun <reified T> defaultNavType() =
     object : NavType<T>(isNullableAllowed = true) {

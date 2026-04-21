@@ -51,12 +51,12 @@ fun FestabookScreen(
                     },
                 )
             },
-            onNavigateToMain = { festabookNavigator.navigate(FestabookRoute.Main) },
+            onNavigateToMain = { festabookNavigator.navigate(FestabookRoute.Main()) },
             onFinishApp = onAppFinish,
         )
         exploreNavGraph(
             onBackClick = { festabookNavigator.popBackStack() },
-            onNavigateToMain = { festabookNavigator.navigate(FestabookRoute.Main) },
+            onNavigateToMain = { festabookNavigator.navigate(FestabookRoute.Main()) },
         )
         mainNavGraph(
             appGraph = appGraph,

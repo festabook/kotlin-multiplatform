@@ -3,12 +3,15 @@ package com.daedan.festabook.presentation.placeMap.placeDetail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.daedan.festabook.domain.model.PlaceWaiting
+import com.daedan.festabook.domain.repository.MyWaitingRepository
 import com.daedan.festabook.domain.repository.PlaceDetailRepository
+import com.daedan.festabook.domain.repository.WaitingRegisterInfoRepository
 import com.daedan.festabook.presentation.news.notice.model.NoticeUiModel
-import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.ImageUiModel
-import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiState
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingStatusUiState
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.WaitingTeamUiState
 import com.daedan.festabook.presentation.placeMap.placeDetail.model.toUiModel
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -17,15 +20,20 @@ import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
 import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @AssistedInject
 class PlaceDetailViewModel(
     private val placeDetailRepository: PlaceDetailRepository,
-    @Assisted private val place: PlaceUiModel?,
-    @Assisted private val receivedPlaceDetail: PlaceDetailUiModel?,
+    private val waitingRegisterInfoRepository: WaitingRegisterInfoRepository,
+    private val myWaitingRepository: MyWaitingRepository,
+    @Assisted private val placeId: Long,
 ) : ViewModel() {
     @AssistedFactory
     @ViewModelAssistedFactoryKey(PlaceDetailViewModel::class)
@@ -33,14 +41,10 @@ class PlaceDetailViewModel(
     interface Factory : ViewModelAssistedFactory {
         override fun create(extras: CreationExtras): PlaceDetailViewModel =
             create(
-                place = extras[PlaceKey],
-                receivedPlaceDetail = extras[PlaceDetailKey],
+                placeId = extras[PlaceIdKey] ?: error("placeId must be required"),
             )
 
-        fun create(
-            place: PlaceUiModel?,
-            receivedPlaceDetail: PlaceDetailUiModel?,
-        ): PlaceDetailViewModel
+        fun create(placeId: Long): PlaceDetailViewModel
     }
 
     private val _placeDetail =
@@ -49,13 +53,17 @@ class PlaceDetailViewModel(
         )
     val placeDetail: StateFlow<PlaceDetailUiState> = _placeDetail
 
+    private val _navigateToWaitingRegisterEvent = MutableSharedFlow<Long>(replay = 0, extraBufferCapacity = 1)
+    val navigateToWaitingRegisterEvent: SharedFlow<Long> = _navigateToWaitingRegisterEvent.asSharedFlow()
+
+    private val _showDuplicateWaitingBottomSheetEvent = MutableSharedFlow<Long>(replay = 0, extraBufferCapacity = 1)
+    val showDuplicateWaitingBottomSheetEvent: SharedFlow<Long> = _showDuplicateWaitingBottomSheetEvent.asSharedFlow()
+
+    private val _cancelWaitingFailureEvent = MutableSharedFlow<Throwable>(replay = 0, extraBufferCapacity = 1)
+    val cancelWaitingFailureEvent: SharedFlow<Throwable> = _cancelWaitingFailureEvent.asSharedFlow()
+
     init {
-        receivedPlaceDetail?.let {
-            val placeDetailUiModel =
-                if (it.images.isEmpty()) it.copy(images = listOf(ImageUiModel())) else it
-            _placeDetail.value = PlaceDetailUiState.Success(placeDetailUiModel)
-        }
-        place?.let { loadPlaceDetail(it.id) }
+        loadPlaceDetail(placeId)
     }
 
     fun loadPlaceDetail(placeId: Long) {
@@ -71,32 +79,159 @@ class PlaceDetailViewModel(
                         }
                     _placeDetail.value =
                         PlaceDetailUiState.Success(placeDetailUiModel)
-                }.onFailure {
-                    _placeDetail.value = PlaceDetailUiState.Error(it)
+                    loadWaitingStatus()
+                }.onFailure { throwable ->
+                    _placeDetail.value = PlaceDetailUiState.Error(throwable)
                 }
         }
     }
 
+    suspend fun refreshWaitingStatus() {
+        updateInnerState { current ->
+            val previousTeams = (current.waitingTeam as? WaitingTeamUiState.Success)?.totalTeams ?: 0
+            current.copy(waitingTeam = WaitingTeamUiState.Refresh(totalTeams = previousTeams))
+        }
+        val placeDetailState = _placeDetail.value
+        if (placeDetailState !is PlaceDetailUiState.Success) return
+        val placeId = placeDetailState.placeDetail.place.id
+        val waitingResult = waitingRegisterInfoRepository.getPlaceWaiting(placeId)
+
+        waitingResult
+            .onSuccess { placeWaiting ->
+                val waitingTeamUiState =
+                    WaitingTeamUiState.Success(totalTeams = placeWaiting.totalWaitingTeams)
+
+                updateInnerState { current ->
+                    val nextWaitingStatus =
+                        when (current.waitingStatus) {
+                            is WaitingStatusUiState.Active -> {
+                                WaitingStatusUiState.Active(estimatedMinutes = placeWaiting.estimatedWaitTime)
+                            }
+
+                            is WaitingStatusUiState.Closed -> {
+                                WaitingStatusUiState.Closed(estimatedMinutes = placeWaiting.estimatedWaitTime)
+                            }
+
+                            else -> {
+                                current.waitingStatus
+                            }
+                        }
+                    current.copy(
+                        waitingTeam = waitingTeamUiState,
+                        waitingStatus = nextWaitingStatus,
+                    )
+                }
+            }.onFailure { throwable ->
+                updateInnerState { current ->
+                    current.copy(
+                        waitingTeam = WaitingTeamUiState.Error(throwable),
+                    )
+                }
+            }
+    }
+
     fun toggleNoticeExpanded(notice: NoticeUiModel) {
-        val currentState = _placeDetail.value
-        if (currentState !is PlaceDetailUiState.Success) return
-        _placeDetail.value =
-            currentState.copy(
+        _placeDetail.update { current ->
+            if (current !is PlaceDetailUiState.Success) return@update current
+            current.copy(
                 placeDetail =
-                    currentState.placeDetail.copy(
+                    current.placeDetail.copy(
                         notices =
-                            currentState.placeDetail.notices.map {
-                                if (notice.id == it.id) {
-                                    it.copy(isExpanded = !it.isExpanded)
-                                } else {
-                                    it
-                                }
+                            current.placeDetail.notices.map {
+                                if (notice.id == it.id) it.copy(isExpanded = !it.isExpanded) else it
                             },
                     ),
             )
+        }
     }
 
-    object PlaceKey : CreationExtras.Key<PlaceUiModel?>
+    fun onRegisterWaitingClick() {
+        val current = _placeDetail.value
+        if (current !is PlaceDetailUiState.Success) return
+        val placeId = current.placeDetail.place.id
 
-    object PlaceDetailKey : CreationExtras.Key<PlaceDetailUiModel?>
+        viewModelScope.launch {
+            myWaitingRepository
+                .getMyWaiting()
+                .onSuccess { myWaiting ->
+                    if (myWaiting == null) {
+                        _navigateToWaitingRegisterEvent.tryEmit(placeId)
+                    } else {
+                        _showDuplicateWaitingBottomSheetEvent.tryEmit(myWaiting.waitingId)
+                    }
+                }.onFailure {
+                    _navigateToWaitingRegisterEvent.tryEmit(placeId)
+                }
+        }
+    }
+
+    fun cancelAndRegister(waitingId: Long) {
+        val current = _placeDetail.value
+        if (current !is PlaceDetailUiState.Success) return
+        val placeId = current.placeDetail.place.id
+
+        viewModelScope.launch {
+            myWaitingRepository
+                .cancelWaiting(waitingId)
+                .onSuccess {
+                    _navigateToWaitingRegisterEvent.tryEmit(placeId)
+                }.onFailure { throwable ->
+                    _cancelWaitingFailureEvent.tryEmit(throwable)
+                }
+        }
+    }
+
+    // TODO UseCase 혹은 Domain Layer로 이동, 하지만 PlaceUiModel -> Place로 변환 불가, 아키텍쳐 변화 필요
+    private fun PlaceDetailUiState.isWaitingNotSupported(placeWaiting: PlaceWaiting): Boolean =
+        if (this is PlaceDetailUiState.Success) {
+            !placeDetail.isWaitingActive && placeWaiting.totalWaitingTeams == 0
+        } else {
+            true
+        }
+
+    private suspend fun loadWaitingStatus() {
+        val placeDetailState = _placeDetail.value
+        if (placeDetailState !is PlaceDetailUiState.Success) return
+        val placeId = placeDetailState.placeDetail.place.id
+        val waitingResult = waitingRegisterInfoRepository.getPlaceWaiting(placeId)
+        val isWaitingActive = placeDetailState.placeDetail.isWaitingActive
+
+        waitingResult
+            .onSuccess { placeWaiting ->
+                val isWaitingNotSupported = placeDetailState.isWaitingNotSupported(placeWaiting)
+                val waitingTeamUiState =
+                    WaitingTeamUiState.Success(totalTeams = placeWaiting.totalWaitingTeams)
+
+                val waitingStatusUiState =
+                    if (isWaitingActive) {
+                        WaitingStatusUiState.Active(
+                            estimatedMinutes = placeWaiting.estimatedWaitTime,
+                        )
+                    } else {
+                        WaitingStatusUiState.Closed(
+                            estimatedMinutes = placeWaiting.estimatedWaitTime,
+                        )
+                    }
+                updateInnerState { current ->
+                    current.copy(
+                        waitingTeam = if (isWaitingNotSupported) WaitingTeamUiState.InActive else waitingTeamUiState,
+                        waitingStatus = if (isWaitingNotSupported) WaitingStatusUiState.InActive else waitingStatusUiState,
+                    )
+                }
+            }.onFailure { throwable ->
+                _placeDetail.value = PlaceDetailUiState.Error(throwable)
+            }
+    }
+
+    private fun updateInnerState(onUpdate: (PlaceDetailUiState.Success) -> PlaceDetailUiState.Success) {
+        _placeDetail.update { current ->
+            if (current is PlaceDetailUiState.Success) {
+                onUpdate(current)
+            } else {
+                current
+            }
+        }
+    }
+
+    object PlaceIdKey : CreationExtras.Key<Long>
 }

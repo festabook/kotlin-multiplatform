@@ -8,20 +8,13 @@ object DeepLinkKeys {
     const val KEY_NOTICE_ID_TO_EXPAND = "noticeIdToExpand"
     const val KEY_CAN_NAVIGATE_TO_NEWS = "canNavigateToNews"
     const val INITIALIZED_ID = -1L
-    const val KEY_FCM_NOTIFICATION = "fcmNewsNotification"
 }
 
-expect class Intent {
-    fun getLongExtra(
-        key: String,
-        defaultValue: Long,
-    ): Long
-
-    fun getBooleanExtra(
-        key: String,
-        defaultValue: Boolean,
-    ): Boolean
-}
-
+/**
+ * FCM 알림 클릭 시 호출되는 딥링크 핸들러.
+ *
+ * @param onNotificationClick announcementId와 festivalId 변경 여부를 전달.
+ *  Android에서는 festivalIdChanged가 항상 false (Activity 재시작으로 처리).
+ */
 @Composable
-expect fun RememberDeepLinkHandler(onDeepLink: (Intent) -> Unit)
+expect fun RememberDeepLinkHandler(onNotificationClick: (announcementId: Long, festivalIdChanged: Boolean) -> Unit)

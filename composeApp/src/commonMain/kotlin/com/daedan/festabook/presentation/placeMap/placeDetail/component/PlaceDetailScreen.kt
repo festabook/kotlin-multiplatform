@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -32,6 +34,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -48,6 +51,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
+import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.EmptyStateScreen
 import com.daedan.festabook.presentation.common.component.FestabookImage
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
@@ -78,23 +82,70 @@ import festabookkmp.composeapp.generated.resources.place_detail_default_time
 import festabookkmp.composeapp.generated.resources.place_list_default_description
 import festabookkmp.composeapp.generated.resources.place_list_default_location
 import festabookkmp.composeapp.generated.resources.place_list_default_title
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaceDetailRoute(
     viewModel: PlaceDetailViewModel,
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
+    onNavigateToWaitingRegister: (placeId: Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val placeDetailUiState by viewModel.placeDetail.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
+    var duplicateWaitingId by remember { mutableStateOf<Long?>(null) }
+    var showCancelConfirmDialog by remember { mutableStateOf(false) }
+
+    ObserveAsEvents(viewModel.navigateToWaitingRegisterEvent) { placeId ->
+        duplicateWaitingId = null
+        showCancelConfirmDialog = false
+        onNavigateToWaitingRegister(placeId)
+    }
+    ObserveAsEvents(viewModel.showDuplicateWaitingBottomSheetEvent) { waitingId ->
+        duplicateWaitingId = waitingId
+    }
+    ObserveAsEvents(viewModel.cancelWaitingFailureEvent) { throwable ->
+        showCancelConfirmDialog = false
+        onShowErrorSnackbar(throwable)
+    }
+
+    if (duplicateWaitingId != null && !showCancelConfirmDialog) {
+        WaitingDuplicateBottomSheet(
+            onMyWaitingClick = {
+                // TODO 나의 웨이팅 화면으로 이동
+            },
+            onRegisterNewClick = { showCancelConfirmDialog = true },
+            onDismiss = { duplicateWaitingId = null },
+        )
+    }
+
+    if (showCancelConfirmDialog) {
+        WaitingCancelConfirmDialog(
+            onDismissClick = {
+                duplicateWaitingId = null
+                showCancelConfirmDialog = false
+            },
+            onCancelClick = {
+                duplicateWaitingId?.let { viewModel.cancelAndRegister(it) }
+            },
+            onDismissRequest = { showCancelConfirmDialog = false },
+        )
+    }
+
     PlaceDetailScreen(
         modifier = modifier,
         uiState = placeDetailUiState,
         onBackToPreviousClick = onBackToPreviousClick,
         onShowErrorSnackbar = onShowErrorSnackbar,
+        onRegisterWaitingClick = viewModel::onRegisterWaitingClick,
+        onWaitingRefresh = {
+            scope.launch { viewModel.refreshWaitingStatus() }
+        },
     )
 }
 
@@ -102,8 +153,10 @@ fun PlaceDetailRoute(
 fun PlaceDetailScreen(
     uiState: PlaceDetailUiState,
     onBackToPreviousClick: () -> Unit,
+    onWaitingRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     onShowErrorSnackbar: (Throwable) -> Unit = {}, // TODO Fragment 제거 시 필수 파라미터로 변경
+    onRegisterWaitingClick: () -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
     val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
@@ -143,24 +196,42 @@ fun PlaceDetailScreen(
                 images = uiState.placeDetail.images,
             )
 
-            Column(
-                modifier =
-                    modifier
-                        .fillMaxSize()
-                        .background(color = FestabookColor.white)
-                        .verticalScroll(scrollState),
-            ) {
-                PlaceDetailImageContent(
-                    images = uiState.placeDetail.images,
-                    onBackToPreviousClick = onBackToPreviousClick,
-                    onPageUpdate = { pagerState.scrollToPage(it) },
+            Box(modifier = modifier.fillMaxSize()) {
+                Column(
                     modifier =
                         Modifier
-                            .clickable { isDialogOpen = true }
-                            .fillMaxWidth(),
-                )
+                            .fillMaxSize()
+                            .background(color = FestabookColor.white)
+                            .verticalScroll(scrollState),
+                ) {
+                    PlaceDetailImageContent(
+                        images = uiState.placeDetail.images,
+                        onBackToPreviousClick = onBackToPreviousClick,
+                        onPageUpdate = { pagerState.scrollToPage(it) },
+                        modifier =
+                            Modifier
+                                .clickable { isDialogOpen = true }
+                                .fillMaxWidth(),
+                    )
 
-                PlaceDetailContent(placeDetail = uiState.placeDetail)
+                    PlaceDetailContent(placeDetail = uiState.placeDetail)
+
+                    PlaceWaitingContent(
+                        waiting = uiState.waitingTeam,
+                        onRefresh = onWaitingRefresh,
+                        onShowErrorSnackbar = currentOnShowErrorSnackbar,
+                    )
+
+                    PlaceDetailDescription(placeDetail = uiState.placeDetail)
+
+                    Spacer(modifier = Modifier.height(80.dp))
+                }
+
+                PlaceDetailBottomBar(
+                    waiting = uiState.waitingStatus,
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                    onRegisterWaitingClick = onRegisterWaitingClick,
+                )
             }
         }
 
@@ -283,8 +354,6 @@ private fun PlaceDetailContent(
     placeDetail: PlaceDetailUiModel,
     modifier: Modifier = Modifier,
 ) {
-    var isDescriptionExpand by remember { mutableStateOf(true) }
-
     Column(
         modifier = modifier.padding(horizontal = festabookSpacing.paddingScreenGutter),
     ) {
@@ -300,35 +369,46 @@ private fun PlaceDetailContent(
         )
 
         PlaceDetailInfo(placeDetail = placeDetail)
-
-        URLText(
-            modifier =
-                Modifier
-                    .animateContentSize(
-                        animationSpec =
-                            spring(
-                                dampingRatio = Spring.DampingRatioLowBouncy,
-                                stiffness = Spring.StiffnessMedium,
-                            ),
-                    ).padding(
-                        top = festabookSpacing.paddingBody3,
-                    ),
-            onClick = {
-                isDescriptionExpand = !isDescriptionExpand
-            },
-            text =
-                placeDetail.place.description
-                    ?: stringResource(Res.string.place_list_default_description),
-            style = FestabookTypography.bodySmall,
-            maxLines =
-                if (isDescriptionExpand) {
-                    Int.MAX_VALUE
-                } else {
-                    1
-                },
-            overflow = TextOverflow.Ellipsis,
-        )
     }
+}
+
+@Composable
+private fun PlaceDetailDescription(
+    placeDetail: PlaceDetailUiModel,
+    modifier: Modifier = Modifier,
+) {
+    var isDescriptionExpand by remember { mutableStateOf(true) }
+
+    URLText(
+        modifier =
+            modifier
+                .animateContentSize(
+                    animationSpec =
+                        spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessMedium,
+                        ),
+                ).padding(
+                    horizontal = festabookSpacing.paddingScreenGutter,
+                ).padding(
+                    bottom = festabookSpacing.paddingBody3,
+                ),
+        onClick = {
+            isDescriptionExpand = !isDescriptionExpand
+        },
+        text =
+            placeDetail.place.description
+                ?: stringResource(Res.string.place_list_default_description),
+        style = FestabookTypography.bodyMedium,
+        maxLines =
+            if (isDescriptionExpand) {
+                Int.MAX_VALUE
+            } else {
+                1
+            },
+        overflow = TextOverflow.Ellipsis,
+        color = FestabookColor.gray500,
+    )
 }
 
 @Composable
@@ -382,7 +462,7 @@ private fun PlaceDetailInfoItem(
         Text(
             modifier = Modifier.padding(start = festabookSpacing.paddingBody1),
             text = text,
-            style = FestabookTypography.bodySmall,
+            style = FestabookTypography.bodyMedium,
             color = FestabookColor.gray500,
         )
     }
@@ -443,11 +523,12 @@ private fun formattedDate(
 
 @Preview(showBackground = true)
 @Composable
-private fun PlaceDetailScreenPreview() {
+private fun PlaceDetailScreenActivePreview() {
     FestabookTheme {
         PlaceDetailScreen(
             onBackToPreviousClick = {},
             onShowErrorSnackbar = {},
+            onWaitingRefresh = {},
             uiState =
                 PlaceDetailUiState.Success(
                     placeDetail =
@@ -456,32 +537,86 @@ private fun PlaceDetailScreenPreview() {
                                 PlaceUiModel(
                                     id = 1,
                                     imageUrl = null,
-                                    title = "테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트",
-                                    description =
-                                        "테스트테스트테스트테스트테스트테스.트테스트.테스트테스트테스트테스트//테스트테스트테스트테스트테스" +
-                                            "트테스트테스트테스트http://i1.sndcdn.com/art 트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테" +
-                                            "스트테스트테스트테스트https://i.ytimg.com/vi/Wr8egRRLU28/maxresdefault.com테스트테스트테스트테스트" +
-                                            "테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트",
-                                    location = "테스트테스트테스트테스트테스트테스트테스트테스트테스트",
+                                    title = "컹과 주점 '코딩하며 한잔'",
+                                    description = "테스트 설명입니다.",
+                                    location = "테스트 위치",
                                     category = PlaceCategoryUiModel.FOOD_TRUCK,
                                     isBookmarked = true,
                                     timeTagId = listOf(1),
                                 ),
                             notices = emptyList(),
-                            host = "테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트",
+                            host = "테스트",
                             startTime = "09:00",
                             endTime = "18:00",
-                            images =
-                                listOf(
-                                    ImageUiModel(
-                                        id = 1,
-                                        url = "https://i1.sndcdn.com/artworks-AIxlEDn4gNDBnNJj-qHUnyA-t500x500.jpg",
-                                    ),
-                                    ImageUiModel(
-                                        id = 2,
-                                        url = "https://i.ytimg.com/vi/Wr8egRRLU28/maxresdefault.jpg",
-                                    ),
+                            images = listOf(ImageUiModel(id = 1, url = "")),
+                        ),
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PlaceDetailScreenClosedPreview() {
+    FestabookTheme {
+        PlaceDetailScreen(
+            onBackToPreviousClick = {},
+            onShowErrorSnackbar = {},
+            onWaitingRefresh = {},
+            uiState =
+                PlaceDetailUiState.Success(
+                    placeDetail =
+                        PlaceDetailUiModel(
+                            place =
+                                PlaceUiModel(
+                                    id = 1,
+                                    imageUrl = null,
+                                    title = "컹과 주점 '코딩하며 한잔'",
+                                    description = "테스트 설명입니다.",
+                                    location = "테스트 위치",
+                                    category = PlaceCategoryUiModel.FOOD_TRUCK,
+                                    isBookmarked = true,
+                                    timeTagId = listOf(1),
                                 ),
+                            notices = emptyList(),
+                            host = "테스트",
+                            startTime = "09:00",
+                            endTime = "18:00",
+                            images = listOf(ImageUiModel(id = 1, url = "")),
+                        ),
+                ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PlaceDetailScreenInactivePreview() {
+    FestabookTheme {
+        PlaceDetailScreen(
+            onBackToPreviousClick = {},
+            onShowErrorSnackbar = {},
+            onWaitingRefresh = {},
+            uiState =
+                PlaceDetailUiState.Success(
+                    placeDetail =
+                        PlaceDetailUiModel(
+                            place =
+                                PlaceUiModel(
+                                    id = 1,
+                                    imageUrl = null,
+                                    title = "컹과 주점 '코딩하며 한잔'",
+                                    description = "테스트 설명입니다.",
+                                    location = "테스트 위치",
+                                    category = PlaceCategoryUiModel.FOOD_TRUCK,
+                                    isBookmarked = true,
+                                    timeTagId = listOf(1),
+                                ),
+                            notices = emptyList(),
+                            host = "테스트",
+                            startTime = "09:00",
+                            endTime = "18:00",
+                            images = listOf(ImageUiModel(id = 1, url = "")),
                         ),
                 ),
         )

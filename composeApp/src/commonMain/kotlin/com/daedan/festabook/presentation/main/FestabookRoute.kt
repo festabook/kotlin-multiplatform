@@ -1,7 +1,5 @@
 package com.daedan.festabook.presentation.main
 
-import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
-import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -11,19 +9,29 @@ sealed interface FestabookRoute {
 
     @Serializable
     data class PlaceDetail(
-        val placeUiModel: PlaceUiModel? = null,
-        val placeDetailUiModel: PlaceDetailUiModel? = null,
+        val placeId: Long,
+    ) : FestabookRoute
+
+    @Serializable
+    data class WaitingRegister(
+        val placeId: Long,
     ) : FestabookRoute
 
     @Serializable
     data object Explore : FestabookRoute
 
-    @Serializable
-    data object Main : FestabookRoute
+    data class Main(
+        val pendingAnnouncementId: Long? = null,
+    ) : FestabookRoute
 
     @Serializable
     data class Festating(
         val festivalId: Long,
+    ) : FestabookRoute
+
+    @Serializable
+    data class AddWaitingInfo(
+        val placeId: Long? = null,
     ) : FestabookRoute
 }
 
