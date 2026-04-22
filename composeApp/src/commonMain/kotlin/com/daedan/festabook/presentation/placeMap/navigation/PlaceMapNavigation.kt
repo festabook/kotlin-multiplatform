@@ -36,11 +36,12 @@ import kotlin.reflect.typeOf
 fun NavGraphBuilder.placeMapNavGraph(
     innerPadding: PaddingValues,
     settingViewModel: SettingViewModel,
-    notificationPermissionManager: NotificationPermissionManager,
+    notificationPermissionManagerFactory: NotificationPermissionManager.Factory,
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
     onNavigateToAddWaitingInfo: (Long) -> Unit,
     onNavigateToPhoneRegistration: (Long) -> Unit,
+    onNavigateToMyWaiting: () -> Unit,
     onShowSnackbar: (String) -> Unit,
 ) {
     composable<MainTabRoute.PlaceMap>(
@@ -83,6 +84,7 @@ fun NavGraphBuilder.placeMapNavGraph(
             onBackToPreviousClick = onBackToPreviousClick,
             onShowErrorSnackbar = onShowErrorSnackbar,
             onNavigateToWaitingRegister = onNavigateToAddWaitingInfo,
+            onNavigateToMyWaiting = onNavigateToMyWaiting,
         )
     }
 
@@ -111,7 +113,8 @@ fun NavGraphBuilder.placeMapNavGraph(
             onShowErrorSnackbar = onShowErrorSnackbar,
             onShowSnackbar = onShowSnackbar,
             onNavigateToPhoneRegistration = { onNavigateToPhoneRegistration(route.placeId) },
-            notificationPermissionManager = notificationPermissionManager,
+            onNavigateToMyWaiting = onNavigateToMyWaiting,
+            notificationPermissionManagerFactory = notificationPermissionManagerFactory,
         )
     }
 }

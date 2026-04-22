@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -30,8 +31,10 @@ import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.LineUpItemGroupUiModel
 import com.daedan.festabook.presentation.home.LineupItemUiModel
 import com.daedan.festabook.presentation.home.LineupUiState
+import com.daedan.festabook.presentation.home.WaitingBarUiState
 import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.theme.FestabookColor
+import com.daedan.festabook.presentation.theme.festabookSpacing
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.error_fail_to_load_info
 import festabookkmp.composeapp.generated.resources.setting_notice_enabled
@@ -50,12 +53,14 @@ fun HomeScreen(
     settingViewModel: SettingViewModel,
     notificationPermissionManager: NotificationPermissionManager,
     onNavigateToExplore: () -> Unit,
+    onNavigateToMyWaiting: () -> Unit,
     onShowSnackBar: (String) -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val festivalUiState by viewModel.festivalUiState.collectAsStateWithLifecycle()
     val lineupUiState by viewModel.lineupUiState.collectAsStateWithLifecycle()
+    val waitingBarUiState by viewModel.waitingBarUiState.collectAsStateWithLifecycle()
     val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
     val settingEnabledText = stringResource(Res.string.setting_notice_enabled)
 
@@ -69,6 +74,14 @@ fun HomeScreen(
 
     ObserveAsEvents(flow = settingViewModel.error) {
         currentOnShowErrorSnackbar(it)
+    }
+
+    ObserveAsEvents(flow = viewModel.navigateToMyWaitingEvent) {
+        onNavigateToMyWaiting()
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadWaitingBar()
     }
 
     LaunchedEffect(festivalUiState) {
@@ -98,13 +111,37 @@ fun HomeScreen(
         }
 
         is FestivalUiState.Success -> {
-            FestivalOverview(
-                festivalUiState = state,
-                lineupUiState = lineupUiState,
-                onNavigateToExplore = onNavigateToExplore,
-                onNavigateToSchedule = viewModel::navigateToScheduleClick,
-                modifier = modifier,
-            )
+            Box(modifier = modifier.fillMaxSize()) {
+                FestivalOverview(
+                    festivalUiState = state,
+                    lineupUiState = lineupUiState,
+                    onNavigateToExplore = onNavigateToExplore,
+                    onNavigateToSchedule = viewModel::navigateToScheduleClick,
+                )
+                when (val waitingBarUiState = waitingBarUiState) {
+                    is WaitingBarUiState.Visible -> {
+                        HomeWaitingBar(
+                            order = waitingBarUiState.order,
+                            estimatedMinutes = waitingBarUiState.estimatedWaitTime,
+                            status = waitingBarUiState.status,
+                            onClick = viewModel::navigateToMyWaitingClick,
+                            modifier =
+                                Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .fillMaxWidth()
+                                    .padding(
+                                        start = festabookSpacing.paddingBody4,
+                                        end = festabookSpacing.paddingBody4,
+                                        bottom = festabookSpacing.paddingBody4,
+                                    ),
+                        )
+                    }
+
+                    else -> {
+                        Unit
+                    }
+                }
+            }
         }
     }
 }

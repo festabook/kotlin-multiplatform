@@ -26,6 +26,8 @@ fun NavGraphBuilder.mainNavGraph(
             onAppFinish = onAppFinish,
             festabookNavigator = festabookNavigator,
             pendingAnnouncementId = mainRoute.pendingAnnouncementId,
+            pendingPlaceDetailId = mainRoute.pendingPlaceDetailId,
+            pendingMyWaiting = mainRoute.pendingMyWaiting,
             homeViewModel = metroViewModel(mainBackEntry),
             scheduleViewModel = metroViewModel(mainBackEntry),
             placeMapViewModel = metroViewModel(mainBackEntry),

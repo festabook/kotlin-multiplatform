@@ -27,6 +27,7 @@ fun NavGraphBuilder.homeNavGraph(
     onShowErrorSnackbar: (Throwable) -> Unit,
     onSubscriptionConfirm: () -> Unit,
     onNavigateToExplore: () -> Unit,
+    onNavigateToMyWaiting: () -> Unit,
 ) {
     composable<MainTabRoute.Home>(
         enterTransition = { EnterTransition.None },
@@ -44,6 +45,7 @@ fun NavGraphBuilder.homeNavGraph(
             viewModel = viewModel,
             onShowErrorSnackbar = onShowErrorSnackbar,
             onNavigateToExplore = onNavigateToExplore,
+            onNavigateToMyWaiting = onNavigateToMyWaiting,
             settingViewModel = settingViewModel,
             notificationPermissionManager = notificationPermissionManager,
             onShowSnackBar = onShowSnackbar,

@@ -23,12 +23,17 @@ sealed interface FestabookRoute {
     @Serializable
     data class Main(
         val pendingAnnouncementId: Long? = null,
+        val pendingPlaceDetailId: Long? = null,
+        val pendingMyWaiting: Boolean = false,
     ) : FestabookRoute
 
     @Serializable
     data class AddWaitingInfo(
         val placeId: Long? = null,
     ) : FestabookRoute
+
+    @Serializable
+    data object MyWaiting : FestabookRoute
 }
 
 @Serializable

@@ -42,6 +42,7 @@ import com.daedan.festabook.presentation.placeMap.component.PlaceMapRoute
 import com.daedan.festabook.presentation.placeMap.intent.event.SelectEvent
 import com.daedan.festabook.presentation.placeMap.navigation.placeMapNavGraph
 import com.daedan.festabook.presentation.placeMap.platform.LocationSource
+import com.daedan.festabook.presentation.platform.FcmDeepLinkAction
 import com.daedan.festabook.presentation.platform.RememberDeepLinkHandler
 import com.daedan.festabook.presentation.schedule.ScheduleViewModel
 import com.daedan.festabook.presentation.schedule.navigation.scheduleNavGraph
@@ -50,6 +51,7 @@ import com.daedan.festabook.presentation.setting.component.platform.rememberNoti
 import com.daedan.festabook.presentation.setting.component.platform.rememberOpenAppSettings
 import com.daedan.festabook.presentation.setting.navigation.settingNavGraph
 import com.daedan.festabook.presentation.setting.waitinginfo.WaitingInfoViewModel
+import com.daedan.festabook.presentation.waiting.navigation.myWaitingNavGraph
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.back_press_exit_message
 import org.jetbrains.compose.resources.stringResource
@@ -63,6 +65,8 @@ fun MainScreen(
     onAppFinish: () -> Unit,
     festabookNavigator: FestabookNavigator,
     pendingAnnouncementId: Long?,
+    pendingPlaceDetailId: Long?,
+    pendingMyWaiting: Boolean,
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
     scheduleViewModel: ScheduleViewModel,
@@ -114,16 +118,58 @@ fun MainScreen(
         }
     }
 
-    RememberDeepLinkHandler { announcementId, festivalIdChanged ->
-        if (festivalIdChanged) {
-            festabookNavigator.navigate(
-                FestabookRoute.Main(pendingAnnouncementId = announcementId),
-                navOptions {
-                    popUpTo<FestabookRoute.Main> { inclusive = true }
-                },
-            )
-        } else {
-            navigateToNewsScreen(newsViewModel, mainViewModel, announcementId)
+    LaunchedEffect(pendingPlaceDetailId) {
+        pendingPlaceDetailId?.let { placeId ->
+            mainNavigator.navigate(FestabookRoute.PlaceDetail(placeId))
+        }
+    }
+
+    LaunchedEffect(pendingMyWaiting) {
+        if (pendingMyWaiting) {
+            mainNavigator.navigate(FestabookRoute.MyWaiting)
+        }
+    }
+
+    RememberDeepLinkHandler { action, festivalIdChanged ->
+        when (action) {
+            is FcmDeepLinkAction.OpenAnnouncement -> {
+                if (festivalIdChanged) {
+                    festabookNavigator.navigate(
+                        FestabookRoute.Main(pendingAnnouncementId = action.announcementId),
+                        navOptions {
+                            popUpTo<FestabookRoute.Main> { inclusive = true }
+                        },
+                    )
+                } else {
+                    navigateToNewsScreen(newsViewModel, mainViewModel, action.announcementId)
+                }
+            }
+
+            FcmDeepLinkAction.OpenMyWaiting -> {
+                if (festivalIdChanged) {
+                    festabookNavigator.navigate(
+                        FestabookRoute.Main(pendingMyWaiting = true),
+                        navOptions {
+                            popUpTo<FestabookRoute.Main> { inclusive = true }
+                        },
+                    )
+                } else {
+                    mainNavigator.navigate(FestabookRoute.MyWaiting)
+                }
+            }
+
+            is FcmDeepLinkAction.OpenPlaceDetail -> {
+                if (festivalIdChanged) {
+                    festabookNavigator.navigate(
+                        FestabookRoute.Main(pendingPlaceDetailId = action.placeId),
+                        navOptions {
+                            popUpTo<FestabookRoute.Main> { inclusive = true }
+                        },
+                    )
+                } else {
+                    mainNavigator.navigate(FestabookRoute.PlaceDetail(action.placeId))
+                }
+            }
         }
     }
     Scaffold(
@@ -202,6 +248,7 @@ fun MainScreen(
             waitingInfoViewModel = waitingInfoViewModel,
             newsViewModel = newsViewModel,
             notificationPermissionManager = notificationPermissionManager,
+            notificationPermissionManagerFactory = appGraph.notificationPermissionManagerFactory,
             snackbarManager = snackbarManager,
         )
     }
@@ -228,6 +275,7 @@ private fun FestabookNavHost(
     settingViewModel: SettingViewModel,
     waitingInfoViewModel: WaitingInfoViewModel,
     notificationPermissionManager: NotificationPermissionManager,
+    notificationPermissionManagerFactory: NotificationPermissionManager.Factory,
     snackbarManager: SnackbarManager,
     modifier: Modifier = Modifier,
 ) {
@@ -249,6 +297,7 @@ private fun FestabookNavHost(
             onShowErrorSnackbar = snackbarManager::showError,
             settingViewModel = settingViewModel,
             notificationPermissionManager = notificationPermissionManager,
+            onNavigateToMyWaiting = { navigator.navigate(FestabookRoute.MyWaiting) },
         )
         scheduleNavGraph(
             innerPadding = innerPadding,
@@ -271,8 +320,16 @@ private fun FestabookNavHost(
                     },
                 )
             },
+            onNavigateToMyWaiting = {
+                navigator.navigate(
+                    FestabookRoute.MyWaiting,
+                    navOptions {
+                        popUpTo<FestabookRoute.WaitingRegister> { inclusive = true }
+                    },
+                )
+            },
             onShowSnackbar = snackbarManager::show,
-            notificationPermissionManager = notificationPermissionManager,
+            notificationPermissionManagerFactory = notificationPermissionManagerFactory,
         )
         newsNavGraph(
             innerPadding = innerPadding,
@@ -297,6 +354,17 @@ private fun FestabookNavHost(
                 )
             },
             onBackClick = { navigator.popBackStack() },
+        )
+        myWaitingNavGraph(
+            onBack = {
+                homeViewModel.loadWaitingBar()
+                navigator.popBackStack()
+            },
+            onNavigateToPlaceDetail = { placeId ->
+                navigator.navigate(FestabookRoute.PlaceDetail(placeId))
+            },
+            onShowSnackbar = snackbarManager::show,
+            onShowErrorSnackbar = snackbarManager::showError,
         )
     }
 }

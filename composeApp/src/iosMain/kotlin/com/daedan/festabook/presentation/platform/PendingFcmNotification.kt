@@ -17,19 +17,19 @@ object PendingFcmNotification {
     val pending: Flow<Data> = _pending.receiveAsFlow()
 
     fun store(
-        announcementId: Long,
+        action: FcmDeepLinkAction,
         festivalIdChanged: Boolean,
     ) {
         _pending.trySend(
             Data(
-                announcementId = announcementId,
+                action = action,
                 festivalIdChanged = festivalIdChanged,
             ),
         )
     }
 
     data class Data(
-        val announcementId: Long,
+        val action: FcmDeepLinkAction,
         val festivalIdChanged: Boolean,
     )
 }
