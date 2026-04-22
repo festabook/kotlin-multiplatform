@@ -1,0 +1,349 @@
+fastlane_version "2.219.0"
+
+# 프로젝트 루트(= fastlane 디렉토리의 상위). 호출 CWD 와 무관하게 동작하도록 절대경로로 고정.
+PROJECT_ROOT = File.expand_path("..", __dir__)
+
+# ---------------------------------------------------------------------------
+# local.properties 기반 설정
+#
+# 다음 키들이 프로젝트 루트의 local.properties 에 정의되어 있어야 합니다.
+# (값은 각자 환경에 맞게 채워 넣습니다 — local.properties 는 git 에서 제외됨)
+#
+#   # Firebase App Distribution
+#   FIREBASE_APP_ID_ANDROID_DEV=1:xxxxxxxxxxxx:android:xxxxxxxxxxxxxxxx
+#   FIREBASE_APP_ID_ANDROID_RELEASE=1:xxxxxxxxxxxx:android:xxxxxxxxxxxxxxxx
+#   FIREBASE_SERVICE_ACCOUNT_PATH=/absolute/path/to/firebase-service-account.json
+#   FIREBASE_TESTER_GROUPS=internal-testers        # 선택, 기본값 "internal-testers"
+#
+#   # iOS / App Store Connect API Key (TestFlight 업로드용 — build_* lane 에서는 불필요)
+#   APPLE_TEAM_ID=ABCDE12345
+#   ASC_KEY_ID=XXXXXXXXXX
+#   ASC_ISSUER_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+#   ASC_KEY_PATH=/absolute/path/to/AuthKey_XXXXXXXXXX.p8
+#
+#   # iOS 서명 (p12 + mobileprovision)
+#   IOS_CERT_P12_PATH=/absolute/path/to/distribution.p12
+#   IOS_CERT_P12_PASSWORD=xxxxxxxx
+#   IOS_PROVISIONING_PROFILE_STAGING_PATH=/absolute/path/to/staging.mobileprovision
+#   IOS_PROVISIONING_PROFILE_STAGING_NAME=Festabook Staging AppStore
+#   IOS_PROVISIONING_PROFILE_RELEASE_PATH=/absolute/path/to/release.mobileprovision
+#   IOS_PROVISIONING_PROFILE_RELEASE_NAME=Festabook Release AppStore
+#
+#   # Slack 알림 (선택 — 비어 있으면 알림 생략)
+#   SLACK_WEBHOOK_URL=https://hooks.slack.com/services/XXX/YYY/ZZZ
+#   SLACK_CHANNEL=#festabook-deploy          # 선택, webhook default 채널 사용하려면 비워둠
+#
+# 기존에 이미 있던 키 (재사용):
+#   APP_BUNDLE_ID=eoehdeksruf.festabook
+#   APP_BUNDLE_ID_DEV=debug.eoehdeksruf.festabook
+#
+# 환경 변수 (CI 전용, 로컬 개발자는 login 키체인이 이미 unlock 돼 있으므로 불필요):
+#   FASTLANE_KEYCHAIN_NAME       = fastlane_tmp.keychain-db    # CI 에서 만든 임시 키체인 이름
+#   FASTLANE_KEYCHAIN_PASSWORD   = <임시 키체인 비밀번호>        # import_certificate unlock 용
+#
+# ---------------------------------------------------------------------------
+# 제공되는 Lane
+#
+#   bundle exec fastlane android build_dev      # Debug APK 빌드만
+#   bundle exec fastlane android build_release  # Release APK 빌드만 (prod API)
+#   bundle exec fastlane android dev            # 빌드 + Firebase App Distribution(dev) 업로드
+#   bundle exec fastlane android release        # 빌드 + Firebase App Distribution(release) 업로드
+#
+#   bundle exec fastlane ios build_dev          # Staging IPA 빌드만
+#   bundle exec fastlane ios build_release      # Release IPA 빌드만
+#   bundle exec fastlane ios dev                # 빌드 + TestFlight 업로드 (Staging)
+#   bundle exec fastlane ios release            # 빌드 + TestFlight 업로드 (Release)
+# ---------------------------------------------------------------------------
+
+def local_properties
+  @local_properties ||= begin
+    path = File.expand_path("../local.properties", __dir__)
+    hash = {}
+    if File.exist?(path)
+      File.readlines(path).each do |raw|
+        line = raw.strip
+        next if line.empty? || line.start_with?("#")
+        key, _, value = line.partition("=")
+        next if key.strip.empty?
+        hash[key.strip] = value.strip
+      end
+    end
+    hash
+  end
+end
+
+def local_property(key)
+  value = local_properties[key]
+  UI.user_error!("#{key} 가 local.properties 에 없습니다.") if value.nil? || value.empty?
+  value
+end
+
+def optional_local_property(key, default)
+  value = local_properties[key]
+  (value.nil? || value.empty?) ? default : value
+end
+
+def app_version
+  @app_version ||= begin
+    content = File.read(File.expand_path("../gradle.properties", __dir__))
+    name = content[/^APP_VERSION_NAME=(\S+)/, 1] || "?"
+    code = content[/^APP_VERSION_CODE=(\S+)/, 1] || "?"
+    "#{name} (#{code})"
+  end
+end
+
+def notify_slack(platform:, build_type:, success:, target: nil, error: nil)
+  webhook = optional_local_property("SLACK_WEBHOOK_URL", "")
+  if webhook.empty?
+    UI.message("SLACK_WEBHOOK_URL 가 비어 있어 Slack 알림을 생략합니다.")
+    return
+  end
+  channel = optional_local_property("SLACK_CHANNEL", "")
+
+  platform_icon = platform == "Android" ? ":robot_face:" : ":apple:"
+  status_icon = success ? ":rocket:" : ":x:"
+  status_text = success ? "배포 완료" : "배포 실패"
+
+  lines = [
+    "#{status_icon} #{platform_icon} #{platform} #{status_text}",
+    "빌드 타입: #{build_type}",
+    "버전: v#{app_version}",
+  ]
+  lines << "Target: #{target}" if target
+  lines << "에러: #{error}" if error
+
+  slack(
+    message: lines.join("\n"),
+    success: success,
+    slack_url: webhook,
+    channel: channel.empty? ? nil : channel,
+    default_payloads: [:git_branch, :git_author, :last_git_commit_message],
+  )
+end
+
+# --- Android helpers (private_lane: `fastlane lanes` 출력에서 숨김) ---
+
+private_lane :android_build do |options|
+  flavor = options[:flavor]
+  case flavor
+  when "dev"
+    gradle(
+      task: "composeApp:assembleDebug",
+      project_dir: PROJECT_ROOT,
+    )
+    File.join(PROJECT_ROOT, "composeApp/build/outputs/apk/debug/composeApp-debug.apk")
+  when "release"
+    gradle(
+      task: "composeApp:assembleRelease",
+      project_dir: PROJECT_ROOT,
+      properties: { "buildkonfig.flavor" => "release" },
+    )
+    File.join(PROJECT_ROOT, "composeApp/build/outputs/apk/release/composeApp-release.apk")
+  else
+    UI.user_error!("알 수 없는 Android flavor: #{flavor}")
+  end
+end
+
+private_lane :android_upload do |options|
+  flavor = options[:flavor]
+  apk_path = options[:apk_path]
+  app_id_key = flavor == "dev" ? "FIREBASE_APP_ID_ANDROID_DEV" : "FIREBASE_APP_ID_ANDROID_RELEASE"
+  firebase_app_distribution(
+    app: local_property(app_id_key),
+    service_credentials_file: local_property("FIREBASE_SERVICE_ACCOUNT_PATH"),
+    groups: optional_local_property("FIREBASE_TESTER_GROUPS", "festabook"),
+    release_notes: changelog_from_git_commits(commits_count: 10, merge_commit_filtering: "exclude_merges"),
+    android_artifact_type: "APK",
+    android_artifact_path: apk_path,
+  )
+  notify_slack(
+    platform: "Android",
+    build_type: flavor == "dev" ? "Dev" : "Release",
+    success: true,
+    target: "Firebase App Distribution",
+  )
+end
+
+# --- iOS helpers (private_lane) ---
+
+private_lane :ios_prepare_signing do |options|
+  profile_path = options[:profile_path]
+  import_certificate(
+    certificate_path: local_property("IOS_CERT_P12_PATH"),
+    certificate_password: local_property("IOS_CERT_P12_PASSWORD"),
+    keychain_name: ENV["FASTLANE_KEYCHAIN_NAME"] || "login.keychain-db",
+    keychain_password: ENV["FASTLANE_KEYCHAIN_PASSWORD"],
+    log_output: false,
+  )
+  install_provisioning_profile(path: profile_path)
+end
+
+private_lane :ios_build do |options|
+  configuration = options[:configuration]
+  bundle_id = options[:bundle_id]
+  profile_path = options[:profile_path]
+  profile_name = options[:profile_name]
+  team_id = local_property("APPLE_TEAM_ID")
+
+  ios_prepare_signing(profile_path: profile_path)
+
+  cocoapods(
+    podfile: File.join(PROJECT_ROOT, "iosApp/Podfile"),
+    try_repo_update_on_error: true,
+  )
+
+  output_directory = File.join(PROJECT_ROOT, "fastlane/build/ios")
+
+  # Release configuration 은 pbxproj 상 CODE_SIGN_STYLE=Automatic 이므로
+  # xcargs 로 Manual + 지정 프로파일을 강제해서 CI/로컬 모두 동일하게 동작하도록 한다.
+  build_app(
+    workspace: File.join(PROJECT_ROOT, "iosApp/iosApp.xcworkspace"),
+    scheme: "iosApp",
+    configuration: configuration,
+    clean: true,
+    export_method: "app-store",
+    output_directory: output_directory,
+    output_name: "iosApp-#{configuration}.ipa",
+    export_options: {
+      signingStyle: "manual",
+      teamID: team_id,
+      provisioningProfiles: {
+        bundle_id => profile_name,
+      },
+    },
+    xcargs: [
+      "DEVELOPMENT_TEAM=#{team_id}",
+      "CODE_SIGN_STYLE=Manual",
+      "PROVISIONING_PROFILE_SPECIFIER=\"#{profile_name}\"",
+    ].join(" "),
+  )
+
+  File.join(output_directory, "iosApp-#{configuration}.ipa")
+end
+
+private_lane :ios_upload do |options|
+  configuration = options[:configuration]
+  bundle_id = options[:bundle_id]
+  ipa_path = options[:ipa_path]
+  api_key = app_store_connect_api_key(
+    key_id: local_property("ASC_KEY_ID"),
+    issuer_id: local_property("ASC_ISSUER_ID"),
+    key_filepath: local_property("ASC_KEY_PATH"),
+    duration: 1200,
+    in_house: false,
+  )
+
+  upload_to_testflight(
+    api_key: api_key,
+    skip_waiting_for_build_processing: true,
+    ipa: ipa_path,
+  )
+
+  notify_slack(
+    platform: "iOS",
+    build_type: configuration == "Staging" ? "Dev" : "Release",
+    success: true,
+    target: "TestFlight",
+  )
+end
+
+# --- Android lanes ---
+
+platform :android do
+  desc "Debug APK 빌드만 (배포 없음)"
+  lane :build_dev do
+    apk = android_build(flavor: "dev")
+    UI.success("Debug APK 빌드 완료: #{apk}")
+  end
+
+  desc "Release APK 빌드만 (prod API, 배포 없음)"
+  lane :build_release do
+    apk = android_build(flavor: "release")
+    UI.success("Release APK 빌드 완료: #{apk}")
+  end
+
+  desc "Debug APK 빌드 + Firebase App Distribution(dev) 업로드"
+  lane :dev do
+    apk = android_build(flavor: "dev")
+    android_upload(flavor: "dev", apk_path: apk)
+  end
+
+  desc "Release APK 빌드(prod API) + Firebase App Distribution(release) 업로드"
+  lane :release do
+    apk = android_build(flavor: "release")
+    android_upload(flavor: "release", apk_path: apk)
+  end
+
+  error do |lane, exception|
+    notify_slack(
+      platform: "Android",
+      build_type: lane.to_s.include?("release") ? "Release" : "Dev",
+      success: false,
+      error: exception.message,
+    )
+  end
+end
+
+# --- iOS lanes ---
+
+platform :ios do
+  before_all do
+    # gradle.properties → xcconfig/Info.plist 동기화 (iOS 빌드 전 필수)
+    sh("cd '#{PROJECT_ROOT}' && ./gradlew updateIosVersion")
+  end
+
+  desc "Staging configuration 으로 IPA 빌드만 (배포 없음)"
+  lane :build_dev do
+    ipa = ios_build(
+      configuration: "Staging",
+      bundle_id: local_property("APP_BUNDLE_ID_DEV"),
+      profile_path: local_property("IOS_PROVISIONING_PROFILE_STAGING_PATH"),
+      profile_name: local_property("IOS_PROVISIONING_PROFILE_STAGING_NAME"),
+    )
+    UI.success("Staging IPA 빌드 완료: #{ipa}")
+  end
+
+  desc "Release configuration 으로 IPA 빌드만 (배포 없음)"
+  lane :build_release do
+    ipa = ios_build(
+      configuration: "Release",
+      bundle_id: local_property("APP_BUNDLE_ID"),
+      profile_path: local_property("IOS_PROVISIONING_PROFILE_RELEASE_PATH"),
+      profile_name: local_property("IOS_PROVISIONING_PROFILE_RELEASE_NAME"),
+    )
+    UI.success("Release IPA 빌드 완료: #{ipa}")
+  end
+
+  desc "Staging 빌드 + TestFlight 업로드 (dev)"
+  lane :dev do
+    bundle_id = local_property("APP_BUNDLE_ID_DEV")
+    ipa = ios_build(
+      configuration: "Staging",
+      bundle_id: bundle_id,
+      profile_path: local_property("IOS_PROVISIONING_PROFILE_STAGING_PATH"),
+      profile_name: local_property("IOS_PROVISIONING_PROFILE_STAGING_NAME"),
+    )
+    ios_upload(configuration: "Staging", bundle_id: bundle_id, ipa_path: ipa)
+  end
+
+  desc "Release 빌드 + TestFlight 업로드 (release)"
+  lane :release do
+    bundle_id = local_property("APP_BUNDLE_ID")
+    ipa = ios_build(
+      configuration: "Release",
+      bundle_id: bundle_id,
+      profile_path: local_property("IOS_PROVISIONING_PROFILE_RELEASE_PATH"),
+      profile_name: local_property("IOS_PROVISIONING_PROFILE_RELEASE_NAME"),
+    )
+    ios_upload(configuration: "Release", bundle_id: bundle_id, ipa_path: ipa)
+  end
+
+  error do |lane, exception|
+    notify_slack(
+      platform: "iOS",
+      build_type: lane.to_s.include?("release") ? "Release" : "Dev",
+      success: false,
+      error: exception.message,
+    )
+  end
+end
