@@ -31,8 +31,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daedan.festabook.BuildKonfig
-import com.daedan.festabook.domain.model.Festival
-import com.daedan.festabook.domain.model.Organization
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.PermissionState
 import com.daedan.festabook.presentation.common.ObserveAsEvents
@@ -40,6 +38,8 @@ import com.daedan.festabook.presentation.common.component.FestabookSwitch
 import com.daedan.festabook.presentation.common.component.FestabookTopAppBar
 import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
+import com.daedan.festabook.presentation.home.model.FestivalUiModel
+import com.daedan.festabook.presentation.home.model.OrganizationUiModel
 import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.setting.waitinginfo.WaitingInfoViewModel
 import com.daedan.festabook.presentation.setting.waitinginfo.model.WaitingInfoUiState
@@ -460,11 +460,11 @@ private fun SettingScreenPreview() {
         SettingScreen(
             festivalUiState =
                 FestivalUiState.Success(
-                    Organization(
+                    OrganizationUiModel(
                         id = 1,
                         organizationName = "성균관대학교 인문사회과학철학문학자연캠퍼스 인문사회과학철학문학자연캠퍼스",
                         festival =
-                            Festival(
+                            FestivalUiModel(
                                 festivalName = "성균관대학교 축제축제축제축제축제축제축제축제축제축제축제축제",
                                 festivalImages = listOf(),
                                 startDate = LocalDate(2026, 1, 1),

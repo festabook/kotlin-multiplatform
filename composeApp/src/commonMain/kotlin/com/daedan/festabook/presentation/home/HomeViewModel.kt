@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.daedan.festabook.di.viewmodel.ViewModelKey
 import com.daedan.festabook.domain.repository.FestivalRepository
+import com.daedan.festabook.presentation.home.model.toUiModel
 import com.daedan.festabook.domain.repository.MyWaitingRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
@@ -52,8 +53,8 @@ class HomeViewModel(
 
             val result = festivalRepository.getFestivalInfo()
             result
-                .onSuccess { festival ->
-                    _festivalUiState.value = FestivalUiState.Success(festival)
+                .onSuccess { organization ->
+                    _festivalUiState.value = FestivalUiState.Success(organization.toUiModel())
                 }.onFailure {
                     _festivalUiState.value = FestivalUiState.Error(it)
                 }

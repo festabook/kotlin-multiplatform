@@ -19,7 +19,7 @@ import com.daedan.festabook.presentation.setting.SettingViewModel
 
 fun NavGraphBuilder.homeNavGraph(
     innerPadding: PaddingValues,
-    viewModel: HomeViewModel,
+    homeViewModel: HomeViewModel,
     mainViewModel: MainViewModel,
     settingViewModel: SettingViewModel,
     notificationPermissionManager: NotificationPermissionManager,
@@ -27,6 +27,7 @@ fun NavGraphBuilder.homeNavGraph(
     onShowErrorSnackbar: (Throwable) -> Unit,
     onSubscriptionConfirm: () -> Unit,
     onNavigateToExplore: () -> Unit,
+    onNavigateToFestating: (festivalId: Long) -> Unit,
     onNavigateToMyWaiting: () -> Unit,
 ) {
     composable<MainTabRoute.Home>(
@@ -42,9 +43,10 @@ fun NavGraphBuilder.homeNavGraph(
         }
         HomeScreen(
             modifier = Modifier.padding(innerPadding),
-            viewModel = viewModel,
+            homeViewModel = homeViewModel,
             onShowErrorSnackbar = onShowErrorSnackbar,
             onNavigateToExplore = onNavigateToExplore,
+            onNavigateToFestating = onNavigateToFestating,
             onNavigateToMyWaiting = onNavigateToMyWaiting,
             settingViewModel = settingViewModel,
             notificationPermissionManager = notificationPermissionManager,

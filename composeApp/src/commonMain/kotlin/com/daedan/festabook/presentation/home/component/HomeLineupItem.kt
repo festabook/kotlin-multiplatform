@@ -22,8 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.daedan.festabook.presentation.home.LineUpItemOfDayUiModel
-import com.daedan.festabook.presentation.home.LineupItemUiModel
+import com.daedan.festabook.presentation.home.model.LineUpItemOfDayUiModel
+import com.daedan.festabook.presentation.home.model.LineupItemUiModel
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import festabookkmp.composeapp.generated.resources.Res

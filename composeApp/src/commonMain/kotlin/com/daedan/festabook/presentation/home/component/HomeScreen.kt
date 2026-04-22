@@ -19,27 +19,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.daedan.festabook.domain.model.Festival
-import com.daedan.festabook.domain.model.Organization
-import com.daedan.festabook.domain.model.Poster
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
-import com.daedan.festabook.presentation.common.formatFestivalPeriod
+import com.daedan.festabook.presentation.festating.component.FestatingPoster
 import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
-import com.daedan.festabook.presentation.home.LineUpItemGroupUiModel
-import com.daedan.festabook.presentation.home.LineupItemUiModel
 import com.daedan.festabook.presentation.home.LineupUiState
+import com.daedan.festabook.presentation.home.model.FestivalPosterUiModel
+import com.daedan.festabook.presentation.home.model.FestivalUiModel
+import com.daedan.festabook.presentation.home.model.LineUpItemGroupUiModel
+import com.daedan.festabook.presentation.home.model.LineupItemUiModel
+import com.daedan.festabook.presentation.home.model.OrganizationUiModel
 import com.daedan.festabook.presentation.home.WaitingBarUiState
 import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.festabookSpacing
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.error_fail_to_load_info
+import festabookkmp.composeapp.generated.resources.format_festival_period_date
+import festabookkmp.composeapp.generated.resources.format_festival_period_year
 import festabookkmp.composeapp.generated.resources.setting_notice_enabled
 import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayIn
@@ -49,18 +53,19 @@ import kotlin.time.Clock
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel,
+    homeViewModel: HomeViewModel,
     settingViewModel: SettingViewModel,
     notificationPermissionManager: NotificationPermissionManager,
     onNavigateToExplore: () -> Unit,
+    onNavigateToFestating: (festivalId: Long) -> Unit,
     onNavigateToMyWaiting: () -> Unit,
     onShowSnackBar: (String) -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val festivalUiState by viewModel.festivalUiState.collectAsStateWithLifecycle()
-    val lineupUiState by viewModel.lineupUiState.collectAsStateWithLifecycle()
-    val waitingBarUiState by viewModel.waitingBarUiState.collectAsStateWithLifecycle()
+    val festivalUiState by homeViewModel.festivalUiState.collectAsStateWithLifecycle()
+    val lineupUiState by homeViewModel.lineupUiState.collectAsStateWithLifecycle()
+    val waitingBarUiState by homeViewModel.waitingBarUiState.collectAsStateWithLifecycle()
     val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
     val settingEnabledText = stringResource(Res.string.setting_notice_enabled)
 
@@ -76,12 +81,12 @@ fun HomeScreen(
         currentOnShowErrorSnackbar(it)
     }
 
-    ObserveAsEvents(flow = viewModel.navigateToMyWaitingEvent) {
+    ObserveAsEvents(flow = homeViewModel.navigateToMyWaitingEvent) {
         onNavigateToMyWaiting()
     }
 
     LaunchedEffect(Unit) {
-        viewModel.loadWaitingBar()
+        homeViewModel.loadWaitingBar()
     }
 
     LaunchedEffect(festivalUiState) {
@@ -90,9 +95,7 @@ fun HomeScreen(
                 currentOnShowErrorSnackbar(state.throwable)
             }
 
-            else -> {
-                Unit
-            }
+            else -> {}
         }
     }
 
@@ -112,11 +115,12 @@ fun HomeScreen(
 
         is FestivalUiState.Success -> {
             Box(modifier = modifier.fillMaxSize()) {
-                FestivalOverview(
+                HomeContent(
                     festivalUiState = state,
                     lineupUiState = lineupUiState,
                     onNavigateToExplore = onNavigateToExplore,
-                    onNavigateToSchedule = viewModel::navigateToScheduleClick,
+                    onNavigateToSchedule = homeViewModel::navigateToScheduleClick,
+                    onFestatingClick = { festivalId -> onNavigateToFestating(festivalId) },
                 )
                 when (val waitingBarUiState = waitingBarUiState) {
                     is WaitingBarUiState.Visible -> {
@@ -124,7 +128,7 @@ fun HomeScreen(
                             order = waitingBarUiState.order,
                             estimatedMinutes = waitingBarUiState.estimatedWaitTime,
                             status = waitingBarUiState.status,
-                            onClick = viewModel::navigateToMyWaitingClick,
+                            onClick = homeViewModel::navigateToMyWaitingClick,
                             modifier =
                                 Modifier
                                     .align(Alignment.BottomCenter)
@@ -137,9 +141,7 @@ fun HomeScreen(
                         )
                     }
 
-                    else -> {
-                        Unit
-                    }
+                    else -> {}
                 }
             }
         }
@@ -147,11 +149,12 @@ fun HomeScreen(
 }
 
 @Composable
-private fun FestivalOverview(
+private fun HomeContent(
     festivalUiState: FestivalUiState.Success,
     lineupUiState: LineupUiState,
     onNavigateToExplore: () -> Unit,
     onNavigateToSchedule: () -> Unit,
+    onFestatingClick: (festivalId: Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val universityName = festivalUiState.organization.organizationName
@@ -159,18 +162,24 @@ private fun FestivalOverview(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = FestabookColor.white,
+        topBar = {
+            HomeHeader(
+                universityName = universityName,
+                onExpandClick = onNavigateToExplore,
+                modifier =
+                    Modifier.padding(
+                        top = festabookSpacing.paddingTitleHorizontal,
+                        bottom = festabookSpacing.paddingBody3,
+                    ),
+            )
+        },
     ) { innerPadding ->
         Column(
             modifier =
                 Modifier
+                    .padding(innerPadding)
                     .fillMaxSize(),
         ) {
-            HomeHeader(
-                universityName = universityName,
-                onExpandClick = onNavigateToExplore,
-                modifier = Modifier.padding(top = 40.dp, bottom = 12.dp),
-            )
-
             LazyColumn(
                 modifier =
                     Modifier
@@ -185,7 +194,7 @@ private fun FestivalOverview(
 
                     HomePosterList(
                         posterUrls = posterUrls,
-                        modifier = Modifier.padding(vertical = 12.dp),
+                        modifier = Modifier.padding(vertical = festabookSpacing.paddingBody3),
                     )
                 }
 
@@ -199,7 +208,7 @@ private fun FestivalOverview(
                                 festival.startDate,
                                 festival.endDate,
                             ),
-                        modifier = Modifier.padding(top = 16.dp),
+                        modifier = Modifier.padding(top = festabookSpacing.paddingBody4),
                     )
                 }
 
@@ -210,7 +219,29 @@ private fun FestivalOverview(
                         color = FestabookColor.gray200,
                         modifier =
                             Modifier
-                                .padding(top = 16.dp),
+                                .padding(top = festabookSpacing.paddingBody4),
+                    )
+                }
+                // 페스타팅 포스터
+                // TODO if문 묶기
+                item {
+                    FestatingPoster(
+                        onClick = { onFestatingClick(festivalUiState.organization.id) },
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(
+                                    vertical = festabookSpacing.paddingBody4,
+                                    horizontal = festabookSpacing.paddingBody5,
+                                ),
+                    )
+                }
+
+                // 구분선
+                item {
+                    HorizontalDivider(
+                        thickness = 4.dp,
+                        color = FestabookColor.gray200,
                     )
                 }
 
@@ -250,15 +281,37 @@ private fun FestivalOverview(
     }
 }
 
+@Composable
+private fun formatFestivalPeriod(
+    start: LocalDate,
+    end: LocalDate,
+): String {
+    val startYear = stringResource(Res.string.format_festival_period_year, start.year)
+    val endYear =
+        if (start.year == end.year) {
+            ""
+        } else {
+            stringResource(
+                Res.string.format_festival_period_year,
+                end.year,
+            )
+        }
+
+    val startDate =
+        stringResource(Res.string.format_festival_period_date, start.month.number, start.day)
+    val endDate = stringResource(Res.string.format_festival_period_date, end.month.number, end.day)
+    return "$startYear$startDate ~ $endYear$endDate"
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun FestivalOverviewPreview() {
     val sampleFestival =
-        Organization(
+        OrganizationUiModel(
             id = 1,
             organizationName = "가천대학교",
             festival =
-                Festival(
+                FestivalUiModel(
                     festivalName = "2025 가천 Water Festival\n: AQUA WAVE",
                     startDate = Clock.System.todayIn(TimeZone.currentSystemDefault()),
                     endDate =
@@ -267,8 +320,8 @@ private fun FestivalOverviewPreview() {
                             .plus(DatePeriod(days = 1)),
                     festivalImages =
                         listOf(
-                            Poster(1, "sample", 1),
-                            Poster(2, "sample", 2),
+                            FestivalPosterUiModel(1, "sample", 1),
+                            FestivalPosterUiModel(2, "sample", 2),
                         ),
                 ),
         )
@@ -312,10 +365,11 @@ private fun FestivalOverviewPreview() {
                 ),
         )
 
-    FestivalOverview(
+    HomeContent(
         festivalUiState = FestivalUiState.Success(sampleFestival),
         lineupUiState = LineupUiState.Success(sampleLineups.getLineupItems()),
         onNavigateToExplore = {},
         onNavigateToSchedule = {},
+        onFestatingClick = {},
     )
 }

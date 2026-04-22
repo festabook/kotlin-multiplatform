@@ -11,6 +11,7 @@ androidx-espresso = "3.7.0"
 androidx-lifecycle = "2.9.6"
 androidx-testExt = "1.3.0"
 composeMultiplatform = "1.9.3"
+composeWebviewMultiplatform = "2.0.3"
 datastorePreferences = "1.2.0"
 compottie = "2.1.0"
 navigationCompose = "2.9.2"
@@ -44,6 +45,7 @@ firebaseMessagingKtx = "25.0.1"
 [libraries]
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastorePreferences" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+compose-webview-multiplatform = { module = "io.github.kevinnzou:compose-webview-multiplatform", version.ref = "composeWebviewMultiplatform" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -97,5 +99,5 @@ metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
-firebaseCrashlytcis = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics"}
+firebaseCrashlytcis = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
 google-gms-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }

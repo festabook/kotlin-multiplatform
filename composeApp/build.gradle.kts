@@ -45,6 +45,12 @@ private val appBundleIdDev =
 private val buildFlavor =
     project.properties["buildkonfig.flavor"]?.toString() ?: "dev"
 
+private val festatingUrlDev =
+    getLocalProperty("FESTA_TING_URL_DEV") ?: error("FESTA_TING_URL_DEV가 local.properties에 없음")
+
+private val festatingUrl =
+    getLocalProperty("FESTA_TING_URL") ?: error("FESTA_TING_URL가 local.properties에 없음")
+
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -138,6 +144,7 @@ kotlin {
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.compottie)
             implementation(libs.metrox.viewmodel.compose)
+            implementation(libs.compose.webview.multiplatform)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -157,38 +164,26 @@ buildkonfig {
         buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
         buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
         buildConfigField(STRING, "APP_BUNDLE_ID", appBundleIdDev)
+        buildConfigField(STRING, "FESTA_TING_URL", festatingUrlDev)
     }
     defaultConfigs("release") {
-        buildConfigField(STRING, "BUILD_FLAVOR", buildFlavor)
-        buildConfigField(STRING, "NAVER_MAP_STYLE_ID", naverMapStyleId)
-        buildConfigField(STRING, "NAVER_MAP_CLIENT_ID", naverMapClientId)
         buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
         buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
         buildConfigField(STRING, "APP_BUNDLE_ID", appBundleId)
+        buildConfigField(STRING, "FESTA_TING_URL", festatingUrl)
     }
     targetConfigs {
-        // android용 입니다.
-        create("debug") {
-            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
-            buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
-        }
-        create("release") {
-            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
-            buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
-        }
-        // ios용 입니다.
-        create("Debug") {
-            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
-            buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
-        }
         create("Release") {
             buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
             buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
+            buildConfigField(STRING, "FESTA_TING_URL", festatingUrl)
         }
+
         create("Staging") {
             buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
             buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
             buildConfigField(STRING, "APP_BUNDLE_ID", appBundleIdDev)
+            buildConfigField(STRING, "FESTA_TING_URL", festatingUrlDev)
         }
     }
 
@@ -284,7 +279,8 @@ ktorfit {
 val updateIosVersion by tasks.registering {
 
     val plistFile = rootProject.layout.projectDirectory.file("iosApp/iosApp/Info.plist")
-    val xcconfigFile = rootProject.layout.projectDirectory.file("iosApp/Configuration/Config.xcconfig")
+    val xcconfigFile =
+        rootProject.layout.projectDirectory.file("iosApp/Configuration/Config.xcconfig")
     val versionName = providers.gradleProperty("APP_VERSION_NAME")
     val versionCode = providers.gradleProperty("APP_VERSION_CODE")
 
