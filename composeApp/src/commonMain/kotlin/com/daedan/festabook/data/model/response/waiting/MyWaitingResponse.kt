@@ -21,15 +21,18 @@ data class MyWaitingResponse(
     val estimatedWaitTime: Int,
     @SerialName("phoneNumber")
     val phoneNumber: String,
+    @SerialName("placeId")
+    val placeId: Long,
 )
 
 fun MyWaitingResponse.toDomain() =
     MyWaiting(
         waitingId = waitingId,
-        waitingOrder = waitingOrder,
+        waitingOrderFromZero = waitingOrder,
         partySize = partySize,
         waitingStatus = waitingStatus,
         totalWaitingTeams = totalWaitingTeams,
         estimatedWaitTime = estimatedWaitTime,
         phoneNumber = phoneNumber,
+        placeId = placeId,
     )

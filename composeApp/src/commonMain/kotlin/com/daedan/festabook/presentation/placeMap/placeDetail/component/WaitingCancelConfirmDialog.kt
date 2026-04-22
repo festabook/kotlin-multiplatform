@@ -24,11 +24,11 @@ import com.daedan.festabook.presentation.theme.festabookSpacing
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.waiting_cancel_confirm_dismiss
 import festabookkmp.composeapp.generated.resources.waiting_cancel_confirm_submit
-import festabookkmp.composeapp.generated.resources.waiting_cancel_confirm_title
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun WaitingCancelConfirmDialog(
+    title: String,
     onDismissClick: () -> Unit,
     onCancelClick: () -> Unit,
     onDismissRequest: () -> Unit,
@@ -45,7 +45,7 @@ fun WaitingCancelConfirmDialog(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = stringResource(Res.string.waiting_cancel_confirm_title),
+                text = title,
                 style = FestabookTypography.displaySmall,
                 color = FestabookColor.black,
                 textAlign = TextAlign.Center,

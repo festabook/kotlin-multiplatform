@@ -82,6 +82,7 @@ import festabookkmp.composeapp.generated.resources.place_detail_default_time
 import festabookkmp.composeapp.generated.resources.place_list_default_description
 import festabookkmp.composeapp.generated.resources.place_list_default_location
 import festabookkmp.composeapp.generated.resources.place_list_default_title
+import festabookkmp.composeapp.generated.resources.waiting_cancel_confirm_title
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -94,6 +95,7 @@ fun PlaceDetailRoute(
     onBackToPreviousClick: () -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
     onNavigateToWaitingRegister: (placeId: Long) -> Unit,
+    onNavigateToMyWaiting: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val placeDetailUiState by viewModel.placeDetail.collectAsStateWithLifecycle()
@@ -117,7 +119,8 @@ fun PlaceDetailRoute(
     if (duplicateWaitingId != null && !showCancelConfirmDialog) {
         WaitingDuplicateBottomSheet(
             onMyWaitingClick = {
-                // TODO 나의 웨이팅 화면으로 이동
+                duplicateWaitingId = null
+                onNavigateToMyWaiting()
             },
             onRegisterNewClick = { showCancelConfirmDialog = true },
             onDismiss = { duplicateWaitingId = null },
@@ -126,6 +129,7 @@ fun PlaceDetailRoute(
 
     if (showCancelConfirmDialog) {
         WaitingCancelConfirmDialog(
+            title = stringResource(Res.string.waiting_cancel_confirm_title),
             onDismissClick = {
                 duplicateWaitingId = null
                 showCancelConfirmDialog = false

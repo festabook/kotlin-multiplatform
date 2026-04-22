@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -30,6 +31,7 @@ import com.daedan.festabook.presentation.home.model.FestivalUiModel
 import com.daedan.festabook.presentation.home.model.LineUpItemGroupUiModel
 import com.daedan.festabook.presentation.home.model.LineupItemUiModel
 import com.daedan.festabook.presentation.home.model.OrganizationUiModel
+import com.daedan.festabook.presentation.home.WaitingBarUiState
 import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.festabookSpacing
@@ -54,14 +56,16 @@ fun HomeScreen(
     homeViewModel: HomeViewModel,
     settingViewModel: SettingViewModel,
     notificationPermissionManager: NotificationPermissionManager,
-    onNavigateToFestating: (festivalId: Long) -> Unit,
     onNavigateToExplore: () -> Unit,
+    onNavigateToFestating: (festivalId: Long) -> Unit,
+    onNavigateToMyWaiting: () -> Unit,
     onShowSnackBar: (String) -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val festivalUiState by homeViewModel.festivalUiState.collectAsStateWithLifecycle()
     val lineupUiState by homeViewModel.lineupUiState.collectAsStateWithLifecycle()
+    val waitingBarUiState by homeViewModel.waitingBarUiState.collectAsStateWithLifecycle()
     val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
     val settingEnabledText = stringResource(Res.string.setting_notice_enabled)
 
@@ -75,6 +79,14 @@ fun HomeScreen(
 
     ObserveAsEvents(flow = settingViewModel.error) {
         currentOnShowErrorSnackbar(it)
+    }
+
+    ObserveAsEvents(flow = homeViewModel.navigateToMyWaitingEvent) {
+        onNavigateToMyWaiting()
+    }
+
+    LaunchedEffect(Unit) {
+        homeViewModel.loadWaitingBar()
     }
 
     LaunchedEffect(festivalUiState) {
@@ -102,14 +114,36 @@ fun HomeScreen(
         }
 
         is FestivalUiState.Success -> {
-            HomeContent(
-                festivalUiState = state,
-                lineupUiState = lineupUiState,
-                onNavigateToExplore = onNavigateToExplore,
-                onNavigateToSchedule = homeViewModel::navigateToScheduleClick,
-                onFestatingClick = { festivalId -> onNavigateToFestating(festivalId) },
-                modifier = modifier,
-            )
+            Box(modifier = modifier.fillMaxSize()) {
+                HomeContent(
+                    festivalUiState = state,
+                    lineupUiState = lineupUiState,
+                    onNavigateToExplore = onNavigateToExplore,
+                    onNavigateToSchedule = homeViewModel::navigateToScheduleClick,
+                    onFestatingClick = { festivalId -> onNavigateToFestating(festivalId) },
+                )
+                when (val waitingBarUiState = waitingBarUiState) {
+                    is WaitingBarUiState.Visible -> {
+                        HomeWaitingBar(
+                            order = waitingBarUiState.order,
+                            estimatedMinutes = waitingBarUiState.estimatedWaitTime,
+                            status = waitingBarUiState.status,
+                            onClick = homeViewModel::navigateToMyWaitingClick,
+                            modifier =
+                                Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .fillMaxWidth()
+                                    .padding(
+                                        start = festabookSpacing.paddingBody4,
+                                        end = festabookSpacing.paddingBody4,
+                                        bottom = festabookSpacing.paddingBody4,
+                                    ),
+                        )
+                    }
+
+                    else -> {}
+                }
+            }
         }
     }
 }

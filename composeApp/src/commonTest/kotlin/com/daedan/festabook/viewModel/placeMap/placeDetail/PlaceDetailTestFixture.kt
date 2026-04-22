@@ -67,10 +67,11 @@ val FAKE_ETC_PLACE_DETAIL =
 val FAKE_MY_WAITING =
     MyWaiting(
         waitingId = 42L,
-        waitingOrder = 3,
+        waitingOrderFromZero = 3,
         partySize = 2,
         waitingStatus = WaitingStatus.WAITING,
         totalWaitingTeams = 10,
         estimatedWaitTime = 15,
         phoneNumber = "010-1234-5678",
+        placeId = 1,
     )
