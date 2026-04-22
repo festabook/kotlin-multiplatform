@@ -14,8 +14,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun FestatingPoster(
-    onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
 ) {
     Image(
         painter = painterResource(Res.drawable.festa_ting_poster),
