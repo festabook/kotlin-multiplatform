@@ -26,12 +26,12 @@ import com.daedan.festabook.presentation.festating.component.FestatingPoster
 import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.LineupUiState
+import com.daedan.festabook.presentation.home.WaitingBarUiState
 import com.daedan.festabook.presentation.home.model.FestivalPosterUiModel
 import com.daedan.festabook.presentation.home.model.FestivalUiModel
 import com.daedan.festabook.presentation.home.model.LineUpItemGroupUiModel
 import com.daedan.festabook.presentation.home.model.LineupItemUiModel
 import com.daedan.festabook.presentation.home.model.OrganizationUiModel
-import com.daedan.festabook.presentation.home.WaitingBarUiState
 import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.festabookSpacing
@@ -165,7 +165,7 @@ private fun HomeContent(
         topBar = {
             HomeHeader(
                 universityName = universityName,
-                onExpandClick = onNavigateToExplore,
+                onTitleClick = onNavigateToExplore,
                 modifier =
                     Modifier.padding(
                         top = festabookSpacing.paddingTitleHorizontal,

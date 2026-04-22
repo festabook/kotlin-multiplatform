@@ -1,6 +1,5 @@
 package com.daedan.festabook.presentation.home.component
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.daedan.festabook.presentation.common.throttleClick
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import festabookkmp.composeapp.generated.resources.Res
@@ -27,7 +27,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun HomeHeader(
     universityName: String,
-    onExpandClick: () -> Unit,
+    onTitleClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -37,7 +37,7 @@ fun HomeHeader(
                 .padding(horizontal = 16.dp),
     ) {
         Row(
-            modifier = Modifier.clickable { onExpandClick() },
+            modifier = Modifier.throttleClick { onTitleClick() },
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -67,6 +67,6 @@ fun HomeHeader(
 private fun HomeHeaderPreview() {
     HomeHeader(
         universityName = "가천대학교",
-        onExpandClick = {},
+        onTitleClick = {},
     )
 }
