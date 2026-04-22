@@ -1,8 +1,8 @@
 package com.daedan.festabook.presentation.main
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -19,7 +19,7 @@ class FestabookNavigator(
         get() =
             navController
                 .visibleEntries
-                .collectAsState()
+                .collectAsStateWithLifecycle()
                 .value
                 .lastOrNull { it.destination.route != null }
                 ?.destination
