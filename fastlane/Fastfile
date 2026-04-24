@@ -273,15 +273,6 @@ platform :android do
     apk = android_build(flavor: "release")
     android_upload(flavor: "release", apk_path: apk)
   end
-
-  error do |lane, exception|
-    notify_slack(
-      platform: "Android",
-      build_type: lane.to_s.include?("release") ? "Release" : "Dev",
-      success: false,
-      error: exception.message,
-    )
-  end
 end
 
 # --- iOS lanes ---
@@ -336,14 +327,5 @@ platform :ios do
       profile_name: local_property("IOS_PROVISIONING_PROFILE_RELEASE_NAME"),
     )
     ios_upload(configuration: "Release", bundle_id: bundle_id, ipa_path: ipa)
-  end
-
-  error do |lane, exception|
-    notify_slack(
-      platform: "iOS",
-      build_type: lane.to_s.include?("release") ? "Release" : "Dev",
-      success: false,
-      error: exception.message,
-    )
   end
 end
