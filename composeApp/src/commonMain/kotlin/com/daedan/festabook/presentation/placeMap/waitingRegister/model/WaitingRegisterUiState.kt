@@ -3,6 +3,8 @@ package com.daedan.festabook.presentation.placeMap.waitingRegister.model
 sealed interface WaitingRegisterUiState {
     data object Loading : WaitingRegisterUiState
 
+    data object NeedsPhoneRegistration : WaitingRegisterUiState
+
     data class Success(
         val waitingRegister: WaitingRegisterUiModel,
     ) : WaitingRegisterUiState
