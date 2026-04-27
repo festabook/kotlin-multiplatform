@@ -26,12 +26,12 @@ import com.daedan.festabook.presentation.festating.component.FestatingPoster
 import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.LineupUiState
+import com.daedan.festabook.presentation.home.WaitingBarUiState
 import com.daedan.festabook.presentation.home.model.FestivalPosterUiModel
 import com.daedan.festabook.presentation.home.model.FestivalUiModel
 import com.daedan.festabook.presentation.home.model.LineUpItemGroupUiModel
 import com.daedan.festabook.presentation.home.model.LineupItemUiModel
 import com.daedan.festabook.presentation.home.model.OrganizationUiModel
-import com.daedan.festabook.presentation.home.WaitingBarUiState
 import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.festabookSpacing
@@ -226,7 +226,7 @@ private fun HomeContent(
                 // TODO if문 묶기
                 item {
                     FestatingPoster(
-                        onClick = { onFestatingClick(festivalUiState.organization.id) },
+                        onClick = { onFestatingClick(festivalUiState.organization.festival.id) },
                         modifier =
                             Modifier
                                 .fillMaxSize()
@@ -312,6 +312,7 @@ private fun FestivalOverviewPreview() {
             organizationName = "가천대학교",
             festival =
                 FestivalUiModel(
+                    id = 1L,
                     festivalName = "2025 가천 Water Festival\n: AQUA WAVE",
                     startDate = Clock.System.todayIn(TimeZone.currentSystemDefault()),
                     endDate =

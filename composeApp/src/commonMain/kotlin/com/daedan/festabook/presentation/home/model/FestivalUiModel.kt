@@ -4,6 +4,7 @@ import com.daedan.festabook.domain.model.Festival
 import kotlinx.datetime.LocalDate
 
 data class FestivalUiModel(
+    val id: Long,
     val festivalName: String,
     val festivalImages: List<FestivalPosterUiModel>,
     val startDate: LocalDate,
@@ -12,6 +13,7 @@ data class FestivalUiModel(
 
 fun Festival.toUiModel(): FestivalUiModel =
     FestivalUiModel(
+        id = id,
         festivalName = festivalName,
         festivalImages = festivalImages.map { it.toUiModel() },
         startDate = startDate,

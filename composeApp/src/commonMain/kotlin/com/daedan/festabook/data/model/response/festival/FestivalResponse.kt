@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FestivalResponse(
     @SerialName("festivalId")
-    val id: Long,
+    val festivalId: Long,
     @SerialName("organizationName")
     val organizationName: String,
     @SerialName("festivalImages")
@@ -35,10 +35,11 @@ data class FestivalResponse(
 
 fun FestivalResponse.toDomain() =
     Organization(
-        id = id,
+        id = 1L, // TODO 우선 하드 코딩 서버 변경되면 연결 필요
         organizationName = organizationName,
         festival =
             Festival(
+                id = festivalId,
                 festivalImages = festivalImages.map { it.toDomain() },
                 festivalName = festivalName,
                 startDate = startDate.toLocalDate(),

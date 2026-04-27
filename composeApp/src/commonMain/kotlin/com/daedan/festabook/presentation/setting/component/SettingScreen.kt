@@ -465,6 +465,7 @@ private fun SettingScreenPreview() {
                         organizationName = "성균관대학교 인문사회과학철학문학자연캠퍼스 인문사회과학철학문학자연캠퍼스",
                         festival =
                             FestivalUiModel(
+                                id = 1,
                                 festivalName = "성균관대학교 축제축제축제축제축제축제축제축제축제축제축제축제",
                                 festivalImages = listOf(),
                                 startDate = LocalDate(2026, 1, 1),
