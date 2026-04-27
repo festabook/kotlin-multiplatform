@@ -8,4 +8,5 @@ data class Festival(
     val festivalImages: List<Poster>,
     val startDate: LocalDate,
     val endDate: LocalDate,
+    val festatingVisible: Boolean,
 )

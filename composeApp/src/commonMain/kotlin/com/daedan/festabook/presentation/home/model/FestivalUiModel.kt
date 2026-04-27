@@ -9,6 +9,7 @@ data class FestivalUiModel(
     val festivalImages: List<FestivalPosterUiModel>,
     val startDate: LocalDate,
     val endDate: LocalDate,
+    val festatingVisible: Boolean,
 )
 
 fun Festival.toUiModel(): FestivalUiModel =
@@ -18,4 +19,5 @@ fun Festival.toUiModel(): FestivalUiModel =
         festivalImages = festivalImages.map { it.toUiModel() },
         startDate = startDate,
         endDate = endDate,
+        festatingVisible = festatingVisible,
     )

@@ -470,6 +470,7 @@ private fun SettingScreenPreview() {
                                 festivalImages = listOf(),
                                 startDate = LocalDate(2026, 1, 1),
                                 endDate = LocalDate(2026, 1, 2),
+                                festatingVisible = true,
                             ),
                     ),
                 ),

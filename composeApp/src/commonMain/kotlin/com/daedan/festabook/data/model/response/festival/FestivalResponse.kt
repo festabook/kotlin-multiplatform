@@ -21,6 +21,8 @@ data class FestivalResponse(
     val startDate: String,
     @SerialName("endDate")
     val endDate: String,
+    @SerialName("festatingVisible")
+    val festatingVisible: Boolean,
 ) {
     @Serializable
     data class FestivalImage(
@@ -44,6 +46,7 @@ fun FestivalResponse.toDomain() =
                 festivalName = festivalName,
                 startDate = startDate.toLocalDate(),
                 endDate = endDate.toLocalDate(),
+                festatingVisible = festatingVisible,
             ),
     )
 
