@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.daedan.festabook.presentation.common.throttleClick
+import com.daedan.festabook.presentation.common.runIfAtLeastState
 
 class FestabookNavigator(
     val navController: NavHostController,
@@ -64,7 +64,7 @@ class FestabookNavigator(
 
     fun popBackStack() {
         val lifecycleOwner: LifecycleOwner = navController.currentBackStackEntry ?: return
-        throttleClick(lifecycleOwner = lifecycleOwner) { navController.popBackStack() }
+        runIfAtLeastState(lifecycleOwner = lifecycleOwner) { navController.popBackStack() }
     }
 
     fun popBackStack(

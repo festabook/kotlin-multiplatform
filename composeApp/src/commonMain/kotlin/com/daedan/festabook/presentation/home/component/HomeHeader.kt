@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.daedan.festabook.presentation.common.throttleClick
+import com.daedan.festabook.presentation.common.runIfAtLeastState
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import festabookkmp.composeapp.generated.resources.Res
@@ -40,7 +40,7 @@ fun HomeHeader(
                 .padding(horizontal = 16.dp),
     ) {
         Row(
-            modifier = Modifier.clickable { throttleClick(lifecycleOwner = lifecycleOwner) { onTitleClick() } },
+            modifier = Modifier.clickable { runIfAtLeastState(lifecycleOwner = lifecycleOwner) { onTitleClick() } },
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
