@@ -290,10 +290,7 @@ private fun MyWaitingContent(
         ) {
             WaitingCancelButton(
                 modifier =
-                    Modifier.padding(
-                        vertical = festabookSpacing.paddingBody2,
-                        horizontal = festabookSpacing.paddingScreenGutter,
-                    ),
+                    Modifier.padding(festabookSpacing.paddingScreenGutter),
                 isEnabled = !uiState.myWaiting.isCanceling,
                 isCancelling = uiState.myWaiting.isCanceling,
                 onClick = { showCancelConfirmDialog = true },
