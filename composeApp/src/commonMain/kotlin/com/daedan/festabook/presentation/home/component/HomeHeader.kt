@@ -1,5 +1,6 @@
 package com.daedan.festabook.presentation.home.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.daedan.festabook.presentation.common.throttleClick
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
@@ -30,6 +32,7 @@ fun HomeHeader(
     onTitleClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val lifecycleOwner = LocalLifecycleOwner.current
     Box(
         modifier =
             modifier
@@ -37,7 +40,7 @@ fun HomeHeader(
                 .padding(horizontal = 16.dp),
     ) {
         Row(
-            modifier = Modifier.throttleClick { onTitleClick() },
+            modifier = Modifier.clickable { throttleClick(lifecycleOwner = lifecycleOwner) { onTitleClick() } },
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(

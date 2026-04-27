@@ -1,16 +1,18 @@
 package com.daedan.festabook.presentation.explore.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.daedan.festabook.presentation.theme.FestabookTheme
+import com.daedan.festabook.presentation.theme.festabookShapes
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.explore_back
 import festabookkmp.composeapp.generated.resources.ic_arrow_back
@@ -30,15 +32,15 @@ fun ExploreBackHeader(
                 .height(56.dp),
         contentAlignment = Alignment.CenterStart,
     ) {
-        IconButton(
-            onClick = onBackClick,
-        ) {
-            Icon(
-                imageVector = vectorResource(Res.drawable.ic_arrow_back),
-                contentDescription = stringResource(Res.string.explore_back),
-                tint = Color.Unspecified,
-            )
-        }
+        Icon(
+            imageVector = vectorResource(Res.drawable.ic_arrow_back),
+            contentDescription = stringResource(Res.string.explore_back),
+            tint = Color.Unspecified,
+            modifier =
+                Modifier
+                    .clip(festabookShapes.radiusFull)
+                    .clickable { onBackClick() },
+        )
     }
 }
 
