@@ -215,6 +215,7 @@ private fun MyWaitingContent(
             modifier =
                 Modifier
                     .fillMaxSize()
+                    .background(FestabookColor.white)
                     .verticalScroll(rememberScrollState()),
         ) {
             Spacer(modifier = Modifier.height(16.dp))
@@ -279,12 +280,22 @@ private fun MyWaitingContent(
 
             Spacer(modifier = Modifier.height(100.dp))
         }
-        WaitingCancelButton(
-            isEnabled = !uiState.myWaiting.isCanceling,
-            isCancelling = uiState.myWaiting.isCanceling,
-            onClick = { showCancelConfirmDialog = true },
-            modifier = Modifier.align(Alignment.BottomCenter),
-        )
+        Column(
+            modifier =
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .requiredWidth(screenWidthDp)
+                    .background(FestabookColor.white),
+            verticalArrangement = Arrangement.Center,
+        ) {
+            WaitingCancelButton(
+                modifier =
+                    Modifier.padding(festabookSpacing.paddingScreenGutter),
+                isEnabled = !uiState.myWaiting.isCanceling,
+                isCancelling = uiState.myWaiting.isCanceling,
+                onClick = { showCancelConfirmDialog = true },
+            )
+        }
     }
 }
 
@@ -377,9 +388,7 @@ private fun WaitingCancelButton(
     Box(
         modifier =
             modifier
-                .padding(
-                    vertical = festabookSpacing.paddingBody4,
-                ).fillMaxWidth()
+                .fillMaxWidth()
                 .height(52.dp)
                 .clip(festabookShapes.radius2)
                 .background(if (isEnabled) FestabookColor.black else FestabookColor.gray300)
