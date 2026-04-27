@@ -12,7 +12,6 @@ import com.daedan.festabook.presentation.home.LineupUiState
 import com.daedan.festabook.presentation.home.WaitingBarUiState
 import com.daedan.festabook.presentation.home.model.LineUpItemOfDayUiModel
 import com.daedan.festabook.presentation.home.model.toUiModel
-import com.daedan.festabook.presentation.home.toUiModel
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
 import dev.mokkery.mock
