@@ -4,4 +4,6 @@ data class Organization(
     val id: Long,
     val organizationName: String,
     val festival: Festival,
+    val instagramLink: String?,
+    val homepageLink: String?,
 )

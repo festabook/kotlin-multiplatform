@@ -323,7 +323,10 @@ private fun FestivalOverviewPreview() {
                             FestivalPosterUiModel(1, "sample", 1),
                             FestivalPosterUiModel(2, "sample", 2),
                         ),
+                    sponsors = emptyList(),
                 ),
+            instagramLink = null,
+            homepageLink = null,
         )
 
     val sampleLineups =
