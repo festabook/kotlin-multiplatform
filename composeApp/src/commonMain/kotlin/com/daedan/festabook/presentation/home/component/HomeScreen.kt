@@ -118,6 +118,7 @@ fun HomeScreen(
                 HomeContent(
                     festivalUiState = state,
                     lineupUiState = lineupUiState,
+                    showWaitingBar = waitingBarUiState is WaitingBarUiState.Visible,
                     onNavigateToExplore = onNavigateToExplore,
                     onNavigateToSchedule = homeViewModel::navigateToScheduleClick,
                     onFestatingClick = { festivalId -> onNavigateToFestating(festivalId) },
@@ -152,6 +153,7 @@ fun HomeScreen(
 private fun HomeContent(
     festivalUiState: FestivalUiState.Success,
     lineupUiState: LineupUiState,
+    showWaitingBar: Boolean,
     onNavigateToExplore: () -> Unit,
     onNavigateToSchedule: () -> Unit,
     onFestatingClick: (festivalId: Long) -> Unit,
@@ -293,7 +295,12 @@ private fun HomeContent(
 
                 // 하단 여백 추가
                 item {
-                    Spacer(modifier = Modifier.padding(bottom = 80.dp))
+                    Spacer(
+                        modifier =
+                            Modifier.padding(
+                                bottom = if (showWaitingBar) 80.dp else festabookSpacing.paddingBody5,
+                            ),
+                    )
                 }
             }
         }
@@ -390,6 +397,7 @@ private fun FestivalOverviewPreview() {
     HomeContent(
         festivalUiState = FestivalUiState.Success(sampleFestival),
         lineupUiState = LineupUiState.Success(sampleLineups.getLineupItems()),
+        showWaitingBar = false,
         onNavigateToExplore = {},
         onNavigateToSchedule = {},
         onFestatingClick = {},
