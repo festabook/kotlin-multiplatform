@@ -25,6 +25,7 @@
     <string name="home_navigate_to_schedule_desc">일정 화면으로 이동하는 버튼</string>
     <string name="home_navigate_to_schedule_text">일정 확인하기</string>
     <string name="home_lineup_title">축제 라인업</string>
+    <string name="home_sponsor_title">Sponsored</string>
     <string name="home_navigate_to_explore_desc">탐색 화면으로 이동하는 버튼</string>
     <string name="home_festating_poster_image">페스타팅 이미지</string>
     <string name="format_festival_period_year">%1$s년 </string>

@@ -274,9 +274,26 @@ private fun HomeContent(
                     }
                 }
 
+                // 후원사 배너
+                val sponsors = festivalUiState.organization.festival.sponsors
+                if (sponsors.isNotEmpty()) {
+                    item {
+                        HorizontalDivider(
+                            thickness = 4.dp,
+                            color = FestabookColor.gray200,
+                            modifier = Modifier.padding(vertical = festabookSpacing.paddingBody4),
+                        )
+                    }
+                    item {
+                        HomeSponsorBanner(
+                            sponsors = sponsors,
+                        )
+                    }
+                }
+
                 // 하단 여백 추가
                 item {
-                    Spacer(modifier = Modifier.padding(bottom = 60.dp))
+                    Spacer(modifier = Modifier.padding(bottom = 80.dp))
                 }
             }
         }
