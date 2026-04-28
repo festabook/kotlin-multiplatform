@@ -29,6 +29,9 @@
     <string name="home_festating_poster_image">페스타팅 이미지</string>
     <string name="format_festival_period_year">%1$s년 </string>
     <string name="format_festival_period_date">%1$s월 %2$s일</string>
+    <string name="content_description_instagram">인스타그램 아이콘</string>
+    <string name="content_description_homepage">홈페이지 아이콘</string>
+
 
 
     <!--한 눈에 보기 화면 -->

@@ -52,9 +52,9 @@ fun FestivalResponse.toDomain() =
                 startDate = startDate.toLocalDate(),
                 endDate = endDate.toLocalDate(),
                 sponsors = festivalSponsors.map { it.toDomain() },
+                instagramLink = instagramLink,
+                homepageLink = homepageLink,
             ),
-        instagramLink = instagramLink,
-        homepageLink = homepageLink,
     )
 
 fun FestivalResponse.FestivalImage.toDomain() =

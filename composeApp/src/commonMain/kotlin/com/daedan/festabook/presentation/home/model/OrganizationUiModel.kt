@@ -6,8 +6,6 @@ data class OrganizationUiModel(
     val id: Long,
     val organizationName: String,
     val festival: FestivalUiModel,
-    val instagramLink: String?,
-    val homepageLink: String?,
 )
 
 fun Organization.toUiModel(): OrganizationUiModel =
@@ -15,6 +13,4 @@ fun Organization.toUiModel(): OrganizationUiModel =
         id = id,
         organizationName = organizationName,
         festival = festival.toUiModel(),
-        instagramLink = instagramLink,
-        homepageLink = homepageLink,
     )

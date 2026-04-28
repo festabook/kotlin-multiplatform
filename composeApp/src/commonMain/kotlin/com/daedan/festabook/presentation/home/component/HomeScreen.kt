@@ -208,6 +208,8 @@ private fun HomeContent(
                                 festival.startDate,
                                 festival.endDate,
                             ),
+                        instagramLink = festival.instagramLink,
+                        homepageLink = festival.homepageLink,
                         modifier = Modifier.padding(top = festabookSpacing.paddingBody4),
                     )
                 }
@@ -324,9 +326,9 @@ private fun FestivalOverviewPreview() {
                             FestivalPosterUiModel(2, "sample", 2),
                         ),
                     sponsors = emptyList(),
+                    instagramLink = null,
+                    homepageLink = null,
                 ),
-            instagramLink = null,
-            homepageLink = null,
         )
 
     val sampleLineups =
