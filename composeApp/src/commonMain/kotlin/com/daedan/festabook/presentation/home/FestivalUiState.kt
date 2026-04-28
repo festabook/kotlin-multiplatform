@@ -1,5 +1,6 @@
 package com.daedan.festabook.presentation.home
 
+import com.daedan.festabook.presentation.home.model.FestatingUiModel
 import com.daedan.festabook.presentation.home.model.OrganizationUiModel
 
 sealed interface FestivalUiState {
@@ -7,6 +8,7 @@ sealed interface FestivalUiState {
 
     data class Success(
         val organization: OrganizationUiModel,
+        val festating: FestatingUiModel?,
     ) : FestivalUiState
 
     data class Error(

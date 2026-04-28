@@ -8,7 +8,11 @@ import com.daedan.festabook.presentation.main.FestabookRoute
 
 fun NavGraphBuilder.festatingNavGraph() {
     composable<FestabookRoute.Festating> { backStackEntry ->
-        val festivalId = backStackEntry.toRoute<FestabookRoute.Festating>().festivalId
-        FestatingScreen(festivalId = festivalId)
+        val route = backStackEntry.toRoute<FestabookRoute.Festating>()
+        FestatingScreen(
+            organizationId = route.organizationId,
+            festivalId = route.festivalId,
+            deviceId = route.deviceId,
+        )
     }
 }

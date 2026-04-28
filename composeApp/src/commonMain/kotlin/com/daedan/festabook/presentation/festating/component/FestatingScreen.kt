@@ -15,17 +15,16 @@ import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewState
 
-private const val HEADER_FESTIVAL_ID = "festivalId"
-
 @Composable
 fun FestatingScreen(
+    organizationId: Long,
     festivalId: Long,
+    deviceId: Long,
     modifier: Modifier = Modifier,
 ) {
     val webViewState =
         rememberConfiguredWebViewState(
-            url = BuildKonfig.FESTA_TING_URL,
-            headers = mapOf(HEADER_FESTIVAL_ID to festivalId.toString()),
+            url = BuildKonfig.FESTA_TING_URL + "?festivalId=$festivalId&deviceId=$deviceId&organizationId=$organizationId",
         )
     val backState = rememberNavigationEventState(NavigationEventInfo.None)
     val navigator = rememberWebViewNavigator()

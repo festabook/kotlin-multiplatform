@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.component.HomeScreen
+import com.daedan.festabook.presentation.home.model.FestatingUiModel
 import com.daedan.festabook.presentation.main.MainTabRoute
 import com.daedan.festabook.presentation.main.MainViewModel
 import com.daedan.festabook.presentation.main.component.FirstVisitDialog
@@ -27,7 +28,7 @@ fun NavGraphBuilder.homeNavGraph(
     onShowErrorSnackbar: (Throwable) -> Unit,
     onSubscriptionConfirm: () -> Unit,
     onNavigateToExplore: () -> Unit,
-    onNavigateToFestating: (festivalId: Long) -> Unit,
+    onNavigateToFestating: (FestatingUiModel) -> Unit,
     onNavigateToMyWaiting: () -> Unit,
 ) {
     composable<MainTabRoute.Home>(
