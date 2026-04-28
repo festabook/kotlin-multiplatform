@@ -53,7 +53,7 @@ fun HomeSponsorBanner(
     }
 
     Column(
-        modifier = Modifier.padding(horizontal = festabookSpacing.paddingScreenGutter),
+        modifier = modifier.padding(horizontal = festabookSpacing.paddingScreenGutter),
     ) {
         Text(
             text = stringResource(Res.string.home_sponsor_title),
@@ -66,7 +66,7 @@ fun HomeSponsorBanner(
         HorizontalPager(
             state = pagerState,
             modifier =
-                modifier
+                Modifier
                     .fillMaxWidth()
                     .height(70.dp)
                     .cardBackground(

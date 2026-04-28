@@ -30,9 +30,9 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun HomeFestivalInfo(
     festivalName: String,
     festivalDate: String,
+    modifier: Modifier = Modifier,
     instagramLink: String? = null,
     homepageLink: String? = null,
-    modifier: Modifier = Modifier,
 ) {
     val uriHandler = LocalUriHandler.current
 
