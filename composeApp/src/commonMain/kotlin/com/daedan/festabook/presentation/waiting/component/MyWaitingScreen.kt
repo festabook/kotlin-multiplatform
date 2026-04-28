@@ -27,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -120,28 +121,36 @@ fun MyWaitingScreen(
     val isCancelEnabled = uiState is MyWaitingUiState.Success && !uiState.myWaiting.isCanceling
     val isCancelling = uiState is MyWaitingUiState.Success && uiState.myWaiting.isCanceling
 
+    LaunchedEffect(uiState) {
+        if (uiState !is MyWaitingUiState.Success) {
+            showCancelConfirmDialog = false
+        }
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = { MyWaitingTopBar(onBack = onBack) },
         bottomBar = {
-            Column(
-                modifier =
-                    Modifier
-                        .shadow(elevation = 10.dp, clip = false)
-                        .background(FestabookColor.white)
-                        .navigationBarsPadding(),
-                verticalArrangement = Arrangement.Center,
-            ) {
-                WaitingCancelButton(
+            if (uiState is MyWaitingUiState.Success) {
+                Column(
                     modifier =
-                        Modifier.padding(
-                            vertical = festabookSpacing.paddingBody2,
-                            horizontal = festabookSpacing.paddingScreenGutter,
-                        ),
-                    isEnabled = isCancelEnabled,
-                    isCancelling = isCancelling,
-                    onClick = { showCancelConfirmDialog = true },
-                )
+                        Modifier
+                            .shadow(elevation = 10.dp, clip = false)
+                            .background(FestabookColor.white)
+                            .navigationBarsPadding(),
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    WaitingCancelButton(
+                        modifier =
+                            Modifier.padding(
+                                vertical = festabookSpacing.paddingBody2,
+                                horizontal = festabookSpacing.paddingScreenGutter,
+                            ),
+                        isEnabled = isCancelEnabled,
+                        isCancelling = isCancelling,
+                        onClick = { showCancelConfirmDialog = true },
+                    )
+                }
             }
         },
         containerColor = FestabookColor.white,
@@ -303,7 +312,7 @@ private fun MyWaitingContent(
                 phoneNumber = uiState.myWaiting.phoneNumber,
             )
 
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(festabookSpacing.paddingTitleHorizontal))
         }
     }
 }
