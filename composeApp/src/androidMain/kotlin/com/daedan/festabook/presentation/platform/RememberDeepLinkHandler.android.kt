@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.util.Consumer
+import com.daedan.festabook.logging.currentTimeMillis
 
 @Composable
 actual fun RememberDeepLinkHandler(onNotificationClick: (action: FcmDeepLinkAction, festivalIdChanged: Boolean) -> Unit) {
@@ -61,7 +62,7 @@ private fun Intent.consumeDeepLinkAction(): FcmDeepLinkAction? {
                 removeExtra(DeepLinkKeys.KEY_TYPE)
                 removeExtra(DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND)
                 removeExtra(DeepLinkKeys.KEY_CAN_NAVIGATE_TO_NEWS)
-                FcmDeepLinkAction.OpenAnnouncement(announcementId)
+                FcmDeepLinkAction.OpenAnnouncement(announcementId, currentTimeMillis())
             }
         }
     }

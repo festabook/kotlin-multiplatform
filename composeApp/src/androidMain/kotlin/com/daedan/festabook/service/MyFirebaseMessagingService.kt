@@ -2,6 +2,7 @@ package com.daedan.festabook.service
 
 import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
 import com.daedan.festabook.di.androidAppGraph
+import com.daedan.festabook.logging.currentTimeMillis
 import com.daedan.festabook.presentation.platform.DeepLinkKeys
 import com.daedan.festabook.presentation.platform.FcmDeepLinkAction
 import com.daedan.festabook.presentation.platform.FcmMessageType
@@ -66,7 +67,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             FcmMessageType.ANNOUNCEMENT, null -> {
                 val announcementId =
                     this[DeepLinkKeys.KEY_ANNOUNCEMENT_ID]?.toLongOrNull() ?: return null
-                FcmDeepLinkAction.OpenAnnouncement(announcementId)
+                FcmDeepLinkAction.OpenAnnouncement(announcementId, currentTimeMillis())
             }
         }
     }

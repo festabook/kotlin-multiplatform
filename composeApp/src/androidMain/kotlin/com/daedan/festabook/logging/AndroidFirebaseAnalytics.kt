@@ -35,7 +35,7 @@ class AndroidFirebaseAnalytics(
                     putString("device_model", Build.MODEL)
                     putString("language", Locale.getDefault().language)
                     putString("user_id", userId.first { it != null })
-                    putLong("timestamp", System.currentTimeMillis())
+                    putLong("timestamp", currentTimeMillis())
                 },
             )
         }

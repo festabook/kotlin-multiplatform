@@ -27,6 +27,7 @@ enum class FcmMessageType {
 sealed interface FcmDeepLinkAction {
     data class OpenAnnouncement(
         val announcementId: Long,
+        val notificationSentAt: Long,
     ) : FcmDeepLinkAction
 
     data object OpenMyWaiting : FcmDeepLinkAction

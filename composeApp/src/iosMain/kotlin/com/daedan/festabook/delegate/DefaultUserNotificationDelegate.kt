@@ -2,6 +2,7 @@ package com.daedan.festabook.delegate
 
 import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
 import com.daedan.festabook.di.coroutine.IO
+import com.daedan.festabook.logging.currentTimeMillis
 import com.daedan.festabook.presentation.platform.DeepLinkKeys
 import com.daedan.festabook.presentation.platform.FcmDeepLinkAction
 import com.daedan.festabook.presentation.platform.FcmMessageType
@@ -89,9 +90,8 @@ class DefaultUserNotificationDelegate(
 
             FcmMessageType.ANNOUNCEMENT, null -> {
                 val announcementId =
-                    (this[DeepLinkKeys.KEY_ANNOUNCEMENT_ID] as? String)?.toLongOrNull()
-                        ?: return null
-                FcmDeepLinkAction.OpenAnnouncement(announcementId)
+                    (this[DeepLinkKeys.KEY_ANNOUNCEMENT_ID] as? String)?.toLongOrNull() ?: return null
+                FcmDeepLinkAction.OpenAnnouncement(announcementId, currentTimeMillis())
             }
         }
     }

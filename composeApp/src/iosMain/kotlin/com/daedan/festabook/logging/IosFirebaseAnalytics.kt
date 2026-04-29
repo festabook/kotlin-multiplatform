@@ -82,6 +82,4 @@ class IosFirebaseAnalytics(
             ) ?: UIDevice.currentDevice.model
         }
     }
-
-    private fun currentTimeMillis(): Long = (NSDate.date().timeIntervalSince1970 * 1000).toLong()
 }
