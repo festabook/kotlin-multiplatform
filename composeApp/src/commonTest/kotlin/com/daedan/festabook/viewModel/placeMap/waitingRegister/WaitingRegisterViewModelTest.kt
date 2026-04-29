@@ -20,7 +20,6 @@ import dev.mokkery.verifySuspend
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -56,13 +55,6 @@ class WaitingRegisterViewModelTest {
                     phoneNumber = "010-1234-5678",
                 ),
             )
-        viewModel =
-            WaitingRegisterViewModel(
-                placeDetailRepository = placeDetailRepository,
-                waitingInfoRepository = waitingInfoRepository,
-                waitingRegisterInfoRepository = waitingRegisterInfoRepository,
-                placeId = FAKE_PLACE_DETAIL.place.id,
-            )
     }
 
     @AfterTest
@@ -70,31 +62,53 @@ class WaitingRegisterViewModelTest {
         Dispatchers.resetMain()
     }
 
+    private fun createViewModel(): WaitingRegisterViewModel =
+        WaitingRegisterViewModel(
+            placeDetailRepository = placeDetailRepository,
+            waitingInfoRepository = waitingInfoRepository,
+            waitingRegisterInfoRepository = waitingRegisterInfoRepository,
+            placeId = FAKE_PLACE_DETAIL.place.id,
+        )
+
     @Test
-    fun `전화번호 미등록 상태에서 초기화 시 navigateToPhoneRegistrationEvent 를 발행한다`() =
-        runTest(UnconfinedTestDispatcher()) {
+    fun `전화번호 미등록 상태에서 초기화 시 NeedsPhoneRegistration 상태가 된다`() =
+        runTest {
             // given
             everySuspend { waitingInfoRepository.getWaitingInfo() } returns Result.success(null)
-            viewModel =
-                WaitingRegisterViewModel(
-                    placeDetailRepository = placeDetailRepository,
-                    waitingInfoRepository = waitingInfoRepository,
-                    waitingRegisterInfoRepository = waitingRegisterInfoRepository,
-                    placeId = FAKE_PLACE_DETAIL.place.id,
-                )
 
             // when
-            val event = observeEvent(viewModel.navigateToPhoneRegistrationEvent)
+            viewModel = createViewModel()
             advanceUntilIdle()
 
             // then
-            assertEquals(Unit, event.await())
+            assertEquals(WaitingRegisterUiState.NeedsPhoneRegistration, viewModel.uiState.value)
+        }
+
+    @Test
+    fun `WaitingInfo 로드에 실패하면 Error 상태가 되고 PlaceDetail 을 조회하지 않는다`() =
+        runTest {
+            // given
+            val exception = Throwable("정보 조회 실패")
+            everySuspend { waitingInfoRepository.getWaitingInfo() } returns Result.failure(exception)
+
+            // when
+            viewModel = createViewModel()
+            advanceUntilIdle()
+
+            // then
+            val state = viewModel.uiState.value
+            assertIs<WaitingRegisterUiState.Error>(state)
+            assertEquals(exception, state.throwable)
+            verifySuspend(VerifyMode.not) {
+                placeDetailRepository.getPlaceDetail(any())
+            }
         }
 
     @Test
     fun `초기화 시 PlaceDetail 로드에 성공하면 Success 상태가 된다`() =
         runTest {
             // when
+            viewModel = createViewModel()
             advanceUntilIdle()
 
             // then
@@ -117,13 +131,7 @@ class WaitingRegisterViewModelTest {
                 )
 
             // when
-            viewModel =
-                WaitingRegisterViewModel(
-                    placeDetailRepository = placeDetailRepository,
-                    waitingInfoRepository = waitingInfoRepository,
-                    waitingRegisterInfoRepository = waitingRegisterInfoRepository,
-                    placeId = FAKE_PLACE_DETAIL.place.id,
-                )
+            viewModel = createViewModel()
             advanceUntilIdle()
 
             // then
@@ -136,6 +144,7 @@ class WaitingRegisterViewModelTest {
     fun `increasePartySize 호출 시 partySize 가 1 증가한다`() =
         runTest {
             // given
+            viewModel = createViewModel()
             advanceUntilIdle()
 
             // when
@@ -151,6 +160,7 @@ class WaitingRegisterViewModelTest {
     fun `partySize 가 MAX 일 때 increasePartySize 를 호출해도 변경되지 않는다`() =
         runTest {
             // given
+            viewModel = createViewModel()
             advanceUntilIdle()
             repeat(WaitingRegisterUiModel.MAX_PARTY_SIZE - WaitingRegisterUiModel.MIN_PARTY_SIZE) {
                 viewModel.increasePartySize()
@@ -169,6 +179,7 @@ class WaitingRegisterViewModelTest {
     fun `decreasePartySize 호출 시 partySize 가 1 감소한다`() =
         runTest {
             // given
+            viewModel = createViewModel()
             advanceUntilIdle()
             viewModel.increasePartySize()
 
@@ -185,6 +196,7 @@ class WaitingRegisterViewModelTest {
     fun `partySize 가 MIN 일 때 decreasePartySize 를 호출해도 변경되지 않는다`() =
         runTest {
             // given
+            viewModel = createViewModel()
             advanceUntilIdle()
 
             // when
@@ -200,6 +212,7 @@ class WaitingRegisterViewModelTest {
     fun `toggleServiceAgreement 호출 시 isServiceAgreed 가 토글된다`() =
         runTest {
             // given
+            viewModel = createViewModel()
             advanceUntilIdle()
 
             // when
@@ -215,6 +228,7 @@ class WaitingRegisterViewModelTest {
     fun `약관 미동의 상태에서 submitWaitingRegister 를 호출해도 API 를 호출하지 않는다`() =
         runTest {
             // given
+            viewModel = createViewModel()
             advanceUntilIdle()
 
             // when - isServiceAgreed 가 false 인 기본 상태
@@ -231,6 +245,7 @@ class WaitingRegisterViewModelTest {
     fun `약관 동의 후 submitWaitingRegister 성공 시 registerSuccessEvent 를 발행한다`() =
         runTest {
             // given
+            viewModel = createViewModel()
             advanceUntilIdle()
             everySuspend { waitingRegisterInfoRepository.registerWaiting(any(), any()) } returns
                 Result.success(FAKE_MY_WAITING)
@@ -249,6 +264,7 @@ class WaitingRegisterViewModelTest {
     fun `submitWaitingRegister 성공 후 Success 상태가 유지되고 isSubmitting 이 false 가 된다`() =
         runTest {
             // given
+            viewModel = createViewModel()
             advanceUntilIdle()
             everySuspend { waitingRegisterInfoRepository.registerWaiting(any(), any()) } returns
                 Result.success(FAKE_MY_WAITING)
@@ -268,6 +284,7 @@ class WaitingRegisterViewModelTest {
     fun `partySize 를 변경하면 registerWaiting 에 변경된 값이 전달된다`() =
         runTest {
             // given
+            viewModel = createViewModel()
             advanceUntilIdle()
             everySuspend { waitingRegisterInfoRepository.registerWaiting(any(), any()) } returns
                 Result.success(FAKE_MY_WAITING)
@@ -292,6 +309,7 @@ class WaitingRegisterViewModelTest {
     fun `submitWaitingRegister 실패 시 registerFailureEvent 를 발행하고 Success 상태를 유지한다`() =
         runTest {
             // given
+            viewModel = createViewModel()
             advanceUntilIdle()
             val exception = Throwable("등록 실패")
             everySuspend { waitingRegisterInfoRepository.registerWaiting(any(), any()) } returns

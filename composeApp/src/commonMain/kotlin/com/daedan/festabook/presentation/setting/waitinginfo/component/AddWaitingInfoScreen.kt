@@ -2,6 +2,7 @@ package com.daedan.festabook.presentation.setting.waitinginfo.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +13,9 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
@@ -37,7 +40,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.input.ImeAction
@@ -135,6 +140,7 @@ fun AddWaitingInfoScreen(
 ) {
     val windowInfo = LocalWindowInfo.current
     val density = LocalDensity.current
+    val focusManager = LocalFocusManager.current
     val screenWidthDp =
         remember {
             with(density) {
@@ -174,7 +180,9 @@ fun AddWaitingInfoScreen(
                 Modifier
                     .fillMaxSize()
                     .background(FestabookColor.white)
-                    .padding(innerPadding)
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = { focusManager.clearFocus() })
+                    }.padding(innerPadding)
                     .imePadding(),
         ) {
             Spacer(modifier = Modifier.height(festabookSpacing.paddingBody5))
@@ -194,7 +202,9 @@ fun AddWaitingInfoScreen(
             Column(
                 modifier =
                     Modifier
-                        .fillMaxSize()
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
                         .padding(horizontal = festabookSpacing.paddingScreenGutter),
             ) {
                 AddPhoneNumberContent(
@@ -215,16 +225,15 @@ fun AddWaitingInfoScreen(
                     isTermsAgreed = isTermsAgreed,
                     onTermsAgreedChange = onTermsAgreedChange,
                 )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                ConfirmButton(
-                    phoneNumber = phoneNumber,
-                    isSaveEnabled = isSaveEnabled,
-                    isSaving = isSaving,
-                    onSaveClick = onSaveClick,
-                )
             }
+
+            ConfirmButton(
+                phoneNumber = phoneNumber,
+                isSaveEnabled = isSaveEnabled,
+                isSaving = isSaving,
+                onSaveClick = onSaveClick,
+                modifier = Modifier.padding(horizontal = festabookSpacing.paddingScreenGutter),
+            )
         }
     }
 }

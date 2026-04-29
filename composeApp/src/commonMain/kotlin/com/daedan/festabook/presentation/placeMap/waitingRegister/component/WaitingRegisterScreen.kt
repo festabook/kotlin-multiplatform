@@ -99,6 +99,7 @@ fun WaitingRegisterRoute(
     var showConfirmBottomSheet by rememberSaveable { mutableStateOf(false) }
     var showPermissionDialog by remember { mutableStateOf(false) }
     val onOpenAppSettings = rememberOpenAppSettings()
+    val currentOnNavigateToPhoneRegistration by rememberUpdatedState(onNavigateToPhoneRegistration)
 
     val notificationPermissionManager =
         rememberNotificationPermissionManager(
@@ -118,9 +119,7 @@ fun WaitingRegisterRoute(
     ObserveAsEvents(viewModel.registerFailureEvent) { throwable ->
         onShowErrorSnackbar(throwable)
     }
-    ObserveAsEvents(viewModel.navigateToPhoneRegistrationEvent) {
-        onNavigateToPhoneRegistration()
-    }
+
     ObserveAsEvents(flow = settingViewModel.permissionCheckEvent) {
         val permission = notificationPermissionManager.checkPermission()
 
@@ -138,6 +137,12 @@ fun WaitingRegisterRoute(
             PermissionState.DENIED -> {
                 notificationPermissionManager.requestPermission()
             }
+        }
+    }
+
+    LaunchedEffect(uiState) {
+        if (uiState is WaitingRegisterUiState.NeedsPhoneRegistration) {
+            currentOnNavigateToPhoneRegistration()
         }
     }
 
@@ -208,7 +213,9 @@ fun WaitingRegisterScreen(
         WaitingRegisterTopBar(onBackClick = onBackToPreviousClick)
 
         when (uiState) {
-            is WaitingRegisterUiState.Loading -> {
+            is WaitingRegisterUiState.Loading,
+            is WaitingRegisterUiState.NeedsPhoneRegistration,
+            -> {
                 Box(modifier = Modifier.weight(1f)) {
                     LoadingStateScreen()
                 }

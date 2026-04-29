@@ -53,11 +53,6 @@ class WaitingRegisterViewModel(
         MutableSharedFlow<Throwable>(replay = 0, extraBufferCapacity = 1)
     val registerFailureEvent: SharedFlow<Throwable> = _registerFailureEvent.asSharedFlow()
 
-    private val _navigateToPhoneRegistrationEvent =
-        MutableSharedFlow<Unit>(replay = 0, extraBufferCapacity = 1)
-    val navigateToPhoneRegistrationEvent: SharedFlow<Unit> =
-        _navigateToPhoneRegistrationEvent.asSharedFlow()
-
     init {
         loadPlaceSummary()
     }
@@ -65,14 +60,17 @@ class WaitingRegisterViewModel(
     private fun loadPlaceSummary() {
         viewModelScope.launch {
             _uiState.value = WaitingRegisterUiState.Loading
-            waitingInfoRepository
-                .getWaitingInfo()
+            val infoResult = waitingInfoRepository.getWaitingInfo()
+            infoResult
                 .onSuccess { info ->
                     if (info == null) {
-                        _navigateToPhoneRegistrationEvent.tryEmit(Unit)
+                        _uiState.value = WaitingRegisterUiState.NeedsPhoneRegistration
                         return@launch
                     }
-                }.onFailure { _uiState.value = WaitingRegisterUiState.Error(it) }
+                }.onFailure {
+                    _uiState.value = WaitingRegisterUiState.Error(it)
+                    return@launch
+                }
             placeDetailRepository
                 .getPlaceDetail(placeId)
                 .onSuccess { placeDetail ->

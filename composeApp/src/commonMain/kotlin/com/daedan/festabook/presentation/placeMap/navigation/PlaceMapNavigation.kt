@@ -56,12 +56,6 @@ fun NavGraphBuilder.placeMapNavGraph(
                 typeOf<PlaceDetailUiModel?>() to defaultNavType<PlaceDetailUiModel?>(),
                 typeOf<PlaceUiModel?>() to defaultNavType<PlaceUiModel?>(),
             ),
-        enterTransition = {
-            slideInVertically(initialOffsetY = { it / INITIAL_OFFSET_CONSTANT }) + fadeIn()
-        },
-        exitTransition = {
-            slideOutVertically(targetOffsetY = { it / INITIAL_OFFSET_CONSTANT }) + fadeOut()
-        },
     ) { backStackEntry ->
         val route = backStackEntry.toRoute<FestabookRoute.PlaceDetail>()
         val viewModel =
