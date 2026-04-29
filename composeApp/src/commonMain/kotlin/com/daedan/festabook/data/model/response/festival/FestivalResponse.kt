@@ -11,6 +11,8 @@ import kotlinx.serialization.Serializable
 data class FestivalResponse(
     @SerialName("festivalId")
     val id: Long,
+    @SerialName("organizationId")
+    val organizationId: Long,
     @SerialName("organizationName")
     val organizationName: String,
     @SerialName("festivalImages")
@@ -21,6 +23,12 @@ data class FestivalResponse(
     val startDate: String,
     @SerialName("endDate")
     val endDate: String,
+    @SerialName("festivalSponsors")
+    val festivalSponsors: List<FestivalSponsorsResponse>,
+    @SerialName("instagramLink")
+    val instagramLink: String?,
+    @SerialName("homepageLink")
+    val homepageLink: String?,
 ) {
     @Serializable
     data class FestivalImage(
@@ -43,6 +51,9 @@ fun FestivalResponse.toDomain() =
                 festivalName = festivalName,
                 startDate = startDate.toLocalDate(),
                 endDate = endDate.toLocalDate(),
+                sponsors = festivalSponsors.map { it.toDomain() },
+                instagramLink = instagramLink,
+                homepageLink = homepageLink,
             ),
     )
 

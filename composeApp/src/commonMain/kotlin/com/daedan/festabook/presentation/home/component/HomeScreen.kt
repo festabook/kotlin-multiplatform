@@ -118,6 +118,7 @@ fun HomeScreen(
                 HomeContent(
                     festivalUiState = state,
                     lineupUiState = lineupUiState,
+                    showWaitingBar = waitingBarUiState is WaitingBarUiState.Visible,
                     onNavigateToExplore = onNavigateToExplore,
                     onNavigateToSchedule = homeViewModel::navigateToScheduleClick,
                     onFestatingClick = { festivalId -> onNavigateToFestating(festivalId) },
@@ -152,6 +153,7 @@ fun HomeScreen(
 private fun HomeContent(
     festivalUiState: FestivalUiState.Success,
     lineupUiState: LineupUiState,
+    showWaitingBar: Boolean,
     onNavigateToExplore: () -> Unit,
     onNavigateToSchedule: () -> Unit,
     onFestatingClick: (festivalId: Long) -> Unit,
@@ -177,7 +179,7 @@ private fun HomeContent(
         Column(
             modifier =
                 Modifier
-                    .padding(innerPadding)
+                    .padding(top = innerPadding.calculateTopPadding())
                     .fillMaxSize(),
         ) {
             LazyColumn(
@@ -208,6 +210,8 @@ private fun HomeContent(
                                 festival.startDate,
                                 festival.endDate,
                             ),
+                        instagramLink = festival.instagramLink,
+                        homepageLink = festival.homepageLink,
                         modifier = Modifier.padding(top = festabookSpacing.paddingBody4),
                     )
                 }
@@ -272,9 +276,31 @@ private fun HomeContent(
                     }
                 }
 
+                // 후원사 배너
+                val sponsors = festivalUiState.organization.festival.sponsors
+                if (sponsors.isNotEmpty()) {
+                    item {
+                        HorizontalDivider(
+                            thickness = 4.dp,
+                            color = FestabookColor.gray200,
+                            modifier = Modifier.padding(vertical = festabookSpacing.paddingBody4),
+                        )
+                    }
+                    item {
+                        HomeSponsorBanner(
+                            sponsors = sponsors,
+                        )
+                    }
+                }
+
                 // 하단 여백 추가
                 item {
-                    Spacer(modifier = Modifier.padding(bottom = 60.dp))
+                    Spacer(
+                        modifier =
+                            Modifier.padding(
+                                bottom = if (showWaitingBar) 80.dp else festabookSpacing.paddingBody5,
+                            ),
+                    )
                 }
             }
         }
@@ -323,6 +349,9 @@ private fun FestivalOverviewPreview() {
                             FestivalPosterUiModel(1, "sample", 1),
                             FestivalPosterUiModel(2, "sample", 2),
                         ),
+                    sponsors = emptyList(),
+                    instagramLink = null,
+                    homepageLink = null,
                 ),
         )
 
@@ -368,6 +397,7 @@ private fun FestivalOverviewPreview() {
     HomeContent(
         festivalUiState = FestivalUiState.Success(sampleFestival),
         lineupUiState = LineupUiState.Success(sampleLineups.getLineupItems()),
+        showWaitingBar = false,
         onNavigateToExplore = {},
         onNavigateToSchedule = {},
         onFestatingClick = {},
