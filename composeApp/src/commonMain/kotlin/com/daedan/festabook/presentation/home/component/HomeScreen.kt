@@ -179,7 +179,7 @@ private fun HomeContent(
         Column(
             modifier =
                 Modifier
-                    .padding(innerPadding)
+                    .padding(top = innerPadding.calculateTopPadding())
                     .fillMaxSize(),
         ) {
             LazyColumn(
