@@ -3,6 +3,7 @@ package com.daedan.festabook
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.daedan.festabook.di.AndroidAppGraph
+import com.daedan.festabook.di.coroutine.IO
 import com.daedan.festabook.domain.repository.DeviceRepository
 import com.daedan.festabook.presentation.error.FestabookGlobalExceptionHandler
 import com.daedan.festabook.service.NotificationHelper
@@ -29,6 +30,7 @@ class FestabookApp : Application() {
     private lateinit var deviceRepository: DeviceRepository
 
     @Inject
+    @IO
     private lateinit var applicationScope: CoroutineScope
 
     override fun onCreate() {
