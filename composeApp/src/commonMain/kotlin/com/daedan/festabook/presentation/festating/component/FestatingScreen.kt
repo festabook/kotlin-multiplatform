@@ -15,6 +15,10 @@ import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewState
 
+private const val FESTIVAL_ID_QUERY_KEY = "festivalId"
+private const val DEVICE_ID_QUERY_KEY = "deviceId"
+private const val ORGANIZATION_ID_QUERY_KEY = "organizationId"
+
 @Composable
 fun FestatingScreen(
     organizationId: Long,
@@ -22,10 +26,16 @@ fun FestatingScreen(
     deviceId: Long,
     modifier: Modifier = Modifier,
 ) {
-    val webViewState =
-        rememberConfiguredWebViewState(
-            url = BuildKonfig.FESTA_TING_URL + "?festivalId=$festivalId&deviceId=$deviceId&organizationId=$organizationId",
+    val url =
+        buildUrl(
+            BuildKonfig.FESTA_TING_URL,
+            mapOf(
+                FESTIVAL_ID_QUERY_KEY to festivalId,
+                DEVICE_ID_QUERY_KEY to deviceId,
+                ORGANIZATION_ID_QUERY_KEY to organizationId,
+            ),
         )
+    val webViewState = rememberConfiguredWebViewState(url = url)
     val backState = rememberNavigationEventState(NavigationEventInfo.None)
     val navigator = rememberWebViewNavigator()
 
@@ -43,6 +53,19 @@ fun FestatingScreen(
                     .fillMaxSize(),
         )
     }
+}
+
+private fun buildUrl(
+    base: String,
+    params: Map<String, Any?>,
+): String {
+    val query =
+        params
+            .filterValues { it != null }
+            .entries
+            .joinToString("&") { (k, v) -> "$k=$v" }
+
+    return if (query.isEmpty()) base else "$base?$query"
 }
 
 @Composable
