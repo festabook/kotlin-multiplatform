@@ -28,6 +28,8 @@ import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+private const val AUTO_SCROLL_DELAY = 4_000L
+
 @Composable
 fun HomeSponsorBanner(
     sponsors: List<FestivalSponsorUiModel>,
@@ -48,7 +50,7 @@ fun HomeSponsorBanner(
 
     LaunchedEffect(Unit) {
         while (true) {
-            delay(4_000)
+            delay(AUTO_SCROLL_DELAY)
             pagerState.animateScrollToPage(pagerState.currentPage + 1)
         }
     }
