@@ -223,6 +223,7 @@ fun MainScreen(
                             }
                         }
                     },
+            isVisible = isVisible,
             placeMapViewModel = placeMapViewModel,
             locationSource = locationSource,
 //            logger = appGraph.defaultFirebaseLogger,
