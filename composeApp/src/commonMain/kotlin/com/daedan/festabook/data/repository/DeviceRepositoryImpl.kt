@@ -6,6 +6,7 @@ import com.daedan.festabook.data.datasource.remote.device.DeviceRemoteDataSource
 import com.daedan.festabook.data.util.randomUUID
 import com.daedan.festabook.data.util.toResult
 import com.daedan.festabook.data.util.withTimeoutOrNullFallback
+import com.daedan.festabook.di.coroutine.IO
 import com.daedan.festabook.domain.repository.DeviceRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -26,7 +27,7 @@ class DeviceRepositoryImpl(
     private val deviceRemoteDataSource: DeviceRemoteDataSource,
     private val deviceLocalDataSource: DeviceLocalDataSource,
     private val fcmDataSource: FcmDataSource,
-    coroutineScope: CoroutineScope,
+    @IO coroutineScope: CoroutineScope,
 ) : DeviceRepository {
     private val cachedFcmToken: StateFlow<String?> =
         fcmDataSource.getFcmToken().stateIn(

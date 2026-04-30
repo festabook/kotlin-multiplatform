@@ -2,6 +2,7 @@ package com.daedan.festabook.delegate
 
 import cocoapods.FirebaseMessaging.FIRMessaging
 import cocoapods.FirebaseMessaging.FIRMessagingDelegateProtocol
+import com.daedan.festabook.di.coroutine.IO
 import com.daedan.festabook.domain.repository.DeviceRepository
 import dev.zacsweers.metro.Inject
 import io.github.aakira.napier.Napier
@@ -14,7 +15,7 @@ import platform.darwin.NSObject
 @OptIn(ExperimentalForeignApi::class, FlowPreview::class)
 @Inject
 class DefaultFirebaseMessagingDelegate(
-    private val scope: CoroutineScope,
+    @param:IO private val scope: CoroutineScope,
     private val deviceRepository: DeviceRepository,
 ) : NSObject(),
     FIRMessagingDelegateProtocol {

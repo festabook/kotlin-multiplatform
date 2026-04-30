@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.daedan.festabook.FestabookApp
 import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
+import com.daedan.festabook.di.coroutine.IO
 import com.daedan.festabook.presentation.splash.platform.AppVersionManager
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -19,7 +20,8 @@ interface AndroidAppGraph : FestabookAppGraph {
 
     val festivalLocalDataSource: FestivalLocalDataSource
 
-    val ioCoroutineScope: CoroutineScope
+    @IO
+    val coroutineScope: CoroutineScope
 
     @DependencyGraph.Factory
     fun interface Factory {

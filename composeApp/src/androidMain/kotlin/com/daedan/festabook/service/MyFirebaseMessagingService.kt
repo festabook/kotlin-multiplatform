@@ -20,7 +20,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private val ioCoroutineScope: CoroutineScope by lazy {
-        application.androidAppGraph.ioCoroutineScope
+        application.androidAppGraph.coroutineScope
     }
 
     override fun onNewToken(token: String) {

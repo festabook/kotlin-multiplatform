@@ -1,6 +1,7 @@
 package com.daedan.festabook.delegate
 
 import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
+import com.daedan.festabook.di.coroutine.IO
 import com.daedan.festabook.presentation.platform.DeepLinkKeys
 import com.daedan.festabook.presentation.platform.FcmDeepLinkAction
 import com.daedan.festabook.presentation.platform.FcmMessageType
@@ -23,7 +24,7 @@ import platform.darwin.NSObject
 @Inject
 class DefaultUserNotificationDelegate(
     private val festivalLocalDataSource: FestivalLocalDataSource,
-    private val ioCoroutineScope: CoroutineScope,
+    @param:IO private val coroutineScope: CoroutineScope,
 ) : NSObject(),
     UNUserNotificationCenterDelegateProtocol {
     override fun userNotificationCenter(
@@ -52,7 +53,7 @@ class DefaultUserNotificationDelegate(
                 return
             }
 
-        ioCoroutineScope.launch {
+        coroutineScope.launch {
             val currentFestivalId = festivalLocalDataSource.getFestivalId().firstOrNull()
             val festivalIdChanged =
                 newFestivalId != DeepLinkKeys.INITIALIZED_ID && newFestivalId != currentFestivalId
@@ -76,16 +77,20 @@ class DefaultUserNotificationDelegate(
         return when (type) {
             FcmMessageType.WAITING_CALL,
             FcmMessageType.WAITING_ALMOST_CALL,
-            -> FcmDeepLinkAction.OpenMyWaiting
+            -> {
+                FcmDeepLinkAction.OpenMyWaiting
+            }
 
             FcmMessageType.WAITING_PLACE_ACCESS_CANCEL -> {
-                val placeId = (this[DeepLinkKeys.KEY_PLACE_ID] as? String)?.toLongOrNull() ?: return null
+                val placeId =
+                    (this[DeepLinkKeys.KEY_PLACE_ID] as? String)?.toLongOrNull() ?: return null
                 FcmDeepLinkAction.OpenPlaceDetail(placeId)
             }
 
             FcmMessageType.ANNOUNCEMENT, null -> {
                 val announcementId =
-                    (this[DeepLinkKeys.KEY_ANNOUNCEMENT_ID] as? String)?.toLongOrNull() ?: return null
+                    (this[DeepLinkKeys.KEY_ANNOUNCEMENT_ID] as? String)?.toLongOrNull()
+                        ?: return null
                 FcmDeepLinkAction.OpenAnnouncement(announcementId)
             }
         }
