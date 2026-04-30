@@ -13,7 +13,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @OptIn(FlowPreview::class)
 suspend inline fun <reified R> StateFlow<PlaceMapUiState>.await(
-    timeout: Duration = 3.seconds,
+    timeout: Duration = 5.seconds,
     onTimeout: (Throwable) -> Unit = {},
     crossinline selector: (PlaceMapUiState) -> Any?,
 ): R =
