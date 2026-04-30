@@ -10,9 +10,11 @@ import com.daedan.festabook.domain.repository.WaitingInfoRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.firstOrNull
 
 @ContributesBinding(AppScope::class)
+@SingleIn(AppScope::class)
 @Inject
 class WaitingInfoRepositoryImpl(
     private val deviceRemoteDataSource: DeviceRemoteDataSource,
@@ -51,7 +53,8 @@ class WaitingInfoRepositoryImpl(
                 waitingLocalDataSource.savePhoneNumber(phoneNumber)
                 Result.success(Unit)
             }
-            is ApiResult.ClientError ->
+
+            is ApiResult.ClientError -> {
                 if (apiResult.code == HTTP_CONFLICT) {
                     // 이미 등록된 번호 — 서버 상태와 로컬 캐시 동기화
                     waitingLocalDataSource.savePhoneNumber(phoneNumber)
@@ -59,7 +62,11 @@ class WaitingInfoRepositoryImpl(
                 } else {
                     apiResult.toResult()
                 }
-            else -> apiResult.toResult()
+            }
+
+            else -> {
+                apiResult.toResult()
+            }
         }
 
     companion object {

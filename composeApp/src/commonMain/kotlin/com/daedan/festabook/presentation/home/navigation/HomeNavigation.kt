@@ -27,7 +27,7 @@ fun NavGraphBuilder.homeNavGraph(
     onShowErrorSnackbar: (Throwable) -> Unit,
     onSubscriptionConfirm: () -> Unit,
     onNavigateToExplore: () -> Unit,
-    onNavigateToFestating: (festivalId: Long) -> Unit,
+    onNavigateToFestating: () -> Unit,
     onNavigateToMyWaiting: () -> Unit,
 ) {
     composable<MainTabRoute.Home>(

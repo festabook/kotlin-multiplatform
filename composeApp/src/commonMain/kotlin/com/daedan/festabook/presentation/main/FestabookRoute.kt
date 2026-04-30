@@ -28,9 +28,7 @@ sealed interface FestabookRoute {
     ) : FestabookRoute
 
     @Serializable
-    data class Festating(
-        val festivalId: Long,
-    ) : FestabookRoute
+    data object Festating : FestabookRoute
 
     @Serializable
     data class AddWaitingInfo(

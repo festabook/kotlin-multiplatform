@@ -1,4 +1,4 @@
-package com.daedan.festabook.home
+package com.daedan.festabook.viewModel.home
 
 import com.daedan.festabook.domain.model.Festival
 import com.daedan.festabook.domain.model.LineupItem
@@ -13,6 +13,7 @@ val FAKE_ORGANIZATION =
         organizationName = "하버드 대학교",
         festival =
             Festival(
+                id = 1,
                 festivalName = "하버드 대동제",
                 festivalImages =
                     listOf(

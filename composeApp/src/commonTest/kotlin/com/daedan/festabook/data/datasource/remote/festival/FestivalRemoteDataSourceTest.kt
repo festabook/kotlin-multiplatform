@@ -17,7 +17,7 @@ import kotlin.test.assertEquals
 
 private val FAKE_FESTIVAL_RESPONSE =
     FestivalResponse(
-        id = 1L,
+        festivalId = 1L,
         organizationName = "대학교",
         festivalImages =
             listOf(
