@@ -47,7 +47,6 @@ import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.PermissionState
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
-import com.daedan.festabook.presentation.common.component.LoadingStateScreen
 import com.daedan.festabook.presentation.common.component.cardBackground
 import com.daedan.festabook.presentation.placeMap.component.PlaceDetailPreviewContent
 import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
@@ -194,7 +193,8 @@ fun WaitingRegisterScreen(
 ) {
     val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
     val state = rememberNavigationEventState(NavigationEventInfo.None)
-    val isSubmitting = (uiState as? WaitingRegisterUiState.Success)?.waitingRegister?.isSubmitting ?: false
+    val isSubmitting =
+        (uiState as? WaitingRegisterUiState.Success)?.waitingRegister?.isSubmitting ?: false
 
     NavigationBackHandler(
         state = state,
@@ -216,9 +216,7 @@ fun WaitingRegisterScreen(
             is WaitingRegisterUiState.Loading,
             is WaitingRegisterUiState.NeedsPhoneRegistration,
             -> {
-                Box(modifier = Modifier.weight(1f)) {
-                    LoadingStateScreen()
-                }
+                Unit
             }
 
             is WaitingRegisterUiState.Error -> {

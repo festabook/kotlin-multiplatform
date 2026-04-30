@@ -2,10 +2,6 @@ package com.daedan.festabook.presentation.placeMap.navigation
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
@@ -82,14 +78,7 @@ fun NavGraphBuilder.placeMapNavGraph(
         )
     }
 
-    composable<FestabookRoute.WaitingRegister>(
-        enterTransition = {
-            slideInVertically(initialOffsetY = { it / 10 }) + fadeIn()
-        },
-        exitTransition = {
-            slideOutVertically(targetOffsetY = { it / 10 }) + fadeOut()
-        },
-    ) { backStackEntry ->
+    composable<FestabookRoute.WaitingRegister> { backStackEntry ->
         val route = backStackEntry.toRoute<FestabookRoute.WaitingRegister>()
         val viewModel =
             assistedMetroViewModel<WaitingRegisterViewModel>(
