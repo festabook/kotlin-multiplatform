@@ -167,7 +167,7 @@ private fun HomeContent(
         topBar = {
             HomeHeader(
                 universityName = universityName,
-                onExpandClick = onNavigateToExplore,
+                onTitleClick = onNavigateToExplore,
                 modifier =
                     Modifier.padding(
                         top = festabookSpacing.paddingTitleHorizontal,
