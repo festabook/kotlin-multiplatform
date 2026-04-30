@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.daedan.festabook.BuildKonfig
 import com.daedan.festabook.data.datasource.local.DeviceLocalDataSource
 import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
+import com.daedan.festabook.di.coroutine.IO
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.analytics
 import com.google.firebase.analytics.logEvent
@@ -19,7 +20,7 @@ import java.util.Locale
 @Inject
 @ContributesBinding(AppScope::class)
 class AndroidFirebaseAnalytics(
-    scope: CoroutineScope,
+    @IO scope: CoroutineScope,
     festivalLocalDataSource: FestivalLocalDataSource,
     deviceLocalDataSource: DeviceLocalDataSource,
 ) : FirebaseAnalytics(scope, festivalLocalDataSource, deviceLocalDataSource) {

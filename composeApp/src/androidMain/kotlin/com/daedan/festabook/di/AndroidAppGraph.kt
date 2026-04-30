@@ -20,9 +20,6 @@ interface AndroidAppGraph : FestabookAppGraph {
 
     val festivalLocalDataSource: FestivalLocalDataSource
 
-    @IO
-    val coroutineScope: CoroutineScope
-
     @DependencyGraph.Factory
     fun interface Factory {
         fun create(
