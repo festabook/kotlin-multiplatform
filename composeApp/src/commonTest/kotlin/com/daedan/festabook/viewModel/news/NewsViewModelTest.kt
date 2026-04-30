@@ -46,7 +46,7 @@ class NewsViewModelTest {
         lostItemRepository = mock()
         everySuspend { noticeRepository.fetchNotices() } returns Result.success(FAKE_NOTICES)
         everySuspend { faqRepository.getAllFAQ() } returns Result.success(FAKE_FAQS)
-        everySuspend { lostItemRepository.getLost() } returns FAKE_LOST_ITEM
+        everySuspend { lostItemRepository.getLost() } returns Result.success(FAKE_LOST_ITEM)
 
         newsViewModel =
             NewsViewModel(

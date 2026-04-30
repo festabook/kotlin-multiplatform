@@ -52,12 +52,10 @@ import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.daedan.festabook.presentation.common.ObserveAsEvents
-import com.daedan.festabook.presentation.common.component.EmptyStateScreen
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.FestabookImage
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
 import com.daedan.festabook.presentation.common.component.URLText
-import com.daedan.festabook.presentation.error.ErrorScreen
 import com.daedan.festabook.presentation.placeMap.component.PlaceCategoryLabel
 import com.daedan.festabook.presentation.placeMap.model.PlaceCategoryUiModel
 import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel

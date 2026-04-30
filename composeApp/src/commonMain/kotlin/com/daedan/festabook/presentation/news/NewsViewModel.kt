@@ -128,17 +128,22 @@ class NewsViewModel(
     fun loadAllLostItems(state: LostUiState) {
         viewModelScope.launch {
             _lostUiState.value = state
-            val result = lostItemRepository.getLost()
-
-            val lostUiModels =
-                result.map { lost ->
-                    when (lost) {
-                        is Lost.Guide -> lost.toLostGuideItemUiModel()
-                        is Lost.Item -> lost.toLostItemUiModel()
-                        null -> LostUiModel.Guide()
-                    }
+            lostItemRepository
+                .getLost()
+                .onSuccess { result ->
+                    val lostUiModels =
+                        result.map { lost ->
+                            when (lost) {
+                                is Lost.Guide -> lost.toLostGuideItemUiModel()
+                                is Lost.Item -> lost.toLostItemUiModel()
+                                null -> LostUiModel.Guide()
+                            }
+                        }
+                    _lostUiState.value =
+                        LostUiState(content = LostUiState.Content.Success(lostUiModels))
+                }.onFailure {
+                    _lostUiState.value = LostUiState(content = LostUiState.Content.Error(it))
                 }
-            _lostUiState.value = LostUiState(content = LostUiState.Content.Success(lostUiModels))
         }
     }
 

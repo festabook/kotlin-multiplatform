@@ -18,6 +18,7 @@ import kotlin.test.assertEquals
 private val FAKE_FESTIVAL_RESPONSE =
     FestivalResponse(
         id = 1L,
+        organizationId = 1L,
         organizationName = "대학교",
         festivalImages =
             listOf(
@@ -35,6 +36,9 @@ private val FAKE_FESTIVAL_RESPONSE =
         festivalName = "봄 축제",
         startDate = "2026-04-01",
         endDate = "2026-04-10",
+        festivalSponsors = emptyList(),
+        instagramLink = null,
+        homepageLink = null,
     )
 
 @Suppress("UNCHECKED_CAST")
