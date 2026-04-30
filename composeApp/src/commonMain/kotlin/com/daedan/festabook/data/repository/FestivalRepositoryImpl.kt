@@ -26,9 +26,13 @@ class FestivalRepositoryImpl(
     private val lineupDataSource: LineupDataSource,
     private val deviceLocalDataSource: DeviceLocalDataSource,
 ) : FestivalRepository {
+    private var cachedOrganization: Organization? = null
+
     override suspend fun getFestivalInfo(): Result<Organization> {
         val response = festivalRemoteDataSource.fetchFestival().toResult()
-        return response.mapCatching { it.toDomain() }
+        return response.mapCatching { response ->
+            response.toDomain().also { cachedOrganization = it }
+        }
     }
 
     override suspend fun getLineUpGroupByDate(): Result<Map<LocalDate, List<LineupItem>>> {
@@ -42,9 +46,10 @@ class FestivalRepositoryImpl(
 
     override fun getIsFirstVisit(): Flow<Boolean> = festivalLocalDataSource.getIsFirstVisit()
 
-    override suspend fun getFestating(organization: Organization): Result<Festating?> =
+    override suspend fun getFestating(): Result<Festating> =
         runCatching {
-            if (!organization.festival.festatingVisible) return@runCatching null
+            val organization = cachedOrganization ?: getFestivalInfo().getOrThrow()
+
             val deviceId =
                 deviceLocalDataSource.getDeviceId().firstOrNull()
                     ?: throw IllegalStateException("deviceId 없음")

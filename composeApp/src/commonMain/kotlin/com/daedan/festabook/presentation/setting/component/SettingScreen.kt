@@ -474,7 +474,6 @@ private fun SettingScreenPreview() {
                                 festatingVisible = true,
                             ),
                     ),
-                    festating = FestatingUiModel(1, 1, 1),
                 ),
             isUniversitySubscribed = isSubscribed,
             onSubscribeClick = { isSubscribed = !isSubscribed },

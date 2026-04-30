@@ -54,13 +54,8 @@ class HomeViewModel(
             val result = festivalRepository.getFestivalInfo()
             result
                 .onSuccess { organization ->
-                    val festating = festivalRepository.getFestating(organization).getOrNull()
-
                     _festivalUiState.value =
-                        FestivalUiState.Success(
-                            organization = organization.toUiModel(),
-                            festating = festating?.toUiModel(),
-                        )
+                        FestivalUiState.Success(organization = organization.toUiModel())
                 }.onFailure {
                     _festivalUiState.value = FestivalUiState.Error(it)
                 }

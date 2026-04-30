@@ -28,7 +28,6 @@ import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.LineupUiState
 import com.daedan.festabook.presentation.home.WaitingBarUiState
-import com.daedan.festabook.presentation.home.model.FestatingUiModel
 import com.daedan.festabook.presentation.home.model.FestivalPosterUiModel
 import com.daedan.festabook.presentation.home.model.FestivalUiModel
 import com.daedan.festabook.presentation.home.model.LineUpItemGroupUiModel
@@ -59,7 +58,7 @@ fun HomeScreen(
     settingViewModel: SettingViewModel,
     notificationPermissionManager: NotificationPermissionManager,
     onNavigateToExplore: () -> Unit,
-    onNavigateToFestating: (FestatingUiModel) -> Unit,
+    onNavigateToFestating: () -> Unit,
     onNavigateToMyWaiting: () -> Unit,
     onShowSnackBar: (String) -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
@@ -122,7 +121,7 @@ fun HomeScreen(
                     lineupUiState = lineupUiState,
                     onNavigateToExplore = onNavigateToExplore,
                     onNavigateToSchedule = homeViewModel::navigateToScheduleClick,
-                    onFestatingClick = { festating -> onNavigateToFestating(festating) },
+                    onFestatingClick = onNavigateToFestating,
                 )
                 when (val waitingBarUiState = waitingBarUiState) {
                     is WaitingBarUiState.Visible -> {
@@ -156,7 +155,7 @@ private fun HomeContent(
     lineupUiState: LineupUiState,
     onNavigateToExplore: () -> Unit,
     onNavigateToSchedule: () -> Unit,
-    onFestatingClick: (FestatingUiModel) -> Unit,
+    onFestatingClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val universityName = festivalUiState.organization.organizationName
@@ -229,7 +228,7 @@ private fun HomeContent(
                 if (festivalUiState.organization.festival.festatingVisible) {
                     item {
                         FestatingPoster(
-                            onClick = { festivalUiState.festating?.let { onFestatingClick(it) } },
+                            onClick = onFestatingClick,
                             modifier =
                                 Modifier
                                     .fillMaxSize()
@@ -371,10 +370,8 @@ private fun FestivalOverviewPreview() {
                 ),
         )
 
-    val sampleFestating = FestatingUiModel(1, 1, 1)
-
     HomeContent(
-        festivalUiState = FestivalUiState.Success(sampleFestival, sampleFestating),
+        festivalUiState = FestivalUiState.Success(sampleFestival),
         lineupUiState = LineupUiState.Success(sampleLineups.getLineupItems()),
         onNavigateToExplore = {},
         onNavigateToSchedule = {},

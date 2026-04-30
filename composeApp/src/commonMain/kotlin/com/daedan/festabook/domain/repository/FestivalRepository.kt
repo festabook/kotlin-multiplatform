@@ -13,5 +13,5 @@ interface FestivalRepository {
 
     fun getIsFirstVisit(): Flow<Boolean>
 
-    suspend fun getFestating(organization: Organization): Result<Festating?>
+    suspend fun getFestating(): Result<Festating>
 }
