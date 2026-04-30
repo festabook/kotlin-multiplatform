@@ -14,6 +14,7 @@ import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewState
+import io.ktor.http.URLBuilder
 
 private const val FESTIVAL_ID_QUERY_KEY = "festivalId"
 private const val DEVICE_ID_QUERY_KEY = "deviceId"
@@ -58,15 +59,15 @@ fun FestatingScreen(
 private fun buildUrl(
     base: String,
     params: Map<String, Any?>,
-): String {
-    val query =
-        params
-            .filterValues { it != null }
-            .entries
-            .joinToString("&") { (k, v) -> "$k=$v" }
-
-    return if (query.isEmpty()) base else "$base?$query"
-}
+): String =
+    URLBuilder(base)
+        .apply {
+            params.forEach { (key, value) ->
+                if (value != null) {
+                    parameters.append(key, value.toString())
+                }
+            }
+        }.buildString()
 
 @Composable
 private fun rememberConfiguredWebViewState(
