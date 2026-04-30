@@ -75,6 +75,7 @@ iosApp/iosApp/GoogleService-Info.plist
 
 /iosApp/Configuration/Debug.xcconfig
 /iosApp/Configuration/Release.xcconfig
+/iosApp/Configuration/Config.xcconfig
 .worktrees/
 
 # Fastlane
