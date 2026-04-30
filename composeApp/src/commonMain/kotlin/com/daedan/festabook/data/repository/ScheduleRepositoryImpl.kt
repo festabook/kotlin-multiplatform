@@ -9,8 +9,10 @@ import com.daedan.festabook.domain.repository.ScheduleRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
 @ContributesBinding(AppScope::class)
+@SingleIn(AppScope::class)
 @Inject
 class ScheduleRepositoryImpl(
     private val scheduleDataSource: ScheduleDataSource,

@@ -14,11 +14,13 @@ import com.daedan.festabook.domain.repository.FestivalRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.datetime.LocalDate
 
 @ContributesBinding(AppScope::class)
+@SingleIn(AppScope::class)
 @Inject
 class FestivalRepositoryImpl(
     private val festivalRemoteDataSource: FestivalRemoteDataSource,
