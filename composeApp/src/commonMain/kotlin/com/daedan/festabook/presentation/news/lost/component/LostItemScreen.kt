@@ -104,7 +104,12 @@ private fun LostItemContent(
     Box(modifier = modifier) {
         val isLostItemEmpty = lostItems.none { it is LostUiModel.Item }
         if (isLostItemEmpty) {
-            EmptyStateScreen()
+            EmptyStateScreen(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
+            )
         }
 
         LazyVerticalGrid(

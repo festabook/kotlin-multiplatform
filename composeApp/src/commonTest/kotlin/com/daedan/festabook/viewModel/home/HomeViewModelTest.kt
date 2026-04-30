@@ -4,9 +4,6 @@ import com.daedan.festabook.domain.model.MyWaiting
 import com.daedan.festabook.domain.model.WaitingStatus
 import com.daedan.festabook.domain.repository.FestivalRepository
 import com.daedan.festabook.domain.repository.MyWaitingRepository
-import com.daedan.festabook.domain.repository.MyWaitingRepository
-import com.daedan.festabook.home.FAKE_LINEUP
-import com.daedan.festabook.home.FAKE_ORGANIZATION
 import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.LineupUiState

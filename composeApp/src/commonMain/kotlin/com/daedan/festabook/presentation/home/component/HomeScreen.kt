@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.common.ObserveAsEvents
+import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
 import com.daedan.festabook.presentation.festating.component.FestatingPoster
 import com.daedan.festabook.presentation.home.FestivalUiState
@@ -37,7 +37,6 @@ import com.daedan.festabook.presentation.setting.SettingViewModel
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.festabookSpacing
 import festabookkmp.composeapp.generated.resources.Res
-import festabookkmp.composeapp.generated.resources.error_fail_to_load_info
 import festabookkmp.composeapp.generated.resources.format_festival_period_date
 import festabookkmp.composeapp.generated.resources.format_festival_period_year
 import festabookkmp.composeapp.generated.resources.setting_notice_enabled
@@ -106,12 +105,7 @@ fun HomeScreen(
         }
 
         is FestivalUiState.Error -> {
-            Box(modifier = modifier.fillMaxSize()) {
-                Text(
-                    text = stringResource(Res.string.error_fail_to_load_info),
-                    modifier = Modifier.align(Alignment.Center),
-                )
-            }
+            ErrorStateScreen()
         }
 
         is FestivalUiState.Success -> {

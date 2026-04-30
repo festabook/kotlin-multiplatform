@@ -28,6 +28,7 @@ val FAKE_ORGANIZATION =
                 sponsors = emptyList(),
                 instagramLink = null,
                 homepageLink = null,
+                festatingVisible = true,
             ),
     )
 
