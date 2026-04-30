@@ -17,7 +17,7 @@ import kotlin.test.assertEquals
 
 private val FAKE_FESTIVAL_RESPONSE =
     FestivalResponse(
-        id = 1L,
+        festivalId = 1L,
         organizationId = 1L,
         organizationName = "대학교",
         festivalImages =
@@ -39,6 +39,7 @@ private val FAKE_FESTIVAL_RESPONSE =
         festivalSponsors = emptyList(),
         instagramLink = null,
         homepageLink = null,
+        festatingVisible = true
     )
 
 @Suppress("UNCHECKED_CAST")

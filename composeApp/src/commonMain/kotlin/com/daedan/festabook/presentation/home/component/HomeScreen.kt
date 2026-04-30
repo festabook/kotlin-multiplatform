@@ -3,6 +3,7 @@ package com.daedan.festabook.presentation.home.component
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -56,7 +57,7 @@ fun HomeScreen(
     settingViewModel: SettingViewModel,
     notificationPermissionManager: NotificationPermissionManager,
     onNavigateToExplore: () -> Unit,
-    onNavigateToFestating: (festivalId: Long) -> Unit,
+    onNavigateToFestating: () -> Unit,
     onNavigateToMyWaiting: () -> Unit,
     onShowSnackBar: (String) -> Unit,
     onShowErrorSnackbar: (Throwable) -> Unit,
@@ -115,7 +116,7 @@ fun HomeScreen(
                     showWaitingBar = waitingBarUiState is WaitingBarUiState.Visible,
                     onNavigateToExplore = onNavigateToExplore,
                     onNavigateToSchedule = homeViewModel::navigateToScheduleClick,
-                    onFestatingClick = { festivalId -> onNavigateToFestating(festivalId) },
+                    onFestatingClick = onNavigateToFestating,
                 )
                 when (val waitingBarUiState = waitingBarUiState) {
                     is WaitingBarUiState.Visible -> {
@@ -150,7 +151,7 @@ private fun HomeContent(
     showWaitingBar: Boolean,
     onNavigateToExplore: () -> Unit,
     onNavigateToSchedule: () -> Unit,
-    onFestatingClick: (festivalId: Long) -> Unit,
+    onFestatingClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val universityName = festivalUiState.organization.organizationName
@@ -158,10 +159,11 @@ private fun HomeContent(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = FestabookColor.white,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             HomeHeader(
                 universityName = universityName,
-                onExpandClick = onNavigateToExplore,
+                onTitleClick = onNavigateToExplore,
                 modifier =
                     Modifier.padding(
                         top = festabookSpacing.paddingTitleHorizontal,
@@ -221,26 +223,27 @@ private fun HomeContent(
                     )
                 }
                 // 페스타팅 포스터
-                // TODO if문 묶기
-                item {
-                    FestatingPoster(
-                        onClick = { onFestatingClick(festivalUiState.organization.id) },
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .padding(
-                                    vertical = festabookSpacing.paddingBody4,
-                                    horizontal = festabookSpacing.paddingBody5,
-                                ),
-                    )
-                }
+                if (festivalUiState.organization.festival.festatingVisible) {
+                    item {
+                        FestatingPoster(
+                            onClick = onFestatingClick,
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(
+                                        vertical = festabookSpacing.paddingBody4,
+                                        horizontal = festabookSpacing.paddingBody5,
+                                    ),
+                        )
+                    }
 
-                // 구분선
-                item {
-                    HorizontalDivider(
-                        thickness = 4.dp,
-                        color = FestabookColor.gray200,
-                    )
+                    // 구분선
+                    item {
+                        HorizontalDivider(
+                            thickness = 4.dp,
+                            color = FestabookColor.gray200,
+                        )
+                    }
                 }
 
                 // 라인업 헤더
@@ -332,6 +335,7 @@ private fun FestivalOverviewPreview() {
             organizationName = "가천대학교",
             festival =
                 FestivalUiModel(
+                    id = 1L,
                     festivalName = "2025 가천 Water Festival\n: AQUA WAVE",
                     startDate = Clock.System.todayIn(TimeZone.currentSystemDefault()),
                     endDate =
@@ -343,6 +347,7 @@ private fun FestivalOverviewPreview() {
                             FestivalPosterUiModel(1, "sample", 1),
                             FestivalPosterUiModel(2, "sample", 2),
                         ),
+                    festatingVisible = true,
                     sponsors = emptyList(),
                     instagramLink = null,
                     homepageLink = null,

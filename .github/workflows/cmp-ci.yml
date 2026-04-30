@@ -51,6 +51,8 @@ jobs:
           echo "NAVER_MAP_STYLE_ID=${{ secrets.NAVER_MAP_STYLE_ID }}" >> local.properties
           echo "APP_BUNDLE_ID=${{ secrets.APP_BUNDLE_ID }}" >> local.properties
           echo "APP_BUNDLE_ID_DEV=${{ secrets.APP_BUNDLE_ID_DEV }}" >> local.properties
+          echo "FESTA_TING_URL=${{ secrets.FESTA_TING_URL }}" >> local.properties
+          echo "FESTA_TING_URL_DEV=${{ secrets.FESTA_TING_URL_DEV }}" >> local.properties
 
       - name: Load Google Service file
         env:

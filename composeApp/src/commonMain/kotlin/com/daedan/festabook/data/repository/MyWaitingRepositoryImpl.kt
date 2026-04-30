@@ -9,14 +9,20 @@ import com.daedan.festabook.domain.repository.MyWaitingRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
 @ContributesBinding(AppScope::class)
+@SingleIn(AppScope::class)
 @Inject
 class MyWaitingRepositoryImpl(
     private val waitingRemoteDataSource: WaitingRemoteDataSource,
 ) : MyWaitingRepository {
     override suspend fun getMyWaiting(): Result<MyWaiting?> {
-        val existResult = waitingRemoteDataSource.fetchMyWaitingExist().toResult().getOrElse { return Result.failure(it) }
+        val existResult =
+            waitingRemoteDataSource
+                .fetchMyWaitingExist()
+                .toResult()
+                .getOrElse { return Result.failure(it) }
 
         if (!existResult.exists) {
             return Result.success(null)

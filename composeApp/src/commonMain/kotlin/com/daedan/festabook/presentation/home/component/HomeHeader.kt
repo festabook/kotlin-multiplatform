@@ -15,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.daedan.festabook.presentation.common.runIfAtLeastState
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import festabookkmp.composeapp.generated.resources.Res
@@ -27,9 +29,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun HomeHeader(
     universityName: String,
-    onExpandClick: () -> Unit,
+    onTitleClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val lifecycleOwner = LocalLifecycleOwner.current
     Box(
         modifier =
             modifier
@@ -37,7 +40,7 @@ fun HomeHeader(
                 .padding(horizontal = 16.dp),
     ) {
         Row(
-            modifier = Modifier.clickable { onExpandClick() },
+            modifier = Modifier.clickable { runIfAtLeastState(lifecycleOwner = lifecycleOwner) { onTitleClick() } },
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -67,6 +70,6 @@ fun HomeHeader(
 private fun HomeHeaderPreview() {
     HomeHeader(
         universityName = "가천대학교",
-        onExpandClick = {},
+        onTitleClick = {},
     )
 }

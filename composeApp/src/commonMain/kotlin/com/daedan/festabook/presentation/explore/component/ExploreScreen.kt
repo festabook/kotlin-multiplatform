@@ -27,6 +27,7 @@ import com.daedan.festabook.presentation.explore.ExploreViewModel
 import com.daedan.festabook.presentation.explore.SearchUiState
 import com.daedan.festabook.presentation.explore.model.SearchResultUiModel
 import com.daedan.festabook.presentation.theme.FestabookTheme
+import com.daedan.festabook.presentation.theme.festabookSpacing
 import festabookkmp.composeapp.generated.resources.Res
 import festabookkmp.composeapp.generated.resources.explore_festabook_logo
 import festabookkmp.composeapp.generated.resources.logo_title
@@ -96,16 +97,19 @@ fun ExploreSearchScreen(
         topBar = {
             ExploreBackHeader(
                 onBackClick = onBackClick,
-                modifier = Modifier.statusBarsPadding(),
+                modifier =
+                    Modifier
+                        .statusBarsPadding()
+                        .padding(horizontal = festabookSpacing.paddingBody5),
             )
         },
     ) { innerPadding ->
         Box(
             modifier =
                 Modifier
-                    .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(20.dp),
+                    .fillMaxSize()
+                    .padding(festabookSpacing.paddingBody5),
         ) {
             ExploreSearchContent(
                 query = query,

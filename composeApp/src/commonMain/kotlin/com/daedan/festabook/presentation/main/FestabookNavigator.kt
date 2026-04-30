@@ -2,6 +2,7 @@ package com.daedan.festabook.presentation.main
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -9,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.daedan.festabook.presentation.common.runIfAtLeastState
 
 class FestabookNavigator(
     val navController: NavHostController,
@@ -61,7 +63,8 @@ class FestabookNavigator(
     }
 
     fun popBackStack() {
-        navController.popBackStack()
+        val lifecycleOwner: LifecycleOwner = navController.currentBackStackEntry ?: return
+        runIfAtLeastState(lifecycleOwner = lifecycleOwner) { navController.popBackStack() }
     }
 
     fun popBackStack(

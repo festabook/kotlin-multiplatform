@@ -9,10 +9,12 @@ import com.daedan.festabook.domain.repository.LostItemRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
 @ContributesBinding(AppScope::class)
+@SingleIn(AppScope::class)
 @Inject
 class LostItemRepositoryImpl(
     private val lostItemDataSource: LostItemDataSource,

@@ -287,9 +287,7 @@ private fun FestabookNavHost(
             homeViewModel = homeViewModel,
             mainViewModel = mainViewModel,
             onNavigateToExplore = { festabookNavigator.navigate(FestabookRoute.Explore) },
-            onNavigateToFestating = { festivalId ->
-                festabookNavigator.navigate(FestabookRoute.Festating(festivalId))
-            },
+            onNavigateToFestating = { festabookNavigator.navigate(FestabookRoute.Festating) },
             onSubscriptionConfirm = {
                 settingViewModel.notificationAllowClick()
                 mainViewModel.declineAlert()
