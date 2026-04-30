@@ -57,6 +57,7 @@ fun PlaceMapRoute(
     locationSource: LocationSource,
 //    logger: DefaultFirebaseLogger,
     modifier: Modifier = Modifier,
+    isVisible: Boolean = true,
 ) {
     val imageLoader = LocalCoilImageLoader.current
     val context = LocalPlatformContext.current
@@ -112,6 +113,7 @@ fun PlaceMapRoute(
         onEvent = { placeMapViewModel.onPlaceMapEvent(it) },
         bottomSheetState = bottomSheetState,
         mapDelegate = mapDelegate,
+        isVisible = isVisible,
     )
 }
 
@@ -122,6 +124,7 @@ fun PlaceMapScreen(
     bottomSheetState: PlaceListBottomSheetState,
     mapDelegate: MapDelegate,
     modifier: Modifier = Modifier,
+    isVisible: Boolean = true,
 ) {
     val isPlaceListVisible = uiState.selectedPlace is LoadState.Empty
 
@@ -130,6 +133,7 @@ fun PlaceMapScreen(
         mapDelegate = mapDelegate,
         onMapReady = { onEvent(MapControlEvent.OnMapReady) },
         onMapDrag = { onEvent(MapControlEvent.OnMapDrag) },
+        isVisible = isVisible,
     ) { naverMap ->
         Column(
             modifier = Modifier.wrapContentSize(),
