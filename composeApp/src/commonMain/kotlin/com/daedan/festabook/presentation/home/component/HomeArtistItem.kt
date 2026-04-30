@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.daedan.festabook.presentation.common.component.CoilImage
+import com.daedan.festabook.presentation.common.component.FestabookImage
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTypography
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -28,9 +28,10 @@ fun HomeArtistItem(
     Column(
         modifier = modifier.width(68.dp),
     ) {
-        CoilImage(
-            url = artistImageUrl,
-            contentDescription = null,
+        FestabookImage(
+            imageUrl = artistImageUrl,
+            contentDescription = artistName,
+            enablePopUp = true,
             modifier =
                 Modifier
                     .fillMaxWidth()

@@ -10,6 +10,9 @@ data class FestivalUiModel(
     val startDate: LocalDate,
     val endDate: LocalDate,
     val festatingVisible: Boolean,
+    val sponsors: List<FestivalSponsorUiModel>,
+    val instagramLink: String?,
+    val homepageLink: String?,
 )
 
 fun Festival.toUiModel(): FestivalUiModel =
@@ -20,4 +23,7 @@ fun Festival.toUiModel(): FestivalUiModel =
         startDate = startDate,
         endDate = endDate,
         festatingVisible = festatingVisible,
+        sponsors = sponsors.map { it.toUiModel() },
+        instagramLink = instagramLink,
+        homepageLink = homepageLink,
     )

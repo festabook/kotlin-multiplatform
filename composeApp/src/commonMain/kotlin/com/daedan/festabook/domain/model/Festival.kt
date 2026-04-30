@@ -9,4 +9,7 @@ data class Festival(
     val startDate: LocalDate,
     val endDate: LocalDate,
     val festatingVisible: Boolean,
+    val sponsors: List<FestivalSponsor>,
+    val instagramLink: String?,
+    val homepageLink: String?,
 )

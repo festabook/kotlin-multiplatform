@@ -25,6 +25,9 @@ val FAKE_ORGANIZATION =
                     ),
                 startDate = LocalDate(2025, 1, 1),
                 endDate = LocalDate(2025, 1, 3),
+                sponsors = emptyList(),
+                instagramLink = null,
+                homepageLink = null,
             ),
     )
 

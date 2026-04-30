@@ -25,6 +25,12 @@ data class FestivalResponse(
     val endDate: String,
     @SerialName("festatingVisible")
     val festatingVisible: Boolean,
+    @SerialName("festivalSponsors")
+    val festivalSponsors: List<FestivalSponsorsResponse>,
+    @SerialName("instagramLink")
+    val instagramLink: String?,
+    @SerialName("homepageLink")
+    val homepageLink: String?,
 ) {
     @Serializable
     data class FestivalImage(
@@ -49,6 +55,9 @@ fun FestivalResponse.toDomain() =
                 startDate = startDate.toLocalDate(),
                 endDate = endDate.toLocalDate(),
                 festatingVisible = festatingVisible,
+                sponsors = festivalSponsors.map { it.toDomain() },
+                instagramLink = instagramLink,
+                homepageLink = homepageLink,
             ),
     )
 
