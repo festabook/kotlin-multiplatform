@@ -38,7 +38,6 @@ import com.daedan.festabook.presentation.common.component.FestabookSwitch
 import com.daedan.festabook.presentation.common.component.FestabookTopAppBar
 import com.daedan.festabook.presentation.home.FestivalUiState
 import com.daedan.festabook.presentation.home.HomeViewModel
-import com.daedan.festabook.presentation.home.model.FestatingUiModel
 import com.daedan.festabook.presentation.home.model.FestivalUiModel
 import com.daedan.festabook.presentation.home.model.OrganizationUiModel
 import com.daedan.festabook.presentation.setting.SettingViewModel

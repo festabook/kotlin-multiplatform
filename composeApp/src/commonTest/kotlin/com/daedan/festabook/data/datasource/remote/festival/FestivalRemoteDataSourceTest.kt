@@ -39,7 +39,7 @@ private val FAKE_FESTIVAL_RESPONSE =
         festivalSponsors = emptyList(),
         instagramLink = null,
         homepageLink = null,
-        festatingVisible = true
+        festatingVisible = true,
     )
 
 @Suppress("UNCHECKED_CAST")
