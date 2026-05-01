@@ -1,22 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-    "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-    <dict>
-        <key>CADisableMinimumFrameDurationOnPhone</key>
-        <true />
-        <key>FirebaseAppDelegateProxyEnabled</key>
-        <false />
-        <key>LSApplicationQueriesSchemes</key>
-        <array>
-            <string>itms-apps</string>
-        </array>
-        <key>UIBackgroundModes</key>
-        <array>
-            <string>remote-notification</string>
-        </array>
-        <key>CFBundleShortVersionString</key>
+<dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>itms-apps</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+<key>CFBundleShortVersionString</key>
 		<string>2.1.1</string>
-        <key>CFBundleVersion</key>
-		<string>20101</string>
-    </dict>
+<key>CFBundleVersion</key>
+		<string>2010102</string>
+</dict>
 </plist>

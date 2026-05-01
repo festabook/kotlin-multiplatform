@@ -134,11 +134,11 @@ private_lane :android_build do |options|
     File.join(PROJECT_ROOT, "composeApp/build/outputs/apk/debug/composeApp-debug.apk")
   when "release"
     gradle(
-      task: "composeApp:assembleRelease",
+      task: "composeApp:bundleRelease",
       project_dir: PROJECT_ROOT,
       properties: { "buildkonfig.flavor" => "release" },
     )
-    File.join(PROJECT_ROOT, "composeApp/build/outputs/apk/release/composeApp-release.apk")
+    File.join(PROJECT_ROOT, "composeApp/build/outputs/bundle/release/composeApp-release.aab")
   else
     UI.user_error!("알 수 없는 Android flavor: #{flavor}")
   end
@@ -153,7 +153,7 @@ private_lane :android_upload do |options|
     service_credentials_file: local_property("FIREBASE_SERVICE_ACCOUNT_PATH"),
     groups: optional_local_property("FIREBASE_TESTER_GROUPS", "festabook"),
     release_notes: changelog_from_git_commits(commits_count: 10, merge_commit_filtering: "exclude_merges"),
-    android_artifact_type: "APK",
+    android_artifact_type: flavor == "release" ? "AAB" : "APK",
     android_artifact_path: apk_path,
   )
   notify_slack(
