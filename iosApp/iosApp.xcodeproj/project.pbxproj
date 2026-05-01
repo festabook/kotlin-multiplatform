@@ -106,8 +106,9 @@
 				3ED20EC5BFA21FC0E7D100C7 /* Frameworks */,
 				A504BDED7EC474099DAD9F64 /* Resources */,
 				67E4A4402F6D7E2800C3FBD6 /* Copy Google Service plist */,
-				67E4A4352F6D707D00C3FBD6 /* Inititialize Firebase Crashlytics */,
 				884269F5D9640B20E82AC683 /* [CP] Embed Pods Frameworks */,
+				67E4A4352F6D707D00C3FBD6 /* Inititialize Firebase Crashlytics */,
+				9F3B2C1A8E7D6F5E4D3C2B1A /* Upload Firebase Crashlytics dSYMs */,
 			);
 			buildRules = (
 			);
@@ -210,6 +211,29 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
+		};
+		9F3B2C1A8E7D6F5E4D3C2B1A /* Upload Firebase Crashlytics dSYMs */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
+			);
+			name = "Upload Firebase Crashlytics dSYMs";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find \"${DWARF_DSYM_FOLDER_PATH}\" -name \"*.dSYM\" | xargs -I {} \"${PODS_ROOT}/FirebaseCrashlytics/upload-symbols\" -gsp \"${PROJECT_DIR}/iosApp/GoogleService-Info.plist\" -p ios {}\n";
 		};
 		67E4A4402F6D7E2800C3FBD6 /* Copy Google Service plist */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -503,7 +527,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "festabook(Debug)";
+				INFOPLIST_KEY_CFBundleDisplayName = festabook;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "현재 위치를 지도에 표시하고 가까운 장소를 찾기 위해 위치 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

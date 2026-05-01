@@ -169,6 +169,7 @@ fun PlaceMapScreen(
                 )
 
                 PlaceListScreen(
+                    isPlaceMapVisible = isVisible,
                     isPlaceListVisible = isPlaceListVisible,
                     placesUiState = uiState.places,
                     map = naverMap,
