@@ -188,7 +188,10 @@ class PlaceMapViewModelTest {
                 Result.success(
                     FAKE_ORGANIZATION_GEOGRAPHY,
                 )
-            everySuspend { placeListRepository.getPlaceGeographies() } returns Result.failure(exception)
+            everySuspend { placeListRepository.getPlaceGeographies() } returns
+                Result.success(
+                    FAKE_PLACE_GEOGRAPHIES,
+                )
 
             // when
             placeMapViewModel = PlaceMapViewModel(placeListRepository, handlerGraphFactory)
@@ -196,8 +199,11 @@ class PlaceMapViewModelTest {
 
             // then
             val uiState = placeMapViewModel.uiState.value
-            assertEquals(LoadState.Success(FAKE_ORGANIZATION_GEOGRAPHY.toUiModel()), uiState.initialMapSetting)
-            assertEquals(LoadState.Error(exception), uiState.placeGeographies)
+            assertEquals(
+                LoadState.Success(FAKE_ORGANIZATION_GEOGRAPHY.toUiModel()),
+                uiState.initialMapSetting,
+            )
+            assertEquals(ListLoadState.Error(exception), uiState.places)
         }
 
     @Test
@@ -245,7 +251,10 @@ class PlaceMapViewModelTest {
         runTest {
             // given
             val throwable = Throwable()
-            everySuspend { placeListRepository.getPlaceGeographies() } returns Result.failure(throwable)
+            everySuspend { placeListRepository.getPlaceGeographies() } returns
+                Result.failure(
+                    throwable,
+                )
 
             // when
             placeMapViewModel = PlaceMapViewModel(placeListRepository, handlerGraphFactory)
