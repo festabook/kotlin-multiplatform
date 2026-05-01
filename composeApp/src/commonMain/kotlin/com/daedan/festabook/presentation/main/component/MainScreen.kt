@@ -27,6 +27,7 @@ import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.FestabookSnackbar
 import com.daedan.festabook.presentation.common.component.SnackbarManager
 import com.daedan.festabook.presentation.common.component.rememberAppSnackbarManager
+import com.daedan.festabook.presentation.festating.navigation.festatingNavGraph
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.navigation.homeNavGraph
 import com.daedan.festabook.presentation.main.FestabookMainTab
@@ -288,7 +289,7 @@ private fun FestabookNavHost(
             homeViewModel = homeViewModel,
             mainViewModel = mainViewModel,
             onNavigateToExplore = { festabookNavigator.navigate(FestabookRoute.Explore) },
-            onNavigateToFestating = { festabookNavigator.navigate(FestabookRoute.Festating) },
+            onNavigateToFestating = { navigator.navigate(FestabookRoute.Festating) },
             onSubscriptionConfirm = {
                 settingViewModel.notificationAllowClick()
                 mainViewModel.declineAlert()
@@ -366,5 +367,7 @@ private fun FestabookNavHost(
             onShowSnackbar = snackbarManager::show,
             onShowErrorSnackbar = snackbarManager::showError,
         )
+
+        festatingNavGraph()
     }
 }

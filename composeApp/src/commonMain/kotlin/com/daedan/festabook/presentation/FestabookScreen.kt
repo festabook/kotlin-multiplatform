@@ -6,7 +6,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
 import com.daedan.festabook.di.FestabookAppGraph
 import com.daedan.festabook.presentation.explore.navigation.exploreNavGraph
-import com.daedan.festabook.presentation.festating.navigation.festatingNavGraph
 import com.daedan.festabook.presentation.main.FestabookRoute
 import com.daedan.festabook.presentation.main.navigation.mainNavGraph
 import com.daedan.festabook.presentation.main.rememberFestabookNavigator
@@ -64,6 +63,5 @@ fun FestabookScreen(
             locationSource = locationSource,
             festabookNavigator = festabookNavigator,
         )
-        festatingNavGraph()
     }
 }
