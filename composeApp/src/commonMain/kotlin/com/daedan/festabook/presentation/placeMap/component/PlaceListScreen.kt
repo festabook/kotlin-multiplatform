@@ -61,6 +61,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun PlaceListScreen(
     placesUiState: ListLoadState<List<PlaceUiModel>>,
     isPlaceListVisible: Boolean,
+    isPlaceMapVisible: Boolean,
     modifier: Modifier = Modifier,
     map: NaverMap? = null,
     isExceededMaxLength: Boolean = false,
@@ -103,7 +104,7 @@ fun PlaceListScreen(
                 Box {
                     CurrentLocationButton(
                         map = map,
-                        visible = isPlaceListVisible,
+                        visible = isPlaceListVisible && isPlaceMapVisible,
                     )
                     if (isExceededMaxLength) {
                         Row(
@@ -318,6 +319,7 @@ private fun PlaceListScreenPreview() {
                     },
                 ),
             isPlaceListVisible = true,
+            isPlaceMapVisible = true,
             modifier =
                 Modifier.padding(
                     horizontal = festabookSpacing.paddingScreenGutter,
