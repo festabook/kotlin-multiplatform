@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.daedan.festabook.logging.ScreenViewLogger
 import com.daedan.festabook.presentation.common.component.EmptyStateScreen
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
@@ -48,6 +49,8 @@ fun LostItemScreen(
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    ScreenViewLogger("LostItemScreen")
+
     var clickedLostItem by remember { mutableStateOf<LostUiModel.Item?>(null) }
     val scrollState = rememberScrollState()
 

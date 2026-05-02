@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.daedan.festabook.logging.ScreenViewLogger
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
@@ -63,6 +64,8 @@ fun HomeScreen(
     onShowErrorSnackbar: (Throwable) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    ScreenViewLogger("HomeScreen")
+
     val festivalUiState by homeViewModel.festivalUiState.collectAsStateWithLifecycle()
     val lineupUiState by homeViewModel.lineupUiState.collectAsStateWithLifecycle()
     val waitingBarUiState by homeViewModel.waitingBarUiState.collectAsStateWithLifecycle()

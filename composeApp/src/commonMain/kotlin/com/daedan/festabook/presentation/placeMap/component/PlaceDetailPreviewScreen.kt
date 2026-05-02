@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
+import com.daedan.festabook.logging.ScreenViewLogger
 import com.daedan.festabook.presentation.common.component.FestabookImage
 import com.daedan.festabook.presentation.common.component.URLText
 import com.daedan.festabook.presentation.common.convertImageUrl
@@ -49,6 +50,8 @@ fun PlaceDetailPreviewScreen(
     onClick: (LoadState<PlaceDetailUiModel>) -> Unit = {},
     onBackPress: () -> Unit = {},
 ) {
+    ScreenViewLogger("PlaceDetailPreviewScreen")
+
     PlaceDetailPreviewBackHandler(enabled = visible) {
         onBackPress()
     }

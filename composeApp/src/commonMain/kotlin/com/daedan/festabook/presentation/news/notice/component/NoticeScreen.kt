@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import com.daedan.festabook.logging.ScreenViewLogger
 import com.daedan.festabook.presentation.common.component.EmptyStateScreen
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
@@ -44,6 +45,8 @@ fun NoticeScreen(
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    ScreenViewLogger("NoticeScreen")
+
     val scrollState = rememberScrollState()
 
     PullToRefreshContainer(

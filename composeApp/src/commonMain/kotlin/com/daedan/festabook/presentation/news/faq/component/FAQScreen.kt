@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.daedan.festabook.logging.ScreenViewLogger
 import com.daedan.festabook.presentation.common.component.EmptyStateScreen
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
@@ -25,6 +26,8 @@ fun FAQScreen(
     onFaqClick: (FAQItemUiModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    ScreenViewLogger("FAQScreen")
+
     when (uiState) {
         is FAQUiState.Error -> {
 //            Timber.w(uiState.throwable.stackTraceToString())

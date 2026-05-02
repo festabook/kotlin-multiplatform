@@ -43,6 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
+import com.daedan.festabook.logging.ScreenViewLogger
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.PermissionState
 import com.daedan.festabook.presentation.common.ObserveAsEvents
@@ -92,6 +93,8 @@ fun WaitingRegisterRoute(
     onNavigateToMyWaiting: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    ScreenViewLogger("WaitingRegisterScreen")
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isNotificationAllowed by settingViewModel.isAllowed.collectAsStateWithLifecycle()
     val successMessage = stringResource(Res.string.waiting_register_success)

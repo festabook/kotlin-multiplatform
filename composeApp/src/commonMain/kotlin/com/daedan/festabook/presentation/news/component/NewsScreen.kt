@@ -12,6 +12,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.daedan.festabook.logging.ScreenViewLogger
 import com.daedan.festabook.presentation.common.component.FestabookTopAppBar
 import com.daedan.festabook.presentation.news.NewsTab
 import com.daedan.festabook.presentation.news.NewsViewModel
@@ -29,6 +30,7 @@ fun NewsScreen(
     newsViewModel: NewsViewModel = metroViewModel(),
     onShowErrorSnackbar: (Throwable) -> Unit = {}, // TODO Fragment 제거 시 필수 파라미터로 변경
 ) {
+    ScreenViewLogger("NewsScreen")
     val pageState = rememberPagerState { NewsTab.entries.size }
     val scope = rememberCoroutineScope()
 

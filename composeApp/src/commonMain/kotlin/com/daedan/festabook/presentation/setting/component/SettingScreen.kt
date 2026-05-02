@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daedan.festabook.BuildKonfig
+import com.daedan.festabook.logging.ScreenViewLogger
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.PermissionState
 import com.daedan.festabook.presentation.common.ObserveAsEvents
@@ -87,6 +88,7 @@ fun SettingRoute(
     onPhoneNumberClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    ScreenViewLogger("SettingScreen")
     val festival by homeViewModel.festivalUiState.collectAsStateWithLifecycle()
     val isUniversitySubscribed by settingViewModel.isAllowed.collectAsStateWithLifecycle()
     val isSubscribedLoading by settingViewModel.isLoading.collectAsStateWithLifecycle()

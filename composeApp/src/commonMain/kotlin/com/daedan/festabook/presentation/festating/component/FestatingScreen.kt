@@ -16,6 +16,7 @@ import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
 import com.daedan.festabook.presentation.festating.FestatingUiState
 import com.daedan.festabook.presentation.festating.FestatingViewModel
+import com.daedan.festabook.logging.ScreenViewLogger
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
@@ -33,6 +34,7 @@ fun FestatingScreen(
     modifier: Modifier = Modifier,
     festatingViewModel: FestatingViewModel = metroViewModel(),
 ) {
+    ScreenViewLogger("FestaingScreen")
     val festatingUiState by festatingViewModel.festatingUiState.collectAsStateWithLifecycle()
 
     when (val uiState = festatingUiState) {

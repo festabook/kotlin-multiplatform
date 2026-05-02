@@ -51,6 +51,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
+import com.daedan.festabook.logging.ScreenViewLogger
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.FestabookImage
@@ -98,6 +99,7 @@ fun PlaceDetailRoute(
     onNavigateToMyWaiting: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    ScreenViewLogger("PlaceDetailScreen")
     val placeDetailUiState by viewModel.placeDetail.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     var duplicateWaitingId by remember { mutableStateOf<Long?>(null) }

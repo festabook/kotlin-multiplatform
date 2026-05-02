@@ -50,6 +50,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.daedan.festabook.logging.ScreenViewLogger
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.setting.waitinginfo.WaitingInfoViewModel
@@ -85,6 +86,7 @@ fun AddWaitingInfoRoute(
     modifier: Modifier = Modifier,
     onSaveSuccess: () -> Unit = onBackClick,
 ) {
+    ScreenViewLogger("AddWaitingInfoScreen")
     val waitingInfoUiState by viewModel.waitingInfoUiState.collectAsStateWithLifecycle()
     val phoneNumber by viewModel.phoneNumber.collectAsStateWithLifecycle()
     val isTermsAgreed by viewModel.isTermsAgreed.collectAsStateWithLifecycle()
