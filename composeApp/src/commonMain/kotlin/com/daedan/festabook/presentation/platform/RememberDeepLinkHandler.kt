@@ -10,6 +10,8 @@ object DeepLinkKeys {
     const val KEY_TYPE = "type"
     const val KEY_PLACE_ID = "placeId"
     const val INITIALIZED_ID = -1L
+
+    const val KEY_NOTIFICATION_SENT_AT = "notificationSentAt"
 }
 
 enum class FcmMessageType {
