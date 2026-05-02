@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import platform.Foundation.timeIntervalSince1970
 import platform.UserNotifications.UNNotification
 import platform.UserNotifications.UNNotificationPresentationOptionAlert
 import platform.UserNotifications.UNNotificationPresentationOptionSound
@@ -43,13 +44,15 @@ class DefaultUserNotificationDelegate(
         withCompletionHandler: () -> Unit,
     ) {
         val userInfo = didReceiveNotificationResponse.notification.request.content.userInfo
+        val notificationSendAt =
+            (didReceiveNotificationResponse.notification.date.timeIntervalSince1970 * 1000).toLong()
 
         val newFestivalId =
             (userInfo[DeepLinkKeys.KEY_FESTIVAL_ID] as? String)?.toLongOrNull()
                 ?: DeepLinkKeys.INITIALIZED_ID
 
         val action =
-            userInfo.toDeepLinkAction() ?: run {
+            userInfo.toDeepLinkAction(notificationSendAt) ?: run {
                 withCompletionHandler()
                 return
             }
@@ -73,12 +76,14 @@ class DefaultUserNotificationDelegate(
         }
     }
 
-    private fun Map<Any?, *>.toDeepLinkAction(): FcmDeepLinkAction? {
+    private fun Map<Any?, *>.toDeepLinkAction(
+        notificationSendAt: Long,
+    ): FcmDeepLinkAction? {
         val type = FcmMessageType.from(this[DeepLinkKeys.KEY_TYPE] as? String)
         return when (type) {
             FcmMessageType.WAITING_CALL,
             FcmMessageType.WAITING_ALMOST_CALL,
-            -> {
+                -> {
                 FcmDeepLinkAction.OpenMyWaiting
             }
 
@@ -90,8 +95,9 @@ class DefaultUserNotificationDelegate(
 
             FcmMessageType.ANNOUNCEMENT, null -> {
                 val announcementId =
-                    (this[DeepLinkKeys.KEY_ANNOUNCEMENT_ID] as? String)?.toLongOrNull() ?: return null
-                FcmDeepLinkAction.OpenAnnouncement(announcementId, currentTimeMillis())
+                    (this[DeepLinkKeys.KEY_ANNOUNCEMENT_ID] as? String)?.toLongOrNull()
+                        ?: return null
+                FcmDeepLinkAction.OpenAnnouncement(announcementId, notificationSendAt)
             }
         }
     }
