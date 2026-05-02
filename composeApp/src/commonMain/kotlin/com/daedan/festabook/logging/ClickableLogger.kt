@@ -12,12 +12,13 @@ fun logClick(
 ): () -> Unit {
     val analytics = rememberAnalytics()
     return {
-        analytics.logEvent("button_click",
+        analytics.logEvent(
+            "button_click",
             buildMap {
                 put("button_id", identifier)
                 put("screen", screenName)
                 putAll(extraParam)
-            }
+            },
         )
 
         onClick()

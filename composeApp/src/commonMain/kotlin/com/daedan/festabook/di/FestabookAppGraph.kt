@@ -12,7 +12,6 @@ interface FestabookAppGraph {
 
     val analytics: FirebaseAnalytics
 
-
     @IO
     val coroutineScope: CoroutineScope
 }

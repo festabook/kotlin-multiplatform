@@ -4,6 +4,7 @@ import cocoapods.FirebaseAnalytics.FIRAnalytics
 import com.daedan.festabook.BuildKonfig
 import com.daedan.festabook.data.datasource.local.DeviceLocalDataSource
 import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
+import com.daedan.festabook.di.coroutine.IO
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
@@ -15,16 +16,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import platform.Foundation.NSDate
 import platform.Foundation.NSLocale
 import platform.Foundation.NSProcessInfo
 import platform.Foundation.NSString
 import platform.Foundation.NSUTF8StringEncoding
 import platform.Foundation.currentLocale
-import platform.Foundation.date
 import platform.Foundation.languageCode
 import platform.Foundation.stringWithCString
-import platform.Foundation.timeIntervalSince1970
 import platform.UIKit.UIDevice
 import platform.posix.uname
 import platform.posix.utsname
@@ -33,7 +31,7 @@ import platform.posix.utsname
 @ContributesBinding(AppScope::class)
 @OptIn(ExperimentalForeignApi::class)
 class IosFirebaseAnalytics(
-    scope: CoroutineScope,
+    @IO scope: CoroutineScope,
     festivalLocalDataSource: FestivalLocalDataSource,
     deviceLocalDataSource: DeviceLocalDataSource,
 ) : FirebaseAnalytics(scope, festivalLocalDataSource, deviceLocalDataSource) {

@@ -9,7 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.util.Consumer
-import com.daedan.festabook.logging.currentTimeMillis
 
 @Composable
 actual fun RememberDeepLinkHandler(onNotificationClick: (action: FcmDeepLinkAction, festivalIdChanged: Boolean) -> Unit) {
