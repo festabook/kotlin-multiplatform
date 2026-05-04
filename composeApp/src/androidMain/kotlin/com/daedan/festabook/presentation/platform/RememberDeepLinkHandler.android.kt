@@ -55,13 +55,16 @@ private fun Intent.consumeDeepLinkAction(): FcmDeepLinkAction? {
         FcmMessageType.ANNOUNCEMENT, null -> {
             val announcementId =
                 getLongExtra(DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND, DeepLinkKeys.INITIALIZED_ID)
+            val notificationSentAt =
+                getLongExtra(DeepLinkKeys.KEY_NOTIFICATION_SENT_AT, DeepLinkKeys.INITIALIZED_ID)
             if (announcementId == DeepLinkKeys.INITIALIZED_ID) {
                 null
             } else {
                 removeExtra(DeepLinkKeys.KEY_TYPE)
                 removeExtra(DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND)
                 removeExtra(DeepLinkKeys.KEY_CAN_NAVIGATE_TO_NEWS)
-                FcmDeepLinkAction.OpenAnnouncement(announcementId)
+                removeExtra(DeepLinkKeys.KEY_NOTIFICATION_SENT_AT)
+                FcmDeepLinkAction.OpenAnnouncement(announcementId, notificationSentAt)
             }
         }
     }

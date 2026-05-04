@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.daedan.festabook.logging.ScreenViewLogger
 import com.daedan.festabook.presentation.placeMap.intent.state.LoadState
 import com.daedan.festabook.presentation.placeMap.model.PlaceCategoryUiModel
 import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
@@ -36,6 +37,8 @@ fun PlaceDetailPreviewSecondaryScreen(
     onBackPress: () -> Unit = {},
     visible: Boolean = false,
 ) {
+    ScreenViewLogger("PlaceDetailPreviewSecondaryScreen")
+
     PlaceDetailPreviewBackHandler(enabled = visible) {
         onBackPress()
     }

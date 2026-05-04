@@ -44,6 +44,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
+import com.daedan.festabook.logging.ScreenViewLogger
+import com.daedan.festabook.logging.logClick
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.EmptyStateScreen
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
@@ -82,6 +84,7 @@ fun MyWaitingRoute(
     onShowErrorSnackbar: (Throwable) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    ScreenViewLogger("MyWaitingScreen")
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val currentOnShowErrorSnackbar by rememberUpdatedState(onShowErrorSnackbar)
     val cancelSuccessText = stringResource(Res.string.my_waiting_cancel_success)
@@ -117,6 +120,16 @@ fun MyWaitingScreen(
     val state = rememberNavigationEventState(NavigationEventInfo.None)
     NavigationBackHandler(state = state) { onBack() }
 
+    val loggedOnBack = logClick(identifier = "back", screenName = "MyWaitingScreen", onClick = onBack)
+    val loggedOnRefresh = logClick(identifier = "refresh", screenName = "MyWaitingScreen", onClick = onRefresh)
+    val waitingId = (uiState as? MyWaitingUiState.Success)?.myWaiting?.waitingId
+    val loggedOnCancelWaiting = logClick(
+        identifier = "cancel_waiting",
+        screenName = "MyWaitingScreen",
+        extraParam = if (waitingId != null) mapOf("waiting_id" to waitingId.toString()) else emptyMap(),
+        onClick = onCancelWaiting,
+    )
+
     var showCancelConfirmDialog by remember { mutableStateOf(false) }
     val isCancelEnabled = uiState is MyWaitingUiState.Success && !uiState.myWaiting.isCanceling
     val isCancelling = uiState is MyWaitingUiState.Success && uiState.myWaiting.isCanceling
@@ -129,7 +142,7 @@ fun MyWaitingScreen(
 
     Scaffold(
         modifier = modifier,
-        topBar = { MyWaitingTopBar(onBack = onBack) },
+        topBar = { MyWaitingTopBar(onBack = loggedOnBack) },
         bottomBar = {
             if (uiState is MyWaitingUiState.Success) {
                 Column(
@@ -161,7 +174,7 @@ fun MyWaitingScreen(
                 onDismissClick = { showCancelConfirmDialog = false },
                 onCancelClick = {
                     showCancelConfirmDialog = false
-                    onCancelWaiting()
+                    loggedOnCancelWaiting()
                 },
                 onDismissRequest = { showCancelConfirmDialog = false },
             )
@@ -182,8 +195,8 @@ fun MyWaitingScreen(
             is MyWaitingUiState.Success -> {
                 MyWaitingContent(
                     uiState = uiState,
-                    onRefresh = onRefresh,
-                    onCancelWaiting = onCancelWaiting,
+                    onRefresh = loggedOnRefresh,
+                    onCancelWaiting = loggedOnCancelWaiting,
                     onNavigateToPlaceDetail = onNavigateToPlaceDetail,
                     modifier = Modifier.padding(innerPadding),
                 )
@@ -255,13 +268,20 @@ private fun MyWaitingContent(
             Spacer(modifier = Modifier.height(16.dp))
 
             uiState.myWaiting.placeDetail?.let { placeDetail ->
+                val loggedOnNavigateToPlaceDetail =
+                    logClick(
+                        identifier = "navigate_to_place_detail",
+                        screenName = "MyWaitingScreen",
+                        extraParam = mapOf("place_id" to uiState.myWaiting.placeId.toString()),
+                        onClick = { onNavigateToPlaceDetail(uiState.myWaiting.placeId) },
+                    )
                 Box(
                     modifier =
                         Modifier
                             .cardBackground(
                                 backgroundColor = FestabookColor.white,
                                 shape = festabookShapes.radius4,
-                            ).clickable { onNavigateToPlaceDetail(uiState.myWaiting.placeId) },
+                            ).clickable { loggedOnNavigateToPlaceDetail() },
                 ) {
                     PlaceDetailPreviewContent(placeDetail = placeDetail)
                 }

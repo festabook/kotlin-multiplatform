@@ -20,6 +20,7 @@ import coil3.PlatformContext
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.ImageResult
+import com.daedan.festabook.logging.ScreenViewVisibilityLogger
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.convertImageUrl
 import com.daedan.festabook.presentation.placeMap.PlaceMapViewModel
@@ -126,6 +127,8 @@ fun PlaceMapScreen(
     modifier: Modifier = Modifier,
     isVisible: Boolean = true,
 ) {
+    ScreenViewVisibilityLogger(screenName = "PlaceMapScreen", isVisible = isVisible)
+
     val isPlaceListVisible = uiState.selectedPlace is LoadState.Empty
 
     NaverMapContent(

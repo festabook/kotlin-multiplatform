@@ -54,6 +54,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.daedan.festabook.logging.ScreenViewLogger
+import com.daedan.festabook.logging.logClick
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.setting.waitinginfo.WaitingInfoViewModel
@@ -89,6 +91,7 @@ fun AddWaitingInfoRoute(
     modifier: Modifier = Modifier,
     onSaveSuccess: () -> Unit = onBackClick,
 ) {
+    ScreenViewLogger("AddWaitingInfoScreen")
     val waitingInfoUiState by viewModel.waitingInfoUiState.collectAsStateWithLifecycle()
     val phoneNumber by viewModel.phoneNumber.collectAsStateWithLifecycle()
     val isTermsAgreed by viewModel.isTermsAgreed.collectAsStateWithLifecycle()
@@ -105,6 +108,13 @@ fun AddWaitingInfoRoute(
     LaunchedEffect(Unit) {
         viewModel.loadWaitingInfo()
     }
+
+    val loggedOnBackClick =
+        logClick(
+            identifier = "back",
+            screenName = "AddWaitingInfoScreen",
+            onClick = onBackClick,
+        )
 
     when (waitingInfoUiState) {
         is WaitingInfoUiState.Error -> {
@@ -123,7 +133,7 @@ fun AddWaitingInfoRoute(
                 onPhoneNumberChange = viewModel::updatePhoneNumber,
                 onTermsAgreedChange = viewModel::setTermsAgreed,
                 onSaveClick = viewModel::saveWaitingInfo,
-                onBackClick = onBackClick,
+                onBackClick = loggedOnBackClick,
             )
         }
     }
@@ -309,6 +319,12 @@ private fun WaitingInfoAddTerms(
     onTermsAgreedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val loggedOnTermsChange =
+        logClick(
+            identifier = "toggle_terms_agreement",
+            screenName = "AddWaitingInfoScreen",
+            onClick = { onTermsAgreedChange(!isTermsAgreed) },
+        )
     Column(modifier = modifier) {
         Text(
             text = stringResource(Res.string.setting_waiting_info_add_terms_title),
@@ -321,7 +337,7 @@ private fun WaitingInfoAddTerms(
             Checkbox(
                 modifier = Modifier.clip(festabookShapes.radius1),
                 checked = isTermsAgreed,
-                onCheckedChange = onTermsAgreedChange,
+                onCheckedChange = { loggedOnTermsChange() },
                 colors =
                     CheckboxDefaults.colors(
                         checkedColor = FestabookColor.black,
@@ -351,8 +367,14 @@ private fun ConfirmButton(
     onSaveClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val loggedOnSaveClick =
+        logClick(
+            identifier = "save_waiting_info",
+            screenName = "AddWaitingInfoScreen",
+            onClick = { onSaveClick(phoneNumber) },
+        )
     Button(
-        onClick = { onSaveClick(phoneNumber) },
+        onClick = loggedOnSaveClick,
         enabled = isSaveEnabled,
         modifier =
             modifier

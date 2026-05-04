@@ -24,11 +24,13 @@ import androidx.navigationevent.compose.rememberNavigationEventState
 import com.daedan.festabook.Platform
 import com.daedan.festabook.di.FestabookAppGraph
 import com.daedan.festabook.getPlatform
+import com.daedan.festabook.logging.currentTimeMillis
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.FestabookSnackbar
 import com.daedan.festabook.presentation.common.component.SnackbarManager
 import com.daedan.festabook.presentation.common.component.rememberAppSnackbarManager
+import com.daedan.festabook.presentation.common.rememberAnalytics
 import com.daedan.festabook.presentation.festating.navigation.festatingNavGraph
 import com.daedan.festabook.presentation.home.HomeViewModel
 import com.daedan.festabook.presentation.home.navigation.homeNavGraph
@@ -85,6 +87,7 @@ fun MainScreen(
     val backPressExitMessage = stringResource(Res.string.back_press_exit_message)
     val openAppSettings = rememberOpenAppSettings()
     val state = rememberNavigationEventState(NavigationEventInfo.None)
+    val analytics = rememberAnalytics()
 
     val notificationPermissionManager =
         rememberNotificationPermissionManager(
@@ -133,9 +136,21 @@ fun MainScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        analytics.logEvent("app_foreground")
+    }
+
     RememberDeepLinkHandler { action, festivalIdChanged ->
         when (action) {
             is FcmDeepLinkAction.OpenAnnouncement -> {
+                analytics.logEvent(
+                    "notification_tapped",
+                    mapOf(
+                        "notification_id" to action.announcementId,
+                        "notification_sent_at" to action.notificationSentAt,
+                        "elapsed_sec" to (currentTimeMillis() - action.notificationSentAt) / 1000,
+                    ),
+                )
                 if (festivalIdChanged) {
                     festabookNavigator.navigate(
                         FestabookRoute.Main(pendingAnnouncementId = action.announcementId),

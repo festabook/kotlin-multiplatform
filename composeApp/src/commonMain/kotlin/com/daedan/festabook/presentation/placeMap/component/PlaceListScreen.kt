@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.daedan.festabook.logging.logClick
 import com.daedan.festabook.presentation.common.component.EmptyStateScreen
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.FestabookImage
@@ -209,12 +210,19 @@ private fun PlaceListItem(
     modifier: Modifier = Modifier,
     onPlaceClick: (PlaceUiModel) -> Unit = {},
 ) {
+    val loggedOnPlaceClick =
+        logClick(
+            identifier = "place_click",
+            screenName = "PlaceMapScreen",
+            extraParam = mapOf("place_id" to place.id.toString()),
+            onClick = { onPlaceClick(place) },
+        )
     Column(
         modifier =
             modifier
                 .padding(bottom = festabookSpacing.paddingBody3)
                 .clickable(
-                    onClick = { onPlaceClick(place) },
+                    onClick = loggedOnPlaceClick,
                     interactionSource = null,
                 ),
     ) {

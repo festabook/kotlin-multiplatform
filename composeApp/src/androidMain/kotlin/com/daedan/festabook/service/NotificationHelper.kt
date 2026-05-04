@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
 import com.daedan.festabook.MainActivity
 import com.daedan.festabook.R
+import com.daedan.festabook.logging.currentTimeMillis
 import com.daedan.festabook.presentation.platform.DeepLinkKeys
 import com.daedan.festabook.presentation.platform.FcmDeepLinkAction
 import com.daedan.festabook.presentation.platform.FcmMessageType
@@ -90,6 +91,7 @@ object NotificationHelper {
                 intent.putExtra(DeepLinkKeys.KEY_TYPE, FcmMessageType.ANNOUNCEMENT.name)
                 intent.putExtra(DeepLinkKeys.KEY_CAN_NAVIGATE_TO_NEWS, true)
                 intent.putExtra(DeepLinkKeys.KEY_NOTICE_ID_TO_EXPAND, announcementId)
+                intent.putExtra(DeepLinkKeys.KEY_NOTIFICATION_SENT_AT, currentTimeMillis())
             }
 
             FcmDeepLinkAction.OpenMyWaiting -> {
