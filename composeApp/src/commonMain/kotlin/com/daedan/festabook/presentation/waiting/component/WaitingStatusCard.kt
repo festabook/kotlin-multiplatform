@@ -198,10 +198,11 @@ private fun RefreshButton(
             rotation.snapTo(rotation.value % 360f)
             rotation.animateTo(
                 targetValue = 360f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(durationMillis = durationMillis, easing = LinearEasing),
-                    repeatMode = RepeatMode.Restart,
-                ),
+                animationSpec =
+                    infiniteRepeatable(
+                        animation = tween(durationMillis = durationMillis, easing = LinearEasing),
+                        repeatMode = RepeatMode.Restart,
+                    ),
             )
         } else {
             val remainder = rotation.value % 360f
@@ -209,11 +210,14 @@ private fun RefreshButton(
                 val remainingFraction = (360f - remainder) / 360f
                 rotation.animateTo(
                     targetValue = 360f,
-                    animationSpec = tween(
-                        durationMillis = (remainingFraction * durationMillis).toInt()
-                            .coerceAtLeast(1),
-                        easing = LinearEasing,
-                    ),
+                    animationSpec =
+                        tween(
+                            durationMillis =
+                                (remainingFraction * durationMillis)
+                                    .toInt()
+                                    .coerceAtLeast(1),
+                            easing = LinearEasing,
+                        ),
                 )
             }
             rotation.snapTo(0f)

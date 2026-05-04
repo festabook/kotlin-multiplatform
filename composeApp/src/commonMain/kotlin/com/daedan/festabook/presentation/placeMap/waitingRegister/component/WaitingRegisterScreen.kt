@@ -206,12 +206,13 @@ fun WaitingRegisterScreen(
     val loggedOnToggleServiceAgreement =
         logClick(identifier = "toggle_service_agreement", screenName = "WaitingRegisterScreen", onClick = onToggleServiceAgreement)
     val partySize = (uiState as? WaitingRegisterUiState.Success)?.waitingRegister?.partySize
-    val loggedOnSubmitClick = logClick(
-        identifier = "submit_waiting",
-        screenName = "WaitingRegisterScreen",
-        extraParam = if (partySize != null) mapOf("party_size" to partySize.toString()) else emptyMap(),
-        onClick = onSubmitClick,
-    )
+    val loggedOnSubmitClick =
+        logClick(
+            identifier = "submit_waiting",
+            screenName = "WaitingRegisterScreen",
+            extraParam = if (partySize != null) mapOf("party_size" to partySize.toString()) else emptyMap(),
+            onClick = onSubmitClick,
+        )
 
     NavigationBackHandler(
         state = state,

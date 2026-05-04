@@ -123,12 +123,13 @@ fun MyWaitingScreen(
     val loggedOnBack = logClick(identifier = "back", screenName = "MyWaitingScreen", onClick = onBack)
     val loggedOnRefresh = logClick(identifier = "refresh", screenName = "MyWaitingScreen", onClick = onRefresh)
     val waitingId = (uiState as? MyWaitingUiState.Success)?.myWaiting?.waitingId
-    val loggedOnCancelWaiting = logClick(
-        identifier = "cancel_waiting",
-        screenName = "MyWaitingScreen",
-        extraParam = if (waitingId != null) mapOf("waiting_id" to waitingId.toString()) else emptyMap(),
-        onClick = onCancelWaiting,
-    )
+    val loggedOnCancelWaiting =
+        logClick(
+            identifier = "cancel_waiting",
+            screenName = "MyWaitingScreen",
+            extraParam = if (waitingId != null) mapOf("waiting_id" to waitingId.toString()) else emptyMap(),
+            onClick = onCancelWaiting,
+        )
 
     var showCancelConfirmDialog by remember { mutableStateOf(false) }
     val isCancelEnabled = uiState is MyWaitingUiState.Success && !uiState.myWaiting.isCanceling

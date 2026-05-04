@@ -17,7 +17,7 @@
         <key>CFBundleShortVersionString</key>
 		<string>2.1.1</string>
         <key>CFBundleVersion</key>
-		<string>2010103</string>
+		<string>2010106</string>
         <key>LSApplicationQueriesSchemes</key>
         <array>
             <string>supertoss</string>

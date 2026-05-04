@@ -108,18 +108,20 @@ fun PlaceDetailRoute(
 
     val loggedOnBackToPreviousClick = logClick(identifier = "back", screenName = "PlaceDetailScreen", onClick = onBackToPreviousClick)
     val placeId = (placeDetailUiState as? PlaceDetailUiState.Success)?.placeDetail?.place?.id
-    val loggedOnNavigateToMyWaiting = logClick(
-        identifier = "navigate_to_my_waiting",
-        screenName = "PlaceDetailScreen",
-        extraParam = if (placeId != null) mapOf("place_id" to placeId.toString()) else emptyMap(),
-        onClick = onNavigateToMyWaiting,
-    )
-    val loggedOnRegisterWaitingClick = logClick(
-        identifier = "register_waiting",
-        screenName = "PlaceDetailScreen",
-        extraParam = if (placeId != null) mapOf("place_id" to placeId.toString()) else emptyMap(),
-        onClick = viewModel::onRegisterWaitingClick,
-    )
+    val loggedOnNavigateToMyWaiting =
+        logClick(
+            identifier = "navigate_to_my_waiting",
+            screenName = "PlaceDetailScreen",
+            extraParam = if (placeId != null) mapOf("place_id" to placeId.toString()) else emptyMap(),
+            onClick = onNavigateToMyWaiting,
+        )
+    val loggedOnRegisterWaitingClick =
+        logClick(
+            identifier = "register_waiting",
+            screenName = "PlaceDetailScreen",
+            extraParam = if (placeId != null) mapOf("place_id" to placeId.toString()) else emptyMap(),
+            onClick = viewModel::onRegisterWaitingClick,
+        )
 
     ObserveAsEvents(viewModel.navigateToWaitingRegisterEvent) { placeId ->
         duplicateWaitingId = null
