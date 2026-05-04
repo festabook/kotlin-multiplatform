@@ -59,8 +59,9 @@ class WaitingInfoViewModel(
     val errorEvent: SharedFlow<Throwable> = _errorEvent.asSharedFlow()
 
     fun updatePhoneNumber(input: String) {
-        if (input.count() > MAX_DIGIT_COUNT) return
-        _phoneNumber.value = input.filter { it.isDigit() }
+        val digits = input.filter { it.isDigit() }
+        if (digits.count() > MAX_DIGIT_COUNT) return
+        _phoneNumber.value = digits
     }
 
     fun setTermsAgreed(agreed: Boolean) {

@@ -2,6 +2,8 @@ package com.daedan.festabook.presentation.placeMap.placeDetail.component
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -214,26 +216,27 @@ private fun RefreshButton(
 
     LaunchedEffect(isRefreshing) {
         if (isRefreshing) {
-            while (true) {
-                rotation.animateTo(
-                    targetValue = rotation.value + 360f,
-                    animationSpec = tween(durationMillis = durationMillis, easing = LinearEasing),
-                )
-            }
+            rotation.snapTo(rotation.value % 360f)
+            rotation.animateTo(
+                targetValue = 360f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = durationMillis, easing = LinearEasing),
+                    repeatMode = RepeatMode.Restart,
+                ),
+            )
         } else {
             val remainder = rotation.value % 360f
             if (remainder > 0f) {
-                val target = rotation.value + (360f - remainder)
                 val remainingFraction = (360f - remainder) / 360f
                 rotation.animateTo(
-                    targetValue = target,
-                    animationSpec =
-                        tween(
-                            durationMillis = (remainingFraction * durationMillis).toInt().coerceAtLeast(1),
-                            easing = LinearEasing,
-                        ),
+                    targetValue = 360f,
+                    animationSpec = tween(
+                        durationMillis = (remainingFraction * durationMillis).toInt().coerceAtLeast(1),
+                        easing = LinearEasing,
+                    ),
                 )
             }
+            rotation.snapTo(0f)
         }
     }
 
