@@ -1,7 +1,5 @@
 package com.daedan.festabook.presentation.festating.component
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,7 +14,7 @@ import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
 import com.daedan.festabook.presentation.festating.FestatingUiState
 import com.daedan.festabook.presentation.festating.FestatingViewModel
-import com.multiplatform.webview.web.WebView
+import com.daedan.festabook.presentation.festating.component.platfom.FestatingWebView
 import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewState
@@ -64,13 +62,10 @@ fun FestatingScreen(
             }
 
             Scaffold(modifier = modifier) { innerPadding ->
-                WebView(
-                    state = webViewState,
+                FestatingWebView(
+                    webViewState = webViewState,
                     navigator = navigator,
-                    modifier =
-                        Modifier
-                            .padding(innerPadding)
-                            .fillMaxSize(),
+                    innerPadding = innerPadding,
                 )
             }
         }
