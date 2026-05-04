@@ -44,6 +44,7 @@ import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.daedan.festabook.logging.ScreenViewLogger
+import com.daedan.festabook.logging.logClick
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.PermissionState
 import com.daedan.festabook.presentation.common.ObserveAsEvents
@@ -199,6 +200,17 @@ fun WaitingRegisterScreen(
     val isSubmitting =
         (uiState as? WaitingRegisterUiState.Success)?.waitingRegister?.isSubmitting ?: false
 
+    val loggedOnBackToPreviousClick = logClick(identifier = "back", screenName = "WaitingRegisterScreen", onClick = onBackToPreviousClick)
+    val loggedOnToggleServiceAgreement =
+        logClick(identifier = "toggle_service_agreement", screenName = "WaitingRegisterScreen", onClick = onToggleServiceAgreement)
+    val partySize = (uiState as? WaitingRegisterUiState.Success)?.waitingRegister?.partySize
+    val loggedOnSubmitClick = logClick(
+        identifier = "submit_waiting",
+        screenName = "WaitingRegisterScreen",
+        extraParam = if (partySize != null) mapOf("party_size" to partySize.toString()) else emptyMap(),
+        onClick = onSubmitClick,
+    )
+
     NavigationBackHandler(
         state = state,
         isBackEnabled = !isSubmitting,
@@ -213,7 +225,7 @@ fun WaitingRegisterScreen(
     }
 
     Column(modifier = modifier.fillMaxSize()) {
-        WaitingRegisterTopBar(onBackClick = onBackToPreviousClick)
+        WaitingRegisterTopBar(onBackClick = loggedOnBackToPreviousClick)
 
         when (uiState) {
             is WaitingRegisterUiState.Loading,
@@ -264,7 +276,7 @@ fun WaitingRegisterScreen(
 
                         AgreementSection(
                             isAgreed = waitingRegister.isServiceAgreed,
-                            onToggle = onToggleServiceAgreement,
+                            onToggle = loggedOnToggleServiceAgreement,
                         )
 
                         Spacer(modifier = Modifier.height(80.dp))
@@ -273,7 +285,7 @@ fun WaitingRegisterScreen(
                     WaitingRegisterSubmitButton(
                         isEnabled = waitingRegister.canSubmit,
                         isSubmitting = waitingRegister.isSubmitting,
-                        onClick = onSubmitClick,
+                        onClick = loggedOnSubmitClick,
                         modifier = Modifier.align(Alignment.BottomCenter),
                     )
                 }

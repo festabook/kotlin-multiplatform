@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
+import com.daedan.festabook.logging.logClick
 import com.daedan.festabook.presentation.main.FestabookMainTab
 import com.daedan.festabook.presentation.main.FestabookMainTab.Defaults.selectedColor
 import com.daedan.festabook.presentation.main.FestabookMainTab.Defaults.unselectedColor
@@ -98,6 +99,13 @@ private fun RowScope.FestabookNavigationItem(
     selected: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val loggedOnClick =
+        logClick(
+            identifier = "main_tab_select",
+            screenName = "MainScreen",
+            extraParam = mapOf("tab" to tab.name),
+            onClick = { onClick(tab) },
+        )
     Box(
         modifier =
             modifier
@@ -106,7 +114,7 @@ private fun RowScope.FestabookNavigationItem(
                 .background(color = FestabookColor.white)
                 .selectable(
                     selected = selected,
-                    onClick = { onClick(tab) },
+                    onClick = loggedOnClick,
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null, // 리플(Ripple) 완벽 제거
                 ),
@@ -136,14 +144,19 @@ private fun PlaceMapNavigationItem(
     onClick: (FestabookMainTab) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val loggedOnClick =
+        logClick(
+            identifier = "main_tab_select",
+            screenName = "MainScreen",
+            extraParam = mapOf("tab" to FestabookMainTab.PLACE_MAP.name),
+            onClick = { onClick(FestabookMainTab.PLACE_MAP) },
+        )
     Image(
         modifier =
             modifier
                 .offset(y = -festabookSpacing.paddingBody4)
                 .clickable(
-                    onClick = {
-                        onClick(FestabookMainTab.PLACE_MAP)
-                    },
+                    onClick = loggedOnClick,
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() },
                 ),

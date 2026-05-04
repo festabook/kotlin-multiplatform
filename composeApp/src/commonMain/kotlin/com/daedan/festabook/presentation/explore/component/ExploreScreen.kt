@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daedan.festabook.logging.ScreenViewLogger
+import com.daedan.festabook.logging.logClick
 import com.daedan.festabook.presentation.explore.ExploreSideEffect
 import com.daedan.festabook.presentation.explore.ExploreUiState
 import com.daedan.festabook.presentation.explore.ExploreViewModel
@@ -48,6 +49,7 @@ fun ExploreScreen(
 
     val latestNavigateToMain by rememberUpdatedState(onNavigateToMain)
     val latestKeyboardController by rememberUpdatedState(keyboardController)
+    val loggedOnBackClick = logClick(identifier = "back", screenName = "ExploreScreen", onClick = onBackClick)
 
     LaunchedEffect(viewModel) {
         viewModel.sideEffect.collect { effect ->
@@ -66,7 +68,7 @@ fun ExploreScreen(
             exploreUiState = exploreUiState,
             onQueryChange = viewModel::onTextInputChanged,
             onUniversitySelect = viewModel::onUniversitySelected,
-            onBackClick = onBackClick,
+            onBackClick = loggedOnBackClick,
             onClearRecentSearches = viewModel::onClearRecentSearches,
             onUniversityDelete = viewModel::onRecentSearchDelete,
         )

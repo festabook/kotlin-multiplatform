@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daedan.festabook.BuildKonfig
 import com.daedan.festabook.logging.ScreenViewLogger
+import com.daedan.festabook.logging.logClick
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.PermissionState
 import com.daedan.festabook.presentation.common.ObserveAsEvents
@@ -137,6 +138,37 @@ fun SettingRoute(
 
     val phoneNumber = (waitingInfoUiState as? WaitingInfoUiState.Registered)?.phoneNumber
 
+    val loggedOnSubscribeClick =
+        logClick(
+            identifier = "subscribe_toggle",
+            screenName = "SettingScreen",
+            onClick = { settingViewModel.notificationAllowClick() },
+        )
+    val loggedOnServicePolicyClick =
+        logClick(
+            identifier = "service_policy_click",
+            screenName = "SettingScreen",
+            onClick = { uriHandler.openUri(SERVICE_POLICY_URL) },
+        )
+    val loggedOnPersonalInfoPolicyClick =
+        logClick(
+            identifier = "personal_info_policy_click",
+            screenName = "SettingScreen",
+            onClick = { uriHandler.openUri(PERSONAL_INFORMATION_POLICY_URL) },
+        )
+    val loggedOnContactUsClick =
+        logClick(
+            identifier = "contact_us_click",
+            screenName = "SettingScreen",
+            onClick = { uriHandler.openUri(CONTACT_US_URL) },
+        )
+    val loggedOnPhoneNumberClick =
+        logClick(
+            identifier = "phone_number_click",
+            screenName = "SettingScreen",
+            onClick = onPhoneNumberClick,
+        )
+
     SettingScreen(
         modifier = modifier,
         festivalUiState = festival,
@@ -144,11 +176,11 @@ fun SettingRoute(
         appVersion = "v ${BuildKonfig.APP_VERSION_NAME}",
         isSubscribeEnabled = !isSubscribedLoading,
         phoneNumber = phoneNumber,
-        onSubscribeClick = { settingViewModel.notificationAllowClick() },
-        onServicePolicyClick = { uriHandler.openUri(SERVICE_POLICY_URL) },
-        onPersonalInformationPolicyClick = { uriHandler.openUri(PERSONAL_INFORMATION_POLICY_URL) },
-        onContactUsClick = { uriHandler.openUri(CONTACT_US_URL) },
-        onPhoneNumberClick = onPhoneNumberClick,
+        onSubscribeClick = { loggedOnSubscribeClick() },
+        onServicePolicyClick = loggedOnServicePolicyClick,
+        onPersonalInformationPolicyClick = loggedOnPersonalInfoPolicyClick,
+        onContactUsClick = loggedOnContactUsClick,
+        onPhoneNumberClick = loggedOnPhoneNumberClick,
         onError = {
             onShowErrorSnackBar(it.throwable)
         },

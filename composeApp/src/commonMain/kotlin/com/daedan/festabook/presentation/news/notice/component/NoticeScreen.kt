@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.daedan.festabook.logging.ScreenViewLogger
+import com.daedan.festabook.logging.logClick
 import com.daedan.festabook.presentation.common.component.EmptyStateScreen
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
@@ -48,10 +49,11 @@ fun NoticeScreen(
     ScreenViewLogger("NoticeScreen")
 
     val scrollState = rememberScrollState()
+    val loggedOnRefresh = logClick(identifier = "refresh", screenName = "NoticeScreen", onClick = onRefresh)
 
     PullToRefreshContainer(
         isRefreshing = uiState.isRefreshing,
-        onRefresh = onRefresh,
+        onRefresh = loggedOnRefresh,
         modifier = modifier,
     ) { graphicsLayer ->
         when (val content = uiState.content) {
@@ -118,11 +120,18 @@ private fun NoticeContent(
                 items = notices,
                 key = { notice -> notice.id },
             ) { notice ->
+                val loggedOnNoticeClick =
+                    logClick(
+                        identifier = "notice_click",
+                        screenName = "NoticeScreen",
+                        extraParam = mapOf("notice_id" to notice.id.toString()),
+                        onClick = { onNoticeClick(notice) },
+                    )
                 NewsItem(
                     title = notice.title,
                     description = notice.content,
                     isExpanded = notice.isExpanded,
-                    onclick = { onNoticeClick(notice) },
+                    onclick = loggedOnNoticeClick,
                     icon = {
                         if (notice.isPinned) {
                             Icon(

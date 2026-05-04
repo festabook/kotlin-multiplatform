@@ -15,7 +15,7 @@ fun ScreenViewLogger(screenName: String) {
     DisposableEffect(Unit) {
         val enteredTime = currentTimeMillis()
         analytics.logEvent(
-            "screen_view",
+            "festabook_screen_view",
             mapOf(
                 "screen_name" to screenName,
                 "entered_at" to enteredTime,

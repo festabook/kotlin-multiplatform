@@ -2,7 +2,6 @@ package com.daedan.festabook.delegate
 
 import com.daedan.festabook.data.datasource.local.FestivalLocalDataSource
 import com.daedan.festabook.di.coroutine.IO
-import com.daedan.festabook.logging.currentTimeMillis
 import com.daedan.festabook.presentation.platform.DeepLinkKeys
 import com.daedan.festabook.presentation.platform.FcmDeepLinkAction
 import com.daedan.festabook.presentation.platform.FcmMessageType
@@ -76,14 +75,12 @@ class DefaultUserNotificationDelegate(
         }
     }
 
-    private fun Map<Any?, *>.toDeepLinkAction(
-        notificationSendAt: Long,
-    ): FcmDeepLinkAction? {
+    private fun Map<Any?, *>.toDeepLinkAction(notificationSendAt: Long): FcmDeepLinkAction? {
         val type = FcmMessageType.from(this[DeepLinkKeys.KEY_TYPE] as? String)
         return when (type) {
             FcmMessageType.WAITING_CALL,
             FcmMessageType.WAITING_ALMOST_CALL,
-                -> {
+            -> {
                 FcmDeepLinkAction.OpenMyWaiting
             }
 

@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.daedan.festabook.presentation.explore.ExploreUiState
 import com.daedan.festabook.presentation.explore.SearchUiState
 import com.daedan.festabook.presentation.explore.model.SearchResultUiModel
+import com.daedan.festabook.logging.logClick
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -50,9 +51,15 @@ fun ExploreSearchResultList(
                     items = searchUiState.universitiesFound,
                     key = { it.festivalId },
                 ) { university ->
+                    val loggedOnItemClick = logClick(
+                        identifier = "university_select",
+                        screenName = "ExploreScreen",
+                        extraParam = mapOf("festival_id" to university.festivalId.toString()),
+                        onClick = { onUniversitySelect(university) },
+                    )
                     ExploreResultItem(
                         university = university,
-                        onItemClick = onUniversitySelect,
+                        onItemClick = { loggedOnItemClick() },
                     )
                 }
             }
@@ -74,9 +81,15 @@ fun ExploreSearchResultList(
                     items = exploreUiState.recentSearches,
                     key = { it.festivalId },
                 ) { recentSearch ->
+                    val loggedOnRecentClick = logClick(
+                        identifier = "recent_search_select",
+                        screenName = "ExploreScreen",
+                        extraParam = mapOf("festival_id" to recentSearch.festivalId.toString()),
+                        onClick = { onUniversitySelect(recentSearch) },
+                    )
                     ExploreResultItem(
                         university = recentSearch,
-                        onItemClick = onUniversitySelect,
+                        onItemClick = { loggedOnRecentClick() },
                         canDelete = true,
                         onDeleteClick = onUniversityDelete,
                     )

@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daedan.festabook.logging.ScreenViewLogger
+import com.daedan.festabook.logging.logClick
 import com.daedan.festabook.presentation.NotificationPermissionManager
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
@@ -102,6 +103,31 @@ fun HomeScreen(
         }
     }
 
+    val loggedOnNavigateToExplore =
+        logClick(
+            identifier = "navigate_to_explore",
+            screenName = "HomeScreen",
+            onClick = onNavigateToExplore,
+        )
+    val loggedOnNavigateToFestating =
+        logClick(
+            identifier = "navigate_to_festating",
+            screenName = "HomeScreen",
+            onClick = onNavigateToFestating,
+        )
+    val loggedOnNavigateToSchedule =
+        logClick(
+            identifier = "schedule_tab_click",
+            screenName = "HomeScreen",
+            onClick = homeViewModel::navigateToScheduleClick,
+        )
+    val loggedOnNavigateToMyWaiting =
+        logClick(
+            identifier = "waiting_bar_click",
+            screenName = "HomeScreen",
+            onClick = homeViewModel::navigateToMyWaitingClick,
+        )
+
     when (val state = festivalUiState) {
         is FestivalUiState.Loading -> {
             LoadingStateScreen(modifier = modifier)
@@ -117,9 +143,9 @@ fun HomeScreen(
                     festivalUiState = state,
                     lineupUiState = lineupUiState,
                     showWaitingBar = waitingBarUiState is WaitingBarUiState.Visible,
-                    onNavigateToExplore = onNavigateToExplore,
-                    onNavigateToSchedule = homeViewModel::navigateToScheduleClick,
-                    onFestatingClick = onNavigateToFestating,
+                    onNavigateToExplore = loggedOnNavigateToExplore,
+                    onNavigateToSchedule = loggedOnNavigateToSchedule,
+                    onFestatingClick = loggedOnNavigateToFestating,
                 )
                 when (val waitingBarUiState = waitingBarUiState) {
                     is WaitingBarUiState.Visible -> {
@@ -127,7 +153,7 @@ fun HomeScreen(
                             order = waitingBarUiState.order,
                             estimatedMinutes = waitingBarUiState.estimatedWaitTime,
                             status = waitingBarUiState.status,
-                            onClick = homeViewModel::navigateToMyWaitingClick,
+                            onClick = loggedOnNavigateToMyWaiting,
                             modifier =
                                 Modifier
                                     .align(Alignment.BottomCenter)

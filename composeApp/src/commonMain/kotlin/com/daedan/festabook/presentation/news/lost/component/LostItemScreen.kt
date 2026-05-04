@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.daedan.festabook.logging.ScreenViewLogger
+import com.daedan.festabook.logging.logClick
 import com.daedan.festabook.presentation.common.component.EmptyStateScreen
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
@@ -53,6 +54,7 @@ fun LostItemScreen(
 
     var clickedLostItem by remember { mutableStateOf<LostUiModel.Item?>(null) }
     val scrollState = rememberScrollState()
+    val loggedOnRefresh = logClick(identifier = "refresh", screenName = "LostItemScreen", onClick = onRefresh)
 
     clickedLostItem?.let {
         LostItemModalDialog(
@@ -63,7 +65,7 @@ fun LostItemScreen(
 
     PullToRefreshContainer(
         isRefreshing = lostUiState.isRefreshing,
-        onRefresh = onRefresh,
+        onRefresh = loggedOnRefresh,
         modifier = modifier,
     ) { graphicsLayer ->
         when (val content = lostUiState.content) {
@@ -128,11 +130,17 @@ private fun LostItemContent(
             item(span = { GridItemSpan(SPAN_COUNT) }) {
                 val guide = lostItems.firstOrNull() as? LostUiModel.Guide
                 guide?.let {
+                    val loggedOnLostGuideClick =
+                        logClick(
+                            identifier = "lost_guide_click",
+                            screenName = "LostItemScreen",
+                            onClick = onLostGuideClick,
+                        )
                     NewsItem(
                         title = stringResource(Res.string.lost_item_guide),
                         description = it.description,
                         isExpanded = it.isExpanded,
-                        onclick = onLostGuideClick,
+                        onclick = loggedOnLostGuideClick,
                         icon =
                             {
                                 Icon(
@@ -147,9 +155,16 @@ private fun LostItemContent(
                 items = lostItems.drop(1).filterIsInstance<LostUiModel.Item>(),
                 key = { lostItem -> lostItem.lostItemId },
             ) { lostItem ->
+                val loggedOnLostItemClick =
+                    logClick(
+                        identifier = "lost_item_click",
+                        screenName = "LostItemScreen",
+                        extraParam = mapOf("lost_item_id" to lostItem.lostItemId.toString()),
+                        onClick = { onLostItemClick(lostItem) },
+                    )
                 LostItem(
                     url = lostItem.imageUrl,
-                    onLostItemClick = { onLostItemClick(lostItem) },
+                    onLostItemClick = loggedOnLostItemClick,
                 )
             }
         }
