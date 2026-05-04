@@ -1,5 +1,7 @@
 package com.daedan.festabook.presentation.main.component
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -283,6 +285,10 @@ private fun FestabookNavHost(
         modifier = modifier,
         startDestination = navigator.startRoute,
         navController = navigator.navController,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None },
     ) {
         homeNavGraph(
             innerPadding = innerPadding,
