@@ -108,7 +108,9 @@ fun WaitingRegisterRoute(
                 settingViewModel.saveNotificationId()
                 viewModel.submitWaitingRegister()
             },
-            onPermissionDeny = {},
+            onPermissionDeny = {
+                onOpenAppSettings()
+            },
         )
 
     ObserveAsEvents(viewModel.registerSuccessEvent) {
