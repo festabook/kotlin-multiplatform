@@ -12,13 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
+import com.daedan.festabook.logging.ScreenViewLogger
+import com.daedan.festabook.logging.logClick
 import com.daedan.festabook.presentation.common.component.FestabookImage
 import com.daedan.festabook.presentation.common.component.URLText
 import com.daedan.festabook.presentation.common.convertImageUrl
-import com.daedan.festabook.presentation.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.intent.state.LoadState
 import com.daedan.festabook.presentation.placeMap.model.PlaceCategoryUiModel
 import com.daedan.festabook.presentation.placeMap.model.PlaceUiModel
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.theme.FestabookColor
 import com.daedan.festabook.presentation.theme.FestabookTheme
 import com.daedan.festabook.presentation.theme.FestabookTypography
@@ -49,6 +51,22 @@ fun PlaceDetailPreviewScreen(
     onClick: (LoadState<PlaceDetailUiModel>) -> Unit = {},
     onBackPress: () -> Unit = {},
 ) {
+    ScreenViewLogger("PlaceDetailPreviewScreen")
+
+    val placeId =
+        (selectedPlace as? LoadState.Success)
+            ?.value
+            ?.place
+            ?.id
+            ?.toString()
+    val loggedOnClick =
+        logClick(
+            identifier = "place_preview_click",
+            screenName = "PlaceDetailPreviewScreen",
+            extraParam = if (placeId != null) mapOf("place_id" to placeId) else emptyMap(),
+            onClick = { onClick(selectedPlace) },
+        )
+
     PlaceDetailPreviewBackHandler(enabled = visible) {
         onBackPress()
     }
@@ -57,7 +75,7 @@ fun PlaceDetailPreviewScreen(
         modifier =
             modifier
                 .wrapContentSize()
-                .clickable { onClick(selectedPlace) },
+                .clickable { loggedOnClick() },
     ) {
         when (selectedPlace) {
             is LoadState.Success -> {
@@ -72,7 +90,7 @@ fun PlaceDetailPreviewScreen(
 }
 
 @Composable
-private fun PlaceDetailPreviewContent(
+fun PlaceDetailPreviewContent(
     placeDetail: PlaceDetailUiModel,
     modifier: Modifier = Modifier,
 ) {

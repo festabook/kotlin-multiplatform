@@ -32,7 +32,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.daedan.festabook.logging.logClick
 import com.daedan.festabook.presentation.common.component.EmptyStateScreen
+import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.FestabookImage
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
 import com.daedan.festabook.presentation.placeMap.intent.state.ListLoadState
@@ -60,6 +62,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun PlaceListScreen(
     placesUiState: ListLoadState<List<PlaceUiModel>>,
     isPlaceListVisible: Boolean,
+    isPlaceMapVisible: Boolean,
     modifier: Modifier = Modifier,
     map: NaverMap? = null,
     isExceededMaxLength: Boolean = false,
@@ -102,7 +105,7 @@ fun PlaceListScreen(
                 Box {
                     CurrentLocationButton(
                         map = map,
-                        visible = isPlaceListVisible,
+                        visible = isPlaceListVisible && isPlaceMapVisible,
                     )
                     if (isExceededMaxLength) {
                         Row(
@@ -150,7 +153,7 @@ fun PlaceListScreen(
                 }
 
                 is ListLoadState.Error -> {
-                    EmptyStateScreen(
+                    ErrorStateScreen(
                         modifier = Modifier.offset(y = HALF_EXPANDED_OFFSET),
                     )
                 }
@@ -207,12 +210,19 @@ private fun PlaceListItem(
     modifier: Modifier = Modifier,
     onPlaceClick: (PlaceUiModel) -> Unit = {},
 ) {
+    val loggedOnPlaceClick =
+        logClick(
+            identifier = "place_click",
+            screenName = "PlaceMapScreen",
+            extraParam = mapOf("place_id" to place.id.toString()),
+            onClick = { onPlaceClick(place) },
+        )
     Column(
         modifier =
             modifier
                 .padding(bottom = festabookSpacing.paddingBody3)
                 .clickable(
-                    onClick = { onPlaceClick(place) },
+                    onClick = loggedOnPlaceClick,
                     interactionSource = null,
                 ),
     ) {
@@ -317,6 +327,7 @@ private fun PlaceListScreenPreview() {
                     },
                 ),
             isPlaceListVisible = true,
+            isPlaceMapVisible = true,
             modifier =
                 Modifier.padding(
                     horizontal = festabookSpacing.paddingScreenGutter,

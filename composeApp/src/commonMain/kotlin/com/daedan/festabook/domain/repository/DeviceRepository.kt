@@ -1,10 +1,7 @@
 package com.daedan.festabook.domain.repository
 
 interface DeviceRepository {
-    suspend fun registerDevice(
-        deviceIdentifier: String,
-        fcmToken: String,
-    ): Result<Long>
+    suspend fun registerDevice(fcmToken: String): Result<Unit>
 
     suspend fun saveDeviceId(deviceId: Long)
 

@@ -8,8 +8,10 @@ import com.daedan.festabook.domain.repository.NoticeRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
 @ContributesBinding(AppScope::class)
+@SingleIn(AppScope::class)
 @Inject
 class NoticeRepositoryImpl(
     private val noticeDataSource: NoticeDataSource,

@@ -30,6 +30,7 @@ actual fun NaverMapContent(
     mapDelegate: MapDelegate,
     onMapDrag: () -> Unit,
     onMapReady: (NaverMap) -> Unit,
+    isVisible: Boolean,
     content: @Composable (NaverMap?) -> Unit,
 ) {
     val context = LocalContext.current

@@ -126,7 +126,19 @@ class PlaceMapViewModel(
             }
 
             val placeGeographies =
-                uiState.await<LoadState.Success<List<PlaceCoordinateUiModel>>> { it.placeGeographies }
+                uiState.await<LoadState.Success<List<PlaceCoordinateUiModel>>>(
+                    onTimeout = {
+                        _uiState.update {
+                            it.copy(
+                                placeGeographies =
+                                    LoadState.Error(
+                                        IllegalStateException("서버에서 마커 정보를 가져오는 데 실패했습니다."),
+                                    ),
+                            )
+                        }
+                    },
+                ) { it.placeGeographies }
+
             _mapControlSideEffect.send(
                 MapControlSideEffect.SetMarkerByTimeTag(
                     placeGeographies = placeGeographies.value,

@@ -1,11 +1,11 @@
 package com.daedan.festabook.presentation.placeMap.intent.sideEffect
 
 import com.daedan.festabook.domain.model.TimeTag
-import com.daedan.festabook.presentation.placeDetail.model.PlaceDetailUiModel
 import com.daedan.festabook.presentation.placeMap.intent.state.LoadState
 import com.daedan.festabook.presentation.placeMap.model.InitialMapSettingUiModel
 import com.daedan.festabook.presentation.placeMap.model.PlaceCategoryUiModel
 import com.daedan.festabook.presentation.placeMap.model.PlaceCoordinateUiModel
+import com.daedan.festabook.presentation.placeMap.placeDetail.model.PlaceDetailUiModel
 
 sealed interface MapControlSideEffect {
     data object InitMap : MapControlSideEffect

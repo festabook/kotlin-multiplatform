@@ -11,5 +11,6 @@ expect fun NaverMapContent(
     mapDelegate: MapDelegate = MapDelegate(),
     onMapDrag: () -> Unit = {},
     onMapReady: (NaverMap) -> Unit = {},
+    isVisible: Boolean = true,
     content: @Composable (NaverMap?) -> Unit,
 )

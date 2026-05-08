@@ -20,12 +20,16 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
+interface FilterEventHandler : EventHandler<FilterEvent, PlaceMapUiState> {
+    fun updatePlacesByTimeTag(timeTagId: Long)
+}
+
 @Inject
 @ContributesBinding(PlaceMapViewModelScope::class)
-class FilterEventHandler(
+class FilterEventHandlerImpl(
     private val context: EventHandlerContext,
 //    private val logger: DefaultFirebaseLogger,
-) : EventHandler<FilterEvent, PlaceMapUiState> {
+) : FilterEventHandler {
     override val uiState: StateFlow<PlaceMapUiState> = context.uiState
     override val onUpdateState = context.onUpdateState
 
@@ -78,12 +82,7 @@ class FilterEventHandler(
         }
     }
 
-    private fun unselectPlace() {
-        onUpdateState.invoke { it.copy(selectedPlace = LoadState.Empty) }
-        context.mapControlSideEffect.trySend(MapControlSideEffect.UnselectMarker)
-    }
-
-    fun updatePlacesByTimeTag(timeTagId: Long) {
+    override fun updatePlacesByTimeTag(timeTagId: Long) {
         val filteredPlaces =
             if (timeTagId == TimeTag.EMTPY_TIME_TAG_ID) {
                 context.cachedPlaces.value
@@ -94,6 +93,11 @@ class FilterEventHandler(
             it.copy(places = ListLoadState.Success(filteredPlaces))
         }
         context.onUpdateCachedPlace(filteredPlaces)
+    }
+
+    private fun unselectPlace() {
+        onUpdateState.invoke { it.copy(selectedPlace = LoadState.Empty) }
+        context.mapControlSideEffect.trySend(MapControlSideEffect.UnselectMarker)
     }
 
     private fun updatePlacesByCategories(category: List<PlaceCategoryUiModel>) {

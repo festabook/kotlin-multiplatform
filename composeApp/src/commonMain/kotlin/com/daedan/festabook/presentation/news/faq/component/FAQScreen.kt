@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.daedan.festabook.logging.ScreenViewLogger
+import com.daedan.festabook.logging.logClick
 import com.daedan.festabook.presentation.common.component.EmptyStateScreen
 import com.daedan.festabook.presentation.common.component.ErrorStateScreen
 import com.daedan.festabook.presentation.common.component.LoadingStateScreen
@@ -25,6 +27,8 @@ fun FAQScreen(
     onFaqClick: (FAQItemUiModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    ScreenViewLogger("FAQScreen")
+
     when (uiState) {
         is FAQUiState.Error -> {
 //            Timber.w(uiState.throwable.stackTraceToString())
@@ -52,11 +56,18 @@ fun FAQScreen(
                         items = uiState.faqs,
                         key = { faq -> faq.questionId },
                     ) { faq ->
+                        val loggedOnFaqClick =
+                            logClick(
+                                identifier = "faq_item_click",
+                                screenName = "FAQScreen",
+                                extraParam = mapOf("faq_id" to faq.questionId.toString()),
+                                onClick = { onFaqClick(faq) },
+                            )
                         NewsItem(
                             title = stringResource(Res.string.tab_faq_question, faq.question),
                             description = faq.answer,
                             isExpanded = faq.isExpanded,
-                            onclick = { onFaqClick(faq) },
+                            onclick = loggedOnFaqClick,
                         )
                     }
                 }

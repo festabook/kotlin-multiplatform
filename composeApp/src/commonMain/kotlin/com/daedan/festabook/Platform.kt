@@ -1,7 +1,8 @@
 package com.daedan.festabook
 
-interface Platform {
-    val name: String
-}
-
 expect fun getPlatform(): Platform
+
+enum class Platform {
+    ANDROID,
+    IOS,
+}

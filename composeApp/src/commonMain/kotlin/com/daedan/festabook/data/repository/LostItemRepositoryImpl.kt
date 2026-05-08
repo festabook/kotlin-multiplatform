@@ -9,10 +9,12 @@ import com.daedan.festabook.domain.repository.LostItemRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
 @ContributesBinding(AppScope::class)
+@SingleIn(AppScope::class)
 @Inject
 class LostItemRepositoryImpl(
     private val lostItemDataSource: LostItemDataSource,
@@ -33,19 +35,20 @@ class LostItemRepositoryImpl(
             it.toDomain()
         }
 
-    override suspend fun getLost(): List<Lost?> =
+    override suspend fun getLost(): Result<List<Lost?>> =
         coroutineScope {
             val guide = async { getLostGuideItem() }
             val pendingItems = async { getPendingLostItems() }
 
-            val guideResult = guide.await()
-            val pendingItemsResult = pendingItems.await()
+            val guideResult = guide.await().getOrElse { return@coroutineScope Result.failure(it) }
+            val pendingItemsResult =
+                pendingItems.await().getOrElse { return@coroutineScope Result.failure(it) }
 
-            val total = mutableListOf<Lost?>()
-
-            total.add(0, guideResult.getOrNull())
-            pendingItemsResult.getOrNull()?.let { total.addAll(it) }
-
-            total
+            Result.success(
+                buildList {
+                    add(guideResult)
+                    addAll(pendingItemsResult)
+                },
+            )
         }
 }

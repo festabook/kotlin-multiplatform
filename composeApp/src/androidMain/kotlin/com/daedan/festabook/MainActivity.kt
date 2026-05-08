@@ -1,53 +1,35 @@
 package com.daedan.festabook
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.imageLoader
-import com.daedan.festabook.presentation.platform.rememberAppVersionManager
-import com.daedan.festabook.presentation.splash.component.SplashScreen
+import com.daedan.festabook.presentation.FestabookScreen
 import com.daedan.festabook.presentation.theme.FestabookTheme
-import com.skydoves.landscapist.coil3.LocalCoilImageLoader
-import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 class MainActivity : ComponentActivity() {
-    private val metroVmf by lazy {
-        (application as FestabookApp).festabookAppGraph.metroViewModelFactory
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         setContent {
             FestabookTheme {
-                CompositionLocalProvider(
-                    LocalMetroViewModelFactory provides metroVmf,
-                    LocalCoilImageLoader provides imageLoader,
-                ) {
-                    Scaffold { innerPadding ->
-                        SplashScreen(
-                            viewModel = viewModel(factory = metroVmf),
-                            appVersionManager =
-                                rememberAppVersionManager(
-                                    appGraph = (application as FestabookApp).festabookAppGraph,
-                                    onUpdateFailure = {},
-                                    onUpdateSuccess = {},
-                                ),
-                            onNavigateToMain = {},
-                            onNavigateToExplore = {},
-                            onFinishApp = { finish() },
-                        )
-                    }
-                }
+                FestabookScreen(
+                    onAppFinish = { finish() },
+                )
             }
         }
+    }
+
+    companion object {
+        fun newIntent(context: Context) =
+            Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
     }
 }
 

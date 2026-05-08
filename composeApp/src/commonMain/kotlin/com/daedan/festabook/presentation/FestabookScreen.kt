@@ -1,0 +1,67 @@
+package com.daedan.festabook.presentation
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.navOptions
+import com.daedan.festabook.di.FestabookAppGraph
+import com.daedan.festabook.presentation.explore.navigation.exploreNavGraph
+import com.daedan.festabook.presentation.main.FestabookRoute
+import com.daedan.festabook.presentation.main.navigation.mainNavGraph
+import com.daedan.festabook.presentation.main.rememberFestabookNavigator
+import com.daedan.festabook.presentation.platform.rememberAppGraph
+import com.daedan.festabook.presentation.platform.rememberAppVersionManager
+import com.daedan.festabook.presentation.platform.rememberLocationSource
+import com.daedan.festabook.presentation.splash.SplashViewModel
+import com.daedan.festabook.presentation.splash.navigation.splashNavGraph
+import dev.zacsweers.metrox.viewmodel.metroViewModel
+
+@Composable
+fun FestabookScreen(
+    onAppFinish: () -> Unit,
+    modifier: Modifier = Modifier,
+    appGraph: FestabookAppGraph = rememberAppGraph(),
+    splashViewModel: SplashViewModel = metroViewModel(),
+) {
+    val locationSource = rememberLocationSource()
+    val festabookNavigator = rememberFestabookNavigator()
+
+    val appVersionManager =
+        rememberAppVersionManager(
+            appGraph = appGraph,
+            onUpdateSuccess = { splashViewModel.handleVersionCheckResult(Result.success(false)) },
+            onUpdateFailure = { splashViewModel.handleVersionCheckResult(Result.failure(Exception("Update failed"))) },
+        )
+
+    NavHost(
+        modifier = modifier,
+        startDestination = festabookNavigator.startRoute,
+        navController = festabookNavigator.navController,
+    ) {
+        splashNavGraph(
+            appVersionManager = appVersionManager,
+            onNavigateToExplore = {
+                festabookNavigator.navigate(
+                    FestabookRoute.Explore,
+                    navOptions {
+                        popUpTo(FestabookRoute.Splash) {
+                            inclusive = true
+                        }
+                    },
+                )
+            },
+            onNavigateToMain = { festabookNavigator.navigate(FestabookRoute.Main()) },
+            onFinishApp = onAppFinish,
+        )
+        exploreNavGraph(
+            onBackClick = { festabookNavigator.popBackStack() },
+            onNavigateToMain = { festabookNavigator.navigate(FestabookRoute.Main()) },
+        )
+        mainNavGraph(
+            appGraph = appGraph,
+            onAppFinish = onAppFinish,
+            locationSource = locationSource,
+            festabookNavigator = festabookNavigator,
+        )
+    }
+}

@@ -2,6 +2,10 @@
 <resources>
     <string name="app_name">festabook</string>
 
+    <!--FCM-->
+    <string name="notification_default_title">알림</string>
+    <string name="notification_default_body">새로운 소식이 있습니다.</string>
+
     <!--공통-->
     <string name="empty_state_message">현재 표시할 항목이 없습니다.</string>
     <string name="loading_animation_content_description">로딩 애니메이션</string>
@@ -21,7 +25,14 @@
     <string name="home_navigate_to_schedule_desc">일정 화면으로 이동하는 버튼</string>
     <string name="home_navigate_to_schedule_text">일정 확인하기</string>
     <string name="home_lineup_title">축제 라인업</string>
+    <string name="home_sponsor_title">Sponsored</string>
     <string name="home_navigate_to_explore_desc">탐색 화면으로 이동하는 버튼</string>
+    <string name="home_festating_poster_image">페스타팅 이미지</string>
+    <string name="format_festival_period_year">%1$s년 </string>
+    <string name="format_festival_period_date">%1$s월 %2$s일</string>
+    <string name="content_description_instagram">인스타그램 아이콘</string>
+    <string name="content_description_homepage">홈페이지 아이콘</string>
+
 
 
     <!--한 눈에 보기 화면 -->
@@ -38,6 +49,14 @@
     <string name="place_detail_notice_title">공지사항</string>
     <string name="place_detail_default_time">미지정</string>
     <string name="place_detail_default_host">미지정</string>
+    <string name="place_detail_real_time_waiting">실시간 웨이팅</string>
+    <string name="place_detail_waiting_estimated_time_title">예상 대기시간</string>
+    <string name="place_detail_waiting_current_teams">현재 대기</string>
+    <string name="place_detail_waiting_teams_count">%1$d팀</string>
+    <string name="place_detail_waiting_estimated_time">약 %1$d분</string>
+    <string name="place_detail_waiting_inactive">웨이팅을 지원하지 않는 부스입니다.</string>
+    <string name="place_detail_waiting_register">+ 웨이팅 등록하기</string>
+    <string name="place_detail_waiting_closed_btn">웨이팅 마감</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
@@ -46,6 +65,10 @@
     <string name="explore_festabook_logo">festabook_logo</string>
     <string name="explore_no_search_result_text">철자가 맞는지 확인해주세요</string>
     <string name="explore_error_text">오류가 발생했습니다: %1$s</string>
+    <string name="recent_searches">최근 검색어</string>
+    <string name="clear_all">전체삭제</string>
+    <string name="no_recent_searches_message">최근 검색어 내역이 없습니다.</string>
+    <string name="content_description_close">닫기 버튼</string>
 
     <!--일정 화면-->
     <string name="schedule_title">일정 타임라인</string>
@@ -88,11 +111,27 @@
     <string name="setting_notice_detail">앱 알림 세부 설정</string>
     <string name="setting_app_info_title">앱 정보</string>
     <string name="setting_app_version">앱 버전</string>
-    <string name="setting_service_policy">약관 및 정책</string>
+    <string name="setting_service_policy">서비스 이용약관</string>
+    <string name="setting_personal_information_policy">개인정보 처리방침</string>
     <string name="setting_contact_us">개발자 문의하기</string>
     <string name="setting_contact_us_email_subject">개발자 문의하기</string>
     <string name="setting_contact_us_email">festabook2025@gmail.com</string>
     <string name="setting_notice_enabled">알림이 설정되었습니다</string>
+    <string name="setting_waiting_info_section_title">등록 정보</string>
+    <string name="setting_waiting_info_phone_number">전화번호</string>
+    <string name="setting_waiting_info_not_registered">미등록</string>
+    <string name="setting_waiting_info_title">전화번호</string>
+    <string name="setting_waiting_info_back">뒤로가기</string>
+    <string name="setting_waiting_info_add_title">전화번호 등록</string>
+    <string name="setting_waiting_info_add_headline">1번의 전화번호 등록으로\n바로 웨이팅을 시작할 수 있어요</string>
+    <string name="setting_waiting_info_add_label">전화번호</string>
+    <string name="setting_waiting_info_add_description">입력하신 전화번호를 바탕으로 웨이팅이 진행됩니다.</string>
+    <string name="setting_waiting_info_add_hint">010-0000-0000</string>
+    <string name="setting_waiting_info_add_phone_icon">전화번호 아이콘</string>
+    <string name="setting_waiting_info_add_terms_title">약관 동의</string>
+    <string name="setting_waiting_info_add_terms_item">(필수) 개인 정보 수집 및 이용 동의</string>
+    <string name="setting_waiting_info_add_button">전화번호 등록하기</string>
+    <string name="setting_waiting_info_save_success">전화번호가 등록되었습니다</string>
 
     <!-- icon description -->
     <string name="iv_speaker">공지 아이콘</string>
@@ -110,6 +149,30 @@
     <string name="lost_item">분실물 이미지</string>
     <string name="chevron_down">펼치기</string>
     <string name="info">정보</string>
+
+    <!-- 웨이팅 등록 화면 -->
+    <string name="waiting_register_title">웨이팅 정보 입력</string>
+    <string name="waiting_register_party_size_title">인원 수</string>
+    <string name="waiting_register_party_size_limit_notice">9명 이상 웨이팅은 부스에 따로 문의해주세요</string>
+    <string name="waiting_register_agreement_title">약관 동의</string>
+    <string name="waiting_register_agreement_service">(필수) 개인정보 제3자 제공 동의서</string>
+    <string name="waiting_register_submit">웨이팅 등록하기</string>
+    <string name="waiting_register_success">웨이팅 등록이 완료되었습니다</string>
+    <string name="content_description_waiting_register_back">이전 화면으로 돌아가기</string>
+    <string name="content_description_waiting_party_size_decrease">인원 수 감소</string>
+    <string name="content_description_waiting_party_size_increase">인원 수 증가</string>
+    <string name="waiting_register_confirm_title">호출 알림은 푸시로 전송돼요\n알림을 놓치지 않도록 허용 상태를 확인해주세요</string>
+    <string name="waiting_register_confirm_description">제시간에 방문하지 않으면 노쇼로 처리될 수 있어요</string>
+    <string name="waiting_register_confirm_checkbox">네 , 확인했어요</string>
+    <string name="waiting_register_confirm_later">다음에 웨이팅하기</string>
+    <string name="waiting_register_confirm_submit">확인</string>
+    <string name="waiting_duplicate_title">한 번에 하나의 플레이스만\n웨이팅을 할 수 있어요</string>
+    <string name="waiting_duplicate_description">이전에 등록한 웨이팅은 취소돼요</string>
+    <string name="waiting_duplicate_my_waiting">나의 웨이팅</string>
+    <string name="waiting_duplicate_register_new">새로 웨이팅하기</string>
+    <string name="waiting_cancel_confirm_title">기존에 등록한 웨이팅을 취소하고\n새로 등록할까요?</string>
+    <string name="waiting_cancel_confirm_dismiss">돌아가기</string>
+    <string name="waiting_cancel_confirm_submit">취소하기</string>
     <string name="schedule_location">위치</string>
     <string name="schedule_time">시간</string>
     <string name="all_book_mark">북마크</string>
@@ -172,4 +235,27 @@
     <string name="friday">금</string>
     <string name="saturday">토</string>
     <string name="sunday">일</string>
+
+    <!-- 나의 웨이팅 화면 -->
+    <string name="my_waiting_title">나의 웨이팅</string>
+    <string name="my_waiting_headline_waiting_far">현재 대기 중</string>
+    <string name="my_waiting_headline_waiting_near">근처에서 기다려주세요</string>
+    <string name="my_waiting_headline_called">지금 바로 입장해주세요!</string>
+    <string name="my_waiting_order_format">번째</string>
+    <string name="my_waiting_enter_now">지금 입장</string>
+    <string name="my_waiting_total_teams_format">%1$d팀</string>
+    <string name="my_waiting_total_teams_label">총 대기</string>
+    <string name="my_waiting_estimated_time_label">예상 대기시간</string>
+    <string name="my_waiting_estimated_time_format">약 %1$d분</string>
+    <string name="my_waiting_party_size_label">방문 인원 수</string>
+    <string name="my_waiting_party_size_format">%1$d명</string>
+    <string name="my_waiting_phone_label">전화번호</string>
+    <string name="my_waiting_cancel_button">웨이팅 취소하기</string>
+    <string name="my_waiting_cancel_confirm_title">등록한 웨이팅을\n정말 취소할까요?</string>
+    <string name="my_waiting_cancel_success">웨이팅을 취소했어요</string>
+    <string name="my_waiting_notice_text">입장 순서가 되면 푸시 알림으로 안내드립니다. 10분 이내 미입장 시 대기가 노쇼로 처리될 수 있습니다.</string>
+
+    <!-- 홈 웨이팅 바 -->
+    <string name="home_waiting_bar_format">%1$d번째  |  약 %2$d분</string>
+    <string name="home_waiting_bar_action">나의 웨이팅</string>
 </resources>

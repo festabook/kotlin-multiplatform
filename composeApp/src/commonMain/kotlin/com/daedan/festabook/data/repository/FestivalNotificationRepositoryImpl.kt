@@ -10,6 +10,7 @@ import com.daedan.festabook.domain.repository.FestivalNotificationRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 
 @ContributesBinding(AppScope::class)
+@SingleIn(AppScope::class)
 @Inject
 class FestivalNotificationRepositoryImpl(
     private val festivalNotificationRemoteDataSource: FestivalNotificationRemoteDataSource,
@@ -29,13 +31,13 @@ class FestivalNotificationRepositoryImpl(
             withTimeoutOrNullFallback(
                 producer = { deviceLocalDataSource.getDeviceId().firstOrNull() },
                 onFallback = { /*TODO 로그 */ },
-            ) ?: return Result.failure(IllegalStateException())
+            ) ?: return Result.failure(IllegalStateException("deviceId가 null"))
 
         val festivalId =
             withTimeoutOrNullFallback(
                 producer = { festivalLocalDataSource.getFestivalId().firstOrNull() },
                 onFallback = { /*TODO 로그 */ },
-            ) ?: return Result.failure(IllegalStateException())
+            ) ?: return Result.failure(IllegalStateException("festivalId가 null"))
 
         val result =
             festivalNotificationRemoteDataSource
@@ -78,6 +80,39 @@ class FestivalNotificationRepositoryImpl(
             }
     }
 
+    override suspend fun syncFestivalNotificationIsAllow(): Result<Boolean> {
+        val deviceId =
+            deviceLocalDataSource.getDeviceId().firstOrNull() ?: return Result.failure(
+                IllegalArgumentException(NO_DEVICE_ID_EXCEPTION),
+            )
+        val festivalId =
+            festivalLocalDataSource.getFestivalId().firstOrNull() ?: return Result.failure(
+                IllegalArgumentException(NO_FESTIVAL_ID_EXCEPTION),
+            )
+
+        return festivalNotificationRemoteDataSource
+            .getFestivalNotification(deviceId)
+            .toResult()
+            .mapCatching { response ->
+                val notificationId =
+                    response.find { it.festivalId == festivalId }?.festivalNotificationId
+                val isAllowed = notificationId != null
+                festivalNotificationLocalDataSource.saveFestivalNotificationIsAllowed(
+                    festivalId,
+                    isAllowed,
+                )
+                if (isAllowed) {
+                    festivalNotificationLocalDataSource.saveFestivalNotificationId(
+                        festivalId,
+                        notificationId,
+                    )
+                } else {
+                    festivalNotificationLocalDataSource.deleteFestivalNotificationId(festivalId)
+                }
+                isAllowed
+            }
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getFestivalNotificationIsAllow(): Flow<Boolean> =
         festivalLocalDataSource.getFestivalId().flatMapLatest { festivalId ->
@@ -89,15 +124,25 @@ class FestivalNotificationRepositoryImpl(
             }
         }
 
-    override suspend fun setFestivalNotificationIsAllow(isAllowed: Boolean) {
-        withTimeoutOrNullFallback(
-            producer = { festivalLocalDataSource.getFestivalId().firstOrNull() },
-            onFallback = { /*TODO 로그 */ },
-        )?.let { festivalId ->
+    override suspend fun saveFestivalNotificationIsAllow(isAllowed: Boolean): Result<Unit> {
+        val festivalId =
+            withTimeoutOrNullFallback(
+                producer = { festivalLocalDataSource.getFestivalId().firstOrNull() },
+                onFallback = { /*TODO 로그 */ },
+            ) ?: return Result.failure(IllegalStateException())
+
+        return runCatching {
             festivalNotificationLocalDataSource.saveFestivalNotificationIsAllowed(
                 festivalId = festivalId,
                 isAllowed = isAllowed,
             )
         }
+    }
+
+    companion object {
+        private val NO_FESTIVAL_ID_EXCEPTION =
+            "${::FestivalNotificationRepositoryImpl.name}: FestivalId가 없습니다."
+        private val NO_DEVICE_ID_EXCEPTION =
+            "${::FestivalNotificationRepositoryImpl.name}: DeviceId가 없습니다."
     }
 }

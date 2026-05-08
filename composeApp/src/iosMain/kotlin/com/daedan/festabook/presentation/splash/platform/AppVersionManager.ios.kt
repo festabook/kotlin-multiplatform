@@ -1,5 +1,6 @@
 package com.daedan.festabook.presentation.splash.platform
 
+import com.daedan.festabook.BuildKonfig
 import com.daedan.festabook.domain.repository.AppVersionRepository
 import dev.zacsweers.metro.Inject
 import platform.Foundation.NSBundle
@@ -15,7 +16,8 @@ actual class AppVersionManager(
         NSBundle.mainBundle.infoDictionary?.get("CFBundleShortVersionString") as? String
 
     actual suspend fun getIsAppUpdateAvailable(): Result<Boolean> {
-        val latestVersion = appVersionRepository.getLatestVersion(APP_BUNDLE_ID)
+        if (BuildKonfig.BUILD_FLAVOR == "dev") return Result.success(false)
+        val latestVersion = appVersionRepository.getLatestVersion(BuildKonfig.APP_BUNDLE_ID)
         return latestVersion.map { latest ->
             isNewerVersion(latest, currentAppVersion)
         }
@@ -62,7 +64,5 @@ actual class AppVersionManager(
         private const val APP_STORE_URL =
             "itms-apps://itunes.apple.com/app/apple-store/id/$APPLE_ID"
         private const val APP_STORE_WEB_URL = "https://apps.apple.com/app/id/$APPLE_ID"
-
-        private const val APP_BUNDLE_ID = "eoehdeksruf.festabook"
     }
 }

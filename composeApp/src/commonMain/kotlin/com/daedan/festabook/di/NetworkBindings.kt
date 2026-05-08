@@ -10,6 +10,7 @@ import com.daedan.festabook.data.service.LostItemService
 import com.daedan.festabook.data.service.NoticeService
 import com.daedan.festabook.data.service.PlaceService
 import com.daedan.festabook.data.service.ScheduleService
+import com.daedan.festabook.data.service.WaitingService
 import com.daedan.festabook.data.service.api.FestaBookAuthPlugin
 import com.daedan.festabook.data.service.createDeviceService
 import com.daedan.festabook.data.service.createFAQService
@@ -20,6 +21,7 @@ import com.daedan.festabook.data.service.createLostItemService
 import com.daedan.festabook.data.service.createNoticeService
 import com.daedan.festabook.data.service.createPlaceService
 import com.daedan.festabook.data.service.createScheduleService
+import com.daedan.festabook.data.service.createWaitingService
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.converter.ResponseConverterFactory
 import de.jensklingenberg.ktorfit.ktorfit
@@ -27,8 +29,11 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
+import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.header
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.KotlinxSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -56,12 +61,11 @@ object NetworkBindings {
                     json(json)
                     register(
                         ContentType.Text.JavaScript,
-                        KotlinxSerializationConverter(
-                            Json {
-                                ignoreUnknownKeys = true
-                            },
-                        ),
+                        KotlinxSerializationConverter(json),
                     )
+                }
+                install(DefaultRequest) {
+                    header(HttpHeaders.ContentType, ContentType.Application.Json)
                 }
                 install(authPlugin.plugin)
             }
@@ -93,4 +97,7 @@ object NetworkBindings {
 
     @Provides
     fun provideFestivalLineupService(ktorfit: Ktorfit): FestivalLineupService = ktorfit.createFestivalLineupService()
+
+    @Provides
+    fun provideWaitingService(ktorfit: Ktorfit): WaitingService = ktorfit.createWaitingService()
 }

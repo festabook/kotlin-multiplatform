@@ -4,11 +4,24 @@
     <dict>
         <key>CADisableMinimumFrameDurationOnPhone</key>
         <true />
-        <key>NSLocationWhenInUseUsageDescription</key>
-        <string>현재 위치를 지도에 표시하고 가까운 장소를 찾기 위해 위치 권한이 필요합니다.</string>
+        <key>FirebaseAppDelegateProxyEnabled</key>
+        <false />
         <key>LSApplicationQueriesSchemes</key>
         <array>
             <string>itms-apps</string>
         </array>
+        <key>UIBackgroundModes</key>
+        <array>
+            <string>remote-notification</string>
+        </array>
+        <key>CFBundleShortVersionString</key>
+		<string>2.1.1</string>
+        <key>CFBundleVersion</key>
+		<string>2010106</string>
+        <key>LSApplicationQueriesSchemes</key>
+        <array>
+            <string>supertoss</string>
+        </array>
+
     </dict>
 </plist>

@@ -20,6 +20,7 @@ import coil3.PlatformContext
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.ImageResult
+import com.daedan.festabook.logging.ScreenViewVisibilityLogger
 import com.daedan.festabook.presentation.common.ObserveAsEvents
 import com.daedan.festabook.presentation.common.convertImageUrl
 import com.daedan.festabook.presentation.placeMap.PlaceMapViewModel
@@ -57,6 +58,7 @@ fun PlaceMapRoute(
     locationSource: LocationSource,
 //    logger: DefaultFirebaseLogger,
     modifier: Modifier = Modifier,
+    isVisible: Boolean = true,
 ) {
     val imageLoader = LocalCoilImageLoader.current
     val context = LocalPlatformContext.current
@@ -112,6 +114,7 @@ fun PlaceMapRoute(
         onEvent = { placeMapViewModel.onPlaceMapEvent(it) },
         bottomSheetState = bottomSheetState,
         mapDelegate = mapDelegate,
+        isVisible = isVisible,
     )
 }
 
@@ -122,7 +125,10 @@ fun PlaceMapScreen(
     bottomSheetState: PlaceListBottomSheetState,
     mapDelegate: MapDelegate,
     modifier: Modifier = Modifier,
+    isVisible: Boolean = true,
 ) {
+    ScreenViewVisibilityLogger(screenName = "PlaceMapScreen", isVisible = isVisible)
+
     val isPlaceListVisible = uiState.selectedPlace is LoadState.Empty
 
     NaverMapContent(
@@ -130,6 +136,7 @@ fun PlaceMapScreen(
         mapDelegate = mapDelegate,
         onMapReady = { onEvent(MapControlEvent.OnMapReady) },
         onMapDrag = { onEvent(MapControlEvent.OnMapDrag) },
+        isVisible = isVisible,
     ) { naverMap ->
         Column(
             modifier = Modifier.wrapContentSize(),
@@ -165,6 +172,7 @@ fun PlaceMapScreen(
                 )
 
                 PlaceListScreen(
+                    isPlaceMapVisible = isVisible,
                     isPlaceListVisible = isPlaceListVisible,
                     placesUiState = uiState.places,
                     map = naverMap,

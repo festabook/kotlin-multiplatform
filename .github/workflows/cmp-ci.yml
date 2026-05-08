@@ -26,6 +26,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+
       - name: Gradle cache
         uses: actions/cache@v4
         with:
@@ -46,6 +49,10 @@ jobs:
           echo "IMAGE_BASE_URL=${{ secrets.IMAGE_BASE_URL }}" >> local.properties
           echo "NAVER_MAP_CLIENT_ID=${{ secrets.NAVER_MAP_CLIENT_ID }}" >> local.properties
           echo "NAVER_MAP_STYLE_ID=${{ secrets.NAVER_MAP_STYLE_ID }}" >> local.properties
+          echo "APP_BUNDLE_ID=${{ secrets.APP_BUNDLE_ID }}" >> local.properties
+          echo "APP_BUNDLE_ID_DEV=${{ secrets.APP_BUNDLE_ID_DEV }}" >> local.properties
+          echo "FESTA_TING_URL=${{ secrets.FESTA_TING_URL }}" >> local.properties
+          echo "FESTA_TING_URL_DEV=${{ secrets.FESTA_TING_URL_DEV }}" >> local.properties
 
       - name: Load Google Service file
         env:
@@ -79,7 +86,7 @@ jobs:
 
       - name: Publish Unit Test Results
         if: always()
-        uses: EnricoMi/publish-unit-test-result-action@v2
+        uses: EnricoMi/publish-unit-test-result-action/linux@v2
         with:
           # 결과 리포트 경로 수정 (composeApp 모듈 기준)
           files: composeApp/build/test-results/**/*.xml

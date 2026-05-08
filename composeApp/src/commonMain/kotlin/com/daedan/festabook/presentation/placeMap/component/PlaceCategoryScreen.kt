@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.daedan.festabook.logging.logClick
 import com.daedan.festabook.presentation.placeMap.model.PlaceCategoryUiModel
 import com.daedan.festabook.presentation.placeMap.model.getIconId
 import com.daedan.festabook.presentation.placeMap.model.getTextId
@@ -91,11 +92,16 @@ private fun CategoryChip(
     icon: @Composable (() -> Unit)? = null,
     onClick: () -> Unit = {},
 ) {
+    val loggedOnClick =
+        logClick(
+            identifier = "category_chip_click",
+            screenName = "PlaceMapScreen",
+            extraParam = mapOf("category" to text),
+            onClick = onClick,
+        )
     FilterChip(
         selected = selected,
-        onClick = {
-            onClick()
-        },
+        onClick = { loggedOnClick() },
         modifier = modifier,
         label = {
             Text(

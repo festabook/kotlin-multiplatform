@@ -20,6 +20,7 @@ actual fun NaverMapContent(
     mapDelegate: MapDelegate,
     onMapDrag: () -> Unit,
     onMapReady: (NaverMap) -> Unit,
+    isVisible: Boolean,
     content: @Composable (NaverMap?) -> Unit,
 ) {
     val mapView = remember { NMFNaverMapView() }
@@ -34,6 +35,7 @@ actual fun NaverMapContent(
     Box(modifier = modifier) {
         UIKitView(
             factory = { mapView },
+            update = { view -> view.hidden = !isVisible },
             modifier = Modifier.dragInterceptor(onMapDrag),
         )
         content(mapDelegate.value)

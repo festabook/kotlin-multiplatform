@@ -3,11 +3,15 @@
 
 platform :ios, '17.0'
 
+project 'iosApp', 'Staging' => :release
+
 target 'iosApp' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
-
-  # Pods for iosApp
-  pod 'NMapsMap'
+   pod 'NMapsMap'
+   pod 'FirebaseCrashlytics'
+   pod 'FirebaseAnalytics'
+   pod 'FirebaseMessaging'
+   pod 'FirebaseCore'
 
 end

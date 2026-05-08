@@ -12,7 +12,6 @@ class PlaceMapSideEffectHandler(
     private val mapManagerDelegate: MapManagerDelegate,
     private val bottomSheetState: PlaceListBottomSheetState,
     private val viewModel: PlaceMapViewModel,
-//    private val logger: DefaultFirebaseLogger,
     // 안드로이드 종속적인 액션은 외부에서 주입
     // TODO Compose로 전환 시, 콜백이 아닌 Compose State 주입
     private val onPreloadImages: (PlaceMapSideEffect.PreloadImages) -> Unit,
@@ -29,13 +28,12 @@ class PlaceMapSideEffectHandler(
 
             is PlaceMapSideEffect.MenuItemReClicked -> {
                 mapManager?.moveToPosition()
-                if (!event.isPreviewVisible) return
-                viewModel.onPlaceMapEvent(SelectEvent.UnSelectPlace)
-//                logger.log(
-//                    PlaceMapButtonReClick(
-//                        baseLogData = logger.getBaseLogData(),
-//                    ),
-//                )
+                if (bottomSheetState.settledValue == PlaceListBottomSheetValue.EXPANDED) {
+                    bottomSheetState.update(PlaceListBottomSheetValue.HALF_EXPANDED)
+                }
+                if (event.isPreviewVisible) {
+                    viewModel.onPlaceMapEvent(SelectEvent.UnSelectPlace)
+                }
             }
 
             is PlaceMapSideEffect.StartPlaceDetail -> {

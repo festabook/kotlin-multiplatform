@@ -31,6 +31,26 @@ private val naverMapStyleId =
 private val naverMapClientId =
     getLocalProperty("NAVER_MAP_CLIENT_ID") ?: error("NAVER_MAP_CLIENT_ID가 local.properties에 없음")
 
+private val appVersionName = providers.gradleProperty("APP_VERSION_NAME").orNull
+    ?: error("APP_VERSION_NAME가 gradle.properties에 없음")
+private val appVersionCode = providers.gradleProperty("APP_VERSION_CODE").orNull
+    ?: error("APP_VERSION_CODE가 gradle.properties에 없음")
+
+private val appBundleId =
+    getLocalProperty("APP_BUNDLE_ID") ?: error("APP_BUNDLE_ID가 local.properties에 없음")
+
+private val appBundleIdDev =
+    getLocalProperty("APP_BUNDLE_ID_DEV") ?: error("APP_BUNDLE_ID_DEV가 local.properties에 없음")
+
+private val buildFlavor =
+    project.properties["buildkonfig.flavor"]?.toString() ?: "dev"
+
+private val festatingUrlDev =
+    getLocalProperty("FESTA_TING_URL_DEV") ?: error("FESTA_TING_URL_DEV가 local.properties에 없음")
+
+private val festatingUrl =
+    getLocalProperty("FESTA_TING_URL") ?: error("FESTA_TING_URL가 local.properties에 없음")
+
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -45,6 +65,8 @@ plugins {
     alias(libs.plugins.mokkery)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.kotlinCocoapods)
+    alias(libs.plugins.firebaseCrashlytcis)
+    alias(libs.plugins.google.gms.services)
 }
 
 kotlin {
@@ -57,6 +79,10 @@ kotlin {
         ios.deploymentTarget = "17.0"
 
         pod("NMapsMap")
+        pod("FirebaseCrashlytics")
+        pod("FirebaseAnalytics")
+        pod("FirebaseMessaging")
+        pod("FirebaseCore")
     }
     androidTarget {
         compilerOptions {
@@ -65,6 +91,7 @@ kotlin {
     }
 
     listOf(
+        iosX64(),
         iosArm64(),
         iosSimulatorArm64(),
     ).forEach { iosTarget ->
@@ -84,9 +111,15 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.androidx.appcompat)
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.firebase.crashlytics.ndk)
+            implementation(libs.firebase.analytics)
+            implementation(libs.firebase.messaging)
         }
         commonMain.dependencies {
+            implementation(libs.napier)
             implementation(libs.compose.navigationevent)
+            implementation(libs.compose.navigation)
             implementation(libs.coil.compose)
             implementation(libs.landscapist.coil3)
             implementation(libs.landscapist.placeholder)
@@ -111,6 +144,7 @@ kotlin {
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.compottie)
             implementation(libs.metrox.viewmodel.compose)
+            implementation(libs.compose.webview.multiplatform)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -123,18 +157,36 @@ buildkonfig {
     packageName = "com.daedan.festabook"
 
     defaultConfigs {
+        buildConfigField(STRING, "BUILD_FLAVOR", buildFlavor)
         buildConfigField(STRING, "NAVER_MAP_STYLE_ID", naverMapStyleId)
         buildConfigField(STRING, "NAVER_MAP_CLIENT_ID", naverMapClientId)
+        buildConfigField(STRING, "APP_VERSION_NAME", appVersionName)
         buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
         buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
+        buildConfigField(STRING, "APP_BUNDLE_ID", appBundleIdDev)
+        buildConfigField(STRING, "FESTA_TING_URL", festatingUrlDev)
     }
-
     defaultConfigs("release") {
-        buildConfigField(STRING, "NAVER_MAP_STYLE_ID", naverMapStyleId)
-        buildConfigField(STRING, "NAVER_MAP_CLIENT_ID", naverMapClientId)
         buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
         buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
+        buildConfigField(STRING, "APP_BUNDLE_ID", appBundleId)
+        buildConfigField(STRING, "FESTA_TING_URL", festatingUrl)
     }
+    targetConfigs {
+        create("Release") {
+            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrl)
+            buildConfigField(STRING, "FESTABOOK_URL", baseUrl)
+            buildConfigField(STRING, "FESTA_TING_URL", festatingUrl)
+        }
+
+        create("Staging") {
+            buildConfigField(STRING, "FESTABOOK_IMAGE_URL", baseImageUrlDev)
+            buildConfigField(STRING, "FESTABOOK_URL", baseUrlDev)
+            buildConfigField(STRING, "APP_BUNDLE_ID", appBundleIdDev)
+            buildConfigField(STRING, "FESTA_TING_URL", festatingUrlDev)
+        }
+    }
+
 }
 
 android {
@@ -163,8 +215,8 @@ android {
             libs.versions.android.targetSdk
                 .get()
                 .toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = appVersionCode.toInt()
+        versionName = appVersionName
     }
     packaging {
         resources {
@@ -179,15 +231,16 @@ android {
         }
 
         release {
-//            isMinifyEnabled = true
-//            isShrinkResources = true
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "proguard-rules.pro",
-//            )
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
             resValue("string", "app_name", "Festabook")
             signingConfig = signingConfigs["release"]
         }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -221,4 +274,76 @@ mokkery {
 
 ktorfit {
     compilerPluginVersion.set("2.3.3")
+}
+
+val updateIosVersion by tasks.registering {
+
+    val plistFile = rootProject.layout.projectDirectory.file("iosApp/iosApp/Info.plist")
+    val xcconfigFile =
+        rootProject.layout.projectDirectory.file("iosApp/Configuration/Config.xcconfig")
+    val versionName = providers.gradleProperty("APP_VERSION_NAME")
+    val versionCode = providers.gradleProperty("APP_VERSION_CODE")
+
+    doLast {
+        // Config.xcconfig의 MARKETING_VERSION, CURRENT_PROJECT_VERSION 업데이트
+        val xcconfig = xcconfigFile.asFile
+        var xcconfigText = xcconfig.readText()
+        xcconfigText = xcconfigText.replace(
+            Regex("MARKETING_VERSION=.*"),
+            "MARKETING_VERSION=${versionName.get()}"
+        )
+        xcconfigText = xcconfigText.replace(
+            Regex("CURRENT_PROJECT_VERSION=.*"),
+            "CURRENT_PROJECT_VERSION=${versionCode.get()}"
+        )
+        xcconfig.writeText(xcconfigText)
+
+        val file = plistFile.asFile
+        var text = file.readText()
+
+        // CFBundleShortVersionString
+        text = if (text.contains("<key>CFBundleShortVersionString</key>")) {
+            text.replace(
+                Regex("<key>CFBundleShortVersionString</key>\\s*<string>.*</string>"),
+                "<key>CFBundleShortVersionString</key>\n\t\t<string>${versionName.get()}</string>"
+            )
+        } else {
+            text.replace(
+                "</dict>",
+                """
+                    <key>CFBundleShortVersionString</key>
+                    <string>${versionName.get()}</string>
+                    </dict>
+                    """.trimIndent()
+            )
+        }
+
+        // CFBundleVersion
+        text = if (text.contains("<key>CFBundleVersion</key>")) {
+            text.replace(
+                Regex("<key>CFBundleVersion</key>\\s*<string>.*</string>"),
+                "<key>CFBundleVersion</key>\n\t\t<string>${versionCode.get()}</string>"
+            )
+        } else {
+            text.replace(
+                "</dict>",
+                """
+                    <key>CFBundleVersion</key>
+                    <string>${versionCode.get()}</string>
+                    </dict>
+                    """.trimIndent()
+            )
+        }
+
+        file.writeText(text)
+    }
+}
+
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile>().configureEach {
+    dependsOn(updateIosVersion)
+}
+
+tasks.named("build") {
+    dependsOn(updateIosVersion)
 }
